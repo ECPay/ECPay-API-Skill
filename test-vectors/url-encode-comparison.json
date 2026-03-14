@@ -1,0 +1,49 @@
+{
+  "description": "ECPay URL Encode 函式比對表 — ecpayUrlEncode (CMV用) vs aesUrlEncode (AES用) 的差異",
+  "note": "此檔案驗證開發者正確區分兩種 URL encode 函式。混用是最常見的串接錯誤之一",
+  "functions": {
+    "ecpayUrlEncode": "urlencode() → toLowerCase() → .NET replacements (%2d→- %5f→_ %2e→. %21→! %2a→* %28→( %29→))",
+    "aesUrlEncode": "urlencode() only (no .NET replacements, no toLowerCase)"
+  },
+  "vectors": [
+    {
+      "input": "Items (Special)~Test",
+      "ecpayUrlEncode": "items+(special)%7etest",
+      "aesUrlEncode": "Items+%28Special%29%7ETest",
+      "differences": [
+        "( → ( vs %28",
+        ") → ) vs %29",
+        "%7e vs %7E (case)",
+        "items vs Items (case)"
+      ],
+      "note": "四處差異：.NET 替換讓 () 不被編碼、toLowerCase 改變大小寫。AES 保留原始大小寫與完整編碼"
+    },
+    {
+      "input": "Tom's Shop!",
+      "ecpayUrlEncode": "tom%27s+shop!",
+      "aesUrlEncode": "Tom%27s+Shop%21",
+      "differences": [
+        "! → ! vs %21",
+        "tom vs Tom (case)",
+        "shop vs Shop (case)"
+      ]
+    },
+    {
+      "input": "price=100&item=test*2",
+      "ecpayUrlEncode": "price%3d100%26item%3dtest*2",
+      "aesUrlEncode": "price%3D100%26item%3Dtest%2A2",
+      "differences": [
+        "* → * vs %2A",
+        "%3d vs %3D (case)",
+        "%26 vs %26 (same)"
+      ]
+    },
+    {
+      "input": "file_name-v2.0",
+      "ecpayUrlEncode": "file_name-v2.0",
+      "aesUrlEncode": "file_name-v2.0",
+      "differences": [],
+      "note": "當輸入只含 _ - . 和英數時，兩函式結果相同。此向量驗證開發者不會因『有時結果一樣』而誤以為可以混用"
+    }
+  ]
+}

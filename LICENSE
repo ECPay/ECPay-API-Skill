@@ -1,0 +1,116 @@
+版權所有 (All Rights Reserved)
+
+Copyright (c) 2025-2026 綠界科技股份有限公司 (ECPay Co., Ltd.)
+
+本著作（包含但不限於所有文件、指南、參考資料、程式碼範例、腳本及相關素材）之
+一切著作權及智慧財產權，均歸綠界科技股份有限公司所有。
+
+有限授權
+
+綠界科技股份有限公司授予您非專屬、不可轉讓、可撤回之有限授權，允許您：
+  (a) 檢視及研讀本著作之內容；
+  (b) 執行程式碼範例以測試綠界科技 API 串接；
+  (c) 搭配 AI 編程助手（如 GitHub Copilot、Claude Code、Cursor 等）參考本著作，
+      產出您自有的綠界 API 串接程式碼。
+
+您不得：
+  (a) 將本著作之全部或部分內容複製至共享函式庫、SDK 或教學素材中散布；
+  (b) 以任何形式重新散布、轉授權或出售本著作；
+  (c) 建立衍生著作用於商業銷售；
+  (d) 移除或修改本著作中之著作權聲明或授權標示。
+
+GitHub 平台使用
+
+本著作透過 GitHub 公開發布。您可依 GitHub 平台功能進行 fork 及 clone，但僅限
+於個人或組織內部評估與串接開發使用。超出此範圍之散布需事先取得書面授權。
+
+貢獻者條款
+
+向本著作提交 Pull Request 或其他貢獻，即表示您同意：
+  (a) 您的貢獻為您的原創著作；
+  (b) 您將該貢獻之著作權讓與綠界科技股份有限公司；
+  (c) 綠界科技股份有限公司得將該貢獻納入本著作並以本授權條款發布。
+
+禁止背書
+
+未經書面授權，不得使用綠界科技之名稱、商標或標誌暗示背書或關聯。
+
+終止
+
+若您違反本授權條款之任何規定，您的授權將自動終止。終止後，您必須停止使用本著作
+並銷毀所有副本。綠界科技股份有限公司保留就違規行為尋求法律救濟之權利。
+
+免責聲明
+
+本著作按「現狀」提供，不附帶任何明示或暗示之擔保，包含但不限於適銷性、特定
+用途適用性及未侵權之擔保。綠界科技股份有限公司不保證本著作不侵害第三方之專利權
+或其他智慧財產權。在任何情況下，綠界科技股份有限公司對因使用或無法使用本著作
+所產生之任何直接、間接、附帶、特殊、懲罰性或衍生性損害，均不負任何責任。
+
+---
+
+All Rights Reserved
+
+Copyright (c) 2025-2026 ECPay Co., Ltd. (綠界科技股份有限公司)
+
+All copyright and intellectual property rights in this work (including but
+not limited to all documents, guides, references, code examples, scripts,
+and related materials) are owned by ECPay Co., Ltd.
+
+Limited License Grant
+
+ECPay Co., Ltd. grants you a non-exclusive, non-transferable, revocable,
+limited license to:
+  (a) view and study the contents of this work;
+  (b) execute code examples to test integration with ECPay APIs;
+  (c) reference this work with AI coding assistants (such as GitHub Copilot,
+      Claude Code, Cursor, etc.) to produce your own ECPay API integration
+      code.
+
+You may NOT:
+  (a) copy all or part of this work into shared libraries, SDKs, or
+      educational materials for distribution;
+  (b) redistribute, sublicense, or sell this work in any form;
+  (c) create derivative works for commercial sale;
+  (d) remove or alter any copyright notices or license markings in this work.
+
+GitHub Platform Usage
+
+This work is distributed on GitHub. You may fork and clone this repository
+using GitHub's standard platform features, but only for personal or
+internal organizational evaluation and integration development. Distribution
+beyond this scope requires prior written permission.
+
+Contributor Terms
+
+By submitting a Pull Request or other contribution to this work, you agree
+that:
+  (a) your contribution is your original work;
+  (b) you assign the copyright of your contribution to ECPay Co., Ltd.;
+  (c) ECPay Co., Ltd. may incorporate your contribution into this work and
+      distribute it under this license.
+
+No Endorsement
+
+You may not use ECPay's name, trademarks, or logos to imply endorsement or
+affiliation without prior written permission.
+
+Termination
+
+If you violate any provision of this license, your rights hereunder
+terminate automatically. Upon termination, you must cease all use of this
+work and destroy all copies. ECPay Co., Ltd. reserves the right to seek
+legal remedies for violations.
+
+Disclaimer
+
+THIS WORK IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. ECPAY CO., LTD. MAKES
+NO REPRESENTATION REGARDING PATENTS OR THIRD-PARTY INTELLECTUAL PROPERTY
+RIGHTS. IN NO EVENT SHALL ECPAY CO., LTD. BE LIABLE FOR ANY DIRECT,
+INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING BUT NOT LIMITED TO LOSS OF USE, DATA, OR PROFITS) ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR INABILITY TO USE THIS WORK.
+
+

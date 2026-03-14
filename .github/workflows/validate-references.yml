@@ -1,0 +1,86 @@
+name: Validate Reference URLs
+
+on:
+  schedule:
+    - cron: '0 2 * * 1'  # 每週一 UTC 02:00
+  workflow_dispatch:       # 支援手動觸發
+  pull_request:
+    paths:
+      - 'references/**'
+  push:
+    branches:
+      - main
+    paths:
+      - 'references/**'
+
+jobs:
+  check-urls:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Extract and check URLs from references
+        run: |
+          echo "Checking URLs in references/ directory..."
+
+          # Run URL checks in parallel (8 concurrent) using a single curl per URL
+          # Each result line is either "FAIL [STATUS] url" or "WARN [type] detail"
+          REPORT=$(grep -roP 'https://[^)\">\s]*ecpay[^)\">\s]*' references/ --include='*.md' | \
+            sed 's/^[^:]*://' | sort -u | \
+            xargs -P 8 -I{} bash -c '
+              url="$1"
+              TMPFILE=$(mktemp)
+              trap "rm -f \"$TMPFILE\"" EXIT
+              # Single curl: body → TMPFILE, HTTP status and effective URL → stdout
+              CURL_VARS=$(curl -s -L --retry 3 --retry-delay 5 --retry-all-errors --max-time 15 \
+                -o "$TMPFILE" -w "%{http_code} %{url_effective}" "$url" 2>/dev/null || echo "000 ")
+              STATUS=$(echo "$CURL_VARS" | cut -d" " -f1)
+              EFFECTIVE_URL=$(echo "$CURL_VARS" | cut -d" " -f2-)
+              if [ "$STATUS" != "200" ]; then
+                echo "FAIL [$STATUS] $url"
+              else
+                if [[ -n "$EFFECTIVE_URL" ]] && ! echo "$EFFECTIVE_URL" | grep -q "ecpay\.com\.tw"; then
+                  echo "WARN [redirect-domain] $url -> $EFFECTIVE_URL (redirected outside ecpay.com.tw)"
+                fi
+                # Require ECPay brand AND at least one API-specific keyword to confirm it is an API doc page
+                if ! grep -qiE "ecpay|綠界" "$TMPFILE" || ! grep -qiE "MerchantID|HashKey|介接" "$TMPFILE"; then
+                  echo "WARN [content-mismatch] $url (HTTP 200 but no ECPay API content found)"
+                fi
+              fi
+            ' _ {})
+
+          [ -n "$REPORT" ] && echo "$REPORT" | sort || true
+          echo "---"
+          FAILED=$(echo "$REPORT" | grep -c '^FAIL' || echo 0)
+          CONTENT_WARN=$(echo "$REPORT" | grep -c '^WARN' || echo 0)
+          if [ "$CONTENT_WARN" -gt 0 ]; then
+            echo "WARN: $CONTENT_WARN URL(s) returned 200 but may no longer contain ECPay API content."
+          fi
+          if [ "$FAILED" -gt 0 ]; then
+            echo "FAIL: $FAILED URL(s) may be unreachable. Please verify manually."
+            exit 1
+          else
+            echo "All checked URLs are reachable."
+          fi
+
+      - name: Create GitHub Issue on failure
+        if: failure()
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue create \
+            --title "⚠️ Reference URL check failed $(date -u '+%Y-%m-%d')" \
+            --label "url-broken" \
+            --body "The weekly reference URL validation found broken or unreachable URLs. Please review the [workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) and update the affected \`references/\` files." \
+            || true
+
+      - name: Close stale URL-broken issues on success
+        if: success()
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue list --label "url-broken" --state open --json number --jq '.[].number' | \
+            xargs -I{} gh issue close {} --comment "✅ Reference URL check passed on $(date -u '+%Y-%m-%d'). Auto-closing." \
+            || true

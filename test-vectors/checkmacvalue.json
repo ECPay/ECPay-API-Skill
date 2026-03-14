@@ -1,0 +1,124 @@
+{
+  "description": "ECPay CheckMacValue 測試向量 — 來源: guides/13-checkmacvalue.md",
+  "vectors": [
+    {
+      "name": "SHA256 基本測試（AIO 金流）",
+      "method": "SHA256",
+      "hashKey": "pwFHCqoQZGmho4w6",
+      "hashIV": "EkRm7iFT261dpevs",
+      "params": {
+        "MerchantID": "3002607",
+        "MerchantTradeNo": "Test1234567890",
+        "MerchantTradeDate": "2025/01/01 12:00:00",
+        "PaymentType": "aio",
+        "TotalAmount": "100",
+        "TradeDesc": "測試",
+        "ItemName": "測試商品",
+        "ReturnURL": "https://example.com/notify",
+        "ChoosePayment": "ALL",
+        "EncryptType": "1"
+      },
+      "expected": "291CBA324D31FB5A4BBBFDF2CFE5D32598524753AFD4959C3BF590C5B2F57FB2",
+      "note": "標準 AIO 金流基線測試。使用測試環境帳號 MerchantID=3002607，SHA256 雜湊，EncryptType=1"
+    },
+    {
+      "name": "MD5 測試（國內物流）",
+      "method": "MD5",
+      "hashKey": "5294y06JbISpM5x9",
+      "hashIV": "v77hoKGq4kWxNNIS",
+      "params": {
+        "MerchantID": "2000132",
+        "LogisticsType": "CVS",
+        "LogisticsSubType": "UNIMART",
+        "MerchantTradeDate": "2025/01/01 12:00:00"
+      },
+      "expected": "545E6146FD45BDA683C88454DB34CE8D"
+    },
+    {
+      "name": "特殊字元 ' 測試（Node.js/TypeScript 修正驗證）",
+      "method": "SHA256",
+      "hashKey": "pwFHCqoQZGmho4w6",
+      "hashIV": "EkRm7iFT261dpevs",
+      "params": {
+        "MerchantID": "3002607",
+        "ItemName": "Tom's Shop",
+        "TotalAmount": "100"
+      },
+      "expected": "CF0A3D4901D99459D8641516EC57210700E8A5C9AB26B1D021301E9CB93EF78D"
+    },
+    {
+      "name": "特殊字元 ~ 測試",
+      "method": "SHA256",
+      "hashKey": "pwFHCqoQZGmho4w6",
+      "hashIV": "EkRm7iFT261dpevs",
+      "params": {
+        "MerchantID": "3002607",
+        "ItemName": "Test~Product",
+        "TotalAmount": "200"
+      },
+      "expected": "CEEAE01D2F9A8E74D4AC0DCE7735B046D73F35A5EC99558A31A2EE03159DA1C9",
+      "note": "驗證各語言 ~ → %7E 替換。ecpayUrlEncode 會將 ~ 編碼為 %7e，再經 toLowerCase 保持小寫"
+    },
+    {
+      "name": "空格處理測試（%20 vs + 陷阱）",
+      "method": "SHA256",
+      "hashKey": "pwFHCqoQZGmho4w6",
+      "hashIV": "EkRm7iFT261dpevs",
+      "params": {
+        "MerchantID": "3002607",
+        "ItemName": "My Test Product",
+        "TotalAmount": "300"
+      },
+      "expected": "7712A5E6EDC3B57086063C88568084C66CE882A21D40E74DE5ACA3B478C6F316",
+      "wrong_with_percent20": "13F7A6B69BF856B5203212AC5F3202B6140D8E2B4316A62851712BF2AF7812D0",
+      "note": "空格必須編碼為 + 而非 %20。Node.js encodeURIComponent 和 Rust percent_encode 預設產生 %20，需手動 .replace(/%20/g, '+')。若使用 %20 會得到 wrong_with_percent20 的錯誤值"
+    },
+    {
+      "name": "Callback 驗證測試（模擬收到付款通知）",
+      "method": "SHA256",
+      "hashKey": "pwFHCqoQZGmho4w6",
+      "hashIV": "EkRm7iFT261dpevs",
+      "params": {
+        "MerchantID": "3002607",
+        "MerchantTradeNo": "Test1234567890",
+        "RtnCode": "1",
+        "RtnMsg": "Succeeded",
+        "TradeNo": "2301011234567890",
+        "TradeAmt": "100",
+        "PaymentDate": "2025/01/01 12:05:00",
+        "PaymentType": "Credit_CreditCard",
+        "TradeDate": "2025/01/01 12:00:00",
+        "SimulatePaid": "0"
+      },
+      "expected": "2AB536D86AFF8E1086744D59175040A32538C96B1C28C4135B551BD728E913B8",
+      "note": "模擬收到 ECPay 付款完成通知 callback。開發者應從 callback 參數中取出除 CheckMacValue 外的所有欄位，重新計算 CMV 比對驗證。注意：callback 中的 CheckMacValue 欄位本身不參與計算"
+    },
+    {
+      "name": "E-Ticket CMV 公式測試（SHA256 of Key+JSON+IV）",
+      "method": "SHA256",
+      "hashKey": "7b53896b742849d3",
+      "hashIV": "37a0ad3c6ffa428b",
+      "formula": "ecticket",
+      "plaintext_json": "{\"MerchantID\":\"3085676\",\"BarCode\":\"/1234567\"}",
+      "expected": "025168759A37FAADD6AC443CDC6C95D534674611E6BD9F8143E5065B16F77796",
+      "note": "E-Ticket（電子票證）CMV 公式與 AIO 完全不同：SHA256(toLowerCase(URL_encode(HashKey + JSON_string + HashIV)))。不使用參數排序，不使用 .NET 字元替換，但需要 toLowerCase。使用電子票證專用測試帳號（7b53896b742849d3 / 37a0ad3c6ffa428b），與電子發票測試帳號不同"
+    },
+    {
+      "name": "MD5 測試（B2C 發票 AllowanceByCollegiate Callback）",
+      "method": "MD5",
+      "hashKey": "ejCk326UnaZWKisg",
+      "hashIV": "q9jcZX8Ib9LM8wYk",
+      "params": {
+        "MerchantID": "2000132",
+        "AllowanceAmt": "100",
+        "AllowanceDate": "2025/01/01 12:00:00",
+        "AllowanceNo": "A01-23456789",
+        "InvoiceNo": "AB-12345678",
+        "RtnCode": "1",
+        "RtnMsg": "OK"
+      },
+      "expected": "6A248D13B8C5B5C4F93D38FB5F2E2B5F",
+      "note": "AllowanceByCollegiate 是 B2C 電子發票中唯一攜帶 CheckMacValue 的 API，且使用 MD5（非 SHA256）。使用電子發票測試帳號（MerchantID 2000132，HashKey ejCk326UnaZWKisg），與 AIO 金流及物流帳號完全不同。此向量驗證開發者不會誤用 SHA256 或錯誤帳號的 HashKey/HashIV"
+    }
+  ]
+}

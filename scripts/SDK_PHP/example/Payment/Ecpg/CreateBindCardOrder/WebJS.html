@@ -1,0 +1,229 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="Content-Language" content="zh-TW">
+        <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1.0, user-scalable=yes">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="format-detection" content="telephone=no">
+        <meta name="renderer" content="webkit|ie-comp|ie-stand">
+        <meta name="description" content="綠界科技 ECPay 提供信用卡刷卡、超商代收及取貨付款、ATM轉帳...等多種金流收款服務，會員可於綠界網站建立收款網址或使用API程式串接，應用彈性，收款隔日起即撥款。支付找綠界，買賣無國界。">
+        <meta name="keywords" content="信用卡,ATM轉帳,超商代碼,超商條碼,applepay,googlepay,samsungpay,金流服務">
+        <title>綠界科技 ECPay - 第三方支付領導品牌</title>
+    </head>
+    <body>
+        <div style="padding: 4rem;">
+            <div style="display: grid; align-items: center; justify-content: center;">
+                <ul>
+                    <li>
+                        <!--設定綁訂信用卡畫面的語言-->
+                        <div style="margin-bottom: 1rem;">
+                            <label for="language" style="margin-right: 2px;">設定綁訂信用卡畫面的語言：</label>
+                            <select id="language">
+                                <option value="zh-TW">繁體中文</option>
+                                <option value="en-US">English</option>
+                            </select>
+                        </div>
+                    </li>
+                    <li>
+                        <!--廠商驗證碼 Token-->
+                        <div style="margin-bottom: 1rem;">
+                            初始廠商驗證碼 Token：<input id="initToken" name="initToken" type="text" size="40"  value="" readonly/><br>
+                            建立訂單 MerchantTradeNo：<input id="merchantTradeNo" name="merchantTradeNo" type="input" value="" />
+                        </div>
+                    </li>
+                    <li>
+                        <!--取得綁定信用卡代碼-->
+                        <div style="margin-bottom: 1rem;">
+                            <div>
+                                <label style="margin-right: 2px;">輸入信用卡資訊後，取得綁定信用卡代碼 BindCardPayToken：</label>
+                                <input id="btnBindCardPayToken" type="button" class="btn single btn-gray-dark" value="取得 BindCardPayToken" />
+                            </div>
+                            <div style="margin-top: 1rem;">
+                                BindCardPayToken：<input id="bindCardPayToken" name="bindCardPayToken" type="text" size="40" value="" />
+                            </div>
+                        </div>
+                    </li>
+
+                    <li>
+                        <!--建立綁定信用卡交易-->
+                        <div style="margin-bottom: 1rem;">
+                            <input id="btnCreateBindCard" type="button" class="btn single btn-gray-dark" value="建立綁定信用卡交易" />
+                        </div>
+                    </li>
+
+                    <!--建立綁定信用卡交易 Response-->
+                    <li>
+                        <div style="margin-bottom: 1rem;">
+                            <label for="ecpayResponse" style="margin-right: 2px; line-height: 40px;">建立綁定信用卡交易 Response 解密 Data 格式：</label><br>
+                            <textarea name="" id="ecpayResponse" cols="30" rows="10" style="width: 437px; height: 132px;"></textarea>
+                        </div>
+                    </li>
+
+                    <li>
+                        <!--前往 3D 驗證頁面-->
+                        <div style="margin-bottom: 1rem;">
+                            <label for="btnThreeD" style="margin-right: 2px; line-height: 40px;">當此交易需要進行 3D 驗證：</label>
+                            <input id="btnThreeD" type="button" class="btn single btn-gray-dark" value="前往 3D 驗證頁面" />
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <!--錯誤提示訊息-->
+            <div id="err"></div>
+
+            <!--渲染站內付 2.0 的綁訂信用卡畫面，請勿更動 id-->
+            <div id="ECPayPayment"></div>
+        </div>
+    </body>
+</html>
+<!-- 綠界科技 ECPay SDK 需引用 JS 區塊 -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/node-forge@0.7.0/dist/forge.min.js"></script>
+<!-- 引用綠界 JS 元件 測試環境 -->
+<script src="https://ecpg-stage.ecpay.com.tw/Scripts/sdk-1.0.0.js?t=20210121100116"></script>
+<!-- 引用綠界 JS 元件 正式環境 -->
+<!-- <script src="https://ecpg.ecpay.com.tw/Scripts/sdk-1.0.0.js?t=20210121100116"></script> -->
+
+<script type="text/javascript">
+    var environment = 'STAGE'; // 請設定要連線的環境: 測試 STAGE ,正式 PROD
+    var envi = getEnvi(environment);
+    var _token = ''; // 請設定你取到的廠商驗證碼 Token
+    var _bindCardPayToken = ''; // 綁定信用卡代碼，初始留白
+    var _threeDURL = '';
+    var url = 'https://' + window.location.host;
+
+    // 模擬流程:
+    // (1)取得廠商驗證碼 Token 並渲染 UI
+    // (2)取得綁定信用卡代碼 BindCardPayToken
+    // (3)建立綁定信用卡交易
+    // (4)接收建立綁定信用卡交易 Response
+    // (5)前往 3D 驗證頁面 (當此交易需要進行 3D 驗證)
+    $(function () {
+        getInitToken()
+    })
+
+    // (1)取得廠商驗證碼 Token 並渲染 UI
+    function getInitToken() {
+        $.get(url + '/example/Payment/Ecpg/GetTokenbyBindingCard.php', function(data, status){
+            let result = JSON.parse(data);
+
+            $('#merchantTradeNo').val(result.MerchantTradeNo)
+            $('#initToken').val(result.Token)
+            _token = result.Token;
+            initECpaySDK();
+        });
+    }
+
+    // 初始化 SDK
+    function initECpaySDK() {
+        ECPay.initialize(envi, 1, function (errMsg) {
+            try {
+                // 取得綁定信用卡畫面
+                addBindingCard();
+            } catch (err) {
+                errHandle(err);
+            }
+        })
+    }
+
+    // 取得綁定信用卡畫面
+    function addBindingCard() {
+        ECPay.addBindingCard(_token, $('#language').val(), function (errMsg) {
+            if (errMsg != null)
+                errHandle(errMsg);
+        });
+    }
+
+    // 切換 SDK 語系
+    $('#language').on('change', function () {
+        try {
+            if (ECPay !== undefined && _token !== '') {
+                // 重新取得綁定信用卡畫面
+                addBindingCard();
+            }
+        } catch (err) {
+            errHandle(err);
+        }
+    });
+
+    // (2)取得綁定信用卡代碼 BindCardPayToken
+    $('#btnBindCardPayToken').on('click', function () {
+        try {
+            if (ECPay !== undefined && _token !== '') {
+                ECPay.getBindCardPayToken(function (bindCardPayToken, errMsg) {
+                    if (errMsg != null) {
+                        errHandle(errMsg);
+                        return
+                    }
+
+                    _bindCardPayToken = bindCardPayToken.BindCardPayToken
+                    $("#bindCardPayToken").val(_bindCardPayToken);
+
+                    $('#err').empty();
+                });
+            }
+            else {
+                errHandle('請先產生初始廠商驗證碼 Token 後再取得 BindCardPayToken');
+            }
+        } catch (err) {
+            errHandle(err);
+        }
+    });
+
+    // (3)建立綁定信用卡交易
+    $('#btnCreateBindCard').on('click', function () {
+        $.post(url + '/example/Payment/Ecpg/CreateBindCard.php', { BindCardPayToken: $("#bindCardPayToken").val() }, function(response) {
+            $('#ecpayResponse').text(JSON.stringify(response, null, 3))
+
+            // 3D 驗證 URL
+            _threeDURL = response.Data.ThreeDInfo.ThreeDURL
+        }, 'json');
+    })
+
+    // (4)接收建立綁定信用卡交易 Response
+    function getReponse() {
+        $.get(url + '/example/Payment/Ecpg/GetCreateBindCardResponse.php', function(data, status) {
+            $('#ecpayResponse').text(JSON.stringify(JSON.parse(data), null, 3))
+        });
+    }
+
+    // (5)前往 3D 驗證頁面 (當此交易需要進行 3D 驗證)
+    $('#btnThreeD').on('click', function () {
+        try {
+            if (_threeDURL !== '' && _threeDURL !== undefined) {
+                window.open(_threeDURL, '_blank');
+            }
+            else {
+                errHandle('沒有 3D 驗證網址');
+            }
+        } catch (err) {
+            errHandle(err);
+        }
+    })
+
+    // 取得環境參數
+    function getEnvi(env) {
+        var result = 'STAGE';
+        switch (env) {
+            case 'STAGE':
+                result = 'Stage';
+                break;
+            case 'PROD':
+                result = 'Prod';
+                break;
+        }
+        return result;
+    }
+
+    // 錯誤訊息處理
+    function errHandle(strErr) {
+        $('#err').empty();
+        if (strErr != null) {
+            $('#err').append('<div style="text-align: center;"><label style="color: red;">' + strErr + '</label></div>');
+        } else {
+            $('#err').append('<div style="text-align: center;"><label style="color: red;">Token取得失敗</label></div>');
+        }
+    }
+</script>

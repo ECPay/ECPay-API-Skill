@@ -1,0 +1,59 @@
+name: Validate AI Section Index
+
+on:
+  pull_request:
+    paths:
+      - 'guides/**'
+      - 'scripts/validate-ai-index.sh'
+      - 'scripts/validate-version-sync.sh'
+      - 'scripts/validate-agents-parity.sh'
+      - 'test-vectors/**'
+      - 'SKILL.md'
+      - 'SKILL_OPENAI.md'
+      - 'README.md'
+      - 'OPENAI_SETUP.md'
+      - 'OPENCLAW_SETUP.md'
+      - 'AGENTS.md'
+      - 'CODEX_SETUP.md'
+      - 'GEMINI.md'
+      - 'GEMINI_SETUP.md'
+  push:
+    branches:
+      - main
+    paths:
+      - 'guides/**'
+      - 'scripts/validate-ai-index.sh'
+      - 'scripts/validate-version-sync.sh'
+      - 'scripts/validate-agents-parity.sh'
+      - 'test-vectors/**'
+      - 'SKILL.md'
+      - 'SKILL_OPENAI.md'
+      - 'README.md'
+      - 'OPENAI_SETUP.md'
+      - 'OPENCLAW_SETUP.md'
+      - 'AGENTS.md'
+      - 'CODEX_SETUP.md'
+      - 'GEMINI.md'
+      - 'GEMINI_SETUP.md'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate AI Section Index line numbers
+        run: bash scripts/validate-ai-index.sh
+      - name: Validate version sync across all 9 files
+        run: bash scripts/validate-version-sync.sh
+      - name: Validate AGENTS.md ↔ GEMINI.md invariant sections
+        run: bash scripts/validate-agents-parity.sh
+      - name: Validate internal cross-guide links
+        run: bash scripts/validate-internal-links.sh
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Install pycryptodome
+        run: pip install "pycryptodome>=3.20,<4"
+      - name: Verify test vectors
+        run: python test-vectors/verify.py

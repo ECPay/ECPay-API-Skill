@@ -1,0 +1,89 @@
+name: Quarterly Maintenance Reminder
+
+on:
+  schedule:
+    # 每季第一個月 1 日 09:00 UTC (1月/4月/7月/10月)
+    - cron: '0 9 1 1,4,7,10 *'
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: '手動觸發原因（可選）'
+        required: false
+        default: '手動觸發季度維護提醒'
+
+permissions:
+  issues: write
+
+jobs:
+  create-reminder:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Determine quarter
+        id: quarter
+        run: |
+          MONTH=$(date +%-m)
+          YEAR=$(date +%Y)
+          if [ "$MONTH" -eq 1 ]; then Q="Q1"
+          elif [ "$MONTH" -eq 4 ]; then Q="Q2"
+          elif [ "$MONTH" -eq 7 ]; then Q="Q3"
+          else Q="Q4"
+          fi
+          echo "label=${YEAR}-${Q}" >> "$GITHUB_OUTPUT"
+          echo "title=${YEAR} ${Q} 季度維護清單" >> "$GITHUB_OUTPUT"
+
+      - name: Ensure required labels exist
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh label create "quarterly-reminder" \
+            --repo "$GITHUB_REPOSITORY" \
+            --description "Quarterly maintenance reminder issue" \
+            --color "0075ca" \
+            --force
+
+      - name: Check for existing open reminder issue
+        id: existing
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          COUNT=$(gh issue list \
+            --repo "$GITHUB_REPOSITORY" \
+            --label "quarterly-reminder" \
+            --state open \
+            --json number \
+            --jq length)
+          echo "count=$COUNT" >> "$GITHUB_OUTPUT"
+
+      - name: Create quarterly maintenance issue
+        if: steps.existing.outputs.count == '0'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          QUARTER_LABEL: ${{ steps.quarter.outputs.label }}
+          ISSUE_TITLE: ${{ steps.quarter.outputs.title }}
+        run: |
+          gh issue create \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "🔔 $ISSUE_TITLE" \
+            --label "quarterly-reminder" \
+            --body "## $ISSUE_TITLE — ECPay Skill 季度維護清單
+
+依 [CONTRIBUTING.md](../blob/main/CONTRIBUTING.md) §維護指引，以下 8 項任務建議每季執行：
+
+### 待辦清單
+
+- [ ] **1. URL 可達性驗證** — 抽查 \`references/\` 中的 URL 是否仍可存取（建議每季抽查 10-20 個 URL）
+- [ ] **2. AI 即時讀取測試** — 使用 \`web_fetch\` 讀取 2-3 個 reference URL，確認回傳內容包含預期的 API 參數表
+- [ ] **3. PHP SDK 版本檢查** — 比對 \`scripts/SDK_PHP/composer.json\` 與 [ECPay 官方 PHP SDK](https://github.com/ECPay/ECPayAIO_PHP) 最新版本
+- [ ] **4. AI Section Index 驗證** — 執行 \`bash scripts/validate-ai-index.sh\` 確認行號索引正確
+- [ ] **5. 測試向量驗證** — 執行 \`pip install pycryptodome && python test-vectors/verify.py\` 確認全部 18 個加密測試向量通過
+- [ ] **6. 平台規則一致性驗證** — 執行 \`bash scripts/validate-agents-parity.sh\` 確認 AGENTS.md ↔ GEMINI.md 一致
+- [ ] **7. 版本同步驗證** — 執行 \`bash scripts/validate-version-sync.sh\` 確認 9 個入口文件版本號一致
+- [ ] **8. 內部連結驗證** — 執行 \`bash scripts/validate-internal-links.sh\` 確認所有指南交叉引用無失效連結
+
+### 備忘事項
+
+> ⚠️ **URL 失效回退策略**：若 \`developers.ecpay.com.tw\` 單一 URL 失效（404/重新導向），先在該站搜尋替代頁面更新 reference 檔案。
+> 若大量 URL 同時失效（網站改版），聯繫綠界技術支援 (techsupport@ecpay.com.tw) 取得新 URL 結構。
+
+---
+*此 Issue 由 [quarterly-reminder.yml](../blob/main/.github/workflows/quarterly-reminder.yml) 自動建立。完成後請關閉此 Issue。*"

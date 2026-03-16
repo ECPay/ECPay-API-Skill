@@ -1,0 +1,70 @@
+{
+  "description": "ECPay AES-128-CBC 測試向量 — 來源: guides/14-aes-encryption.md",
+  "algorithm": "AES-128-CBC with PKCS7 padding",
+  "flow": "JSON → URL encode → AES encrypt → Base64 encode",
+  "vectors": [
+    {
+      "name": "基本測試（插入順序 JSON key）",
+      "hashKey": "ejCk326UnaZWKisg",
+      "hashIV": "q9jcZX8Ib9LM8wYk",
+      "plaintext_json": "{\"MerchantID\":\"2000132\",\"BarCode\":\"/1234567\"}",
+      "expected_url_encoded": "%7B%22MerchantID%22%3A%222000132%22%2C%22BarCode%22%3A%22%2F1234567%22%7D",
+      "expected_base64": "XeEOdHpTRvxKEqs/JD9RSd16s7VtpyWVCN6AV44pKTW3DVa6yI7vKmjBRp2eulDhXoru/qBqFDBH3fEqlkMn3bbJfJBfGAq+v+SvttutYnc=",
+      "note": "JSON key 順序依插入順序（MerchantID 在前）。Python/Node.js/C#/Ruby 等保留插入順序的語言應比對此值"
+    },
+    {
+      "name": "基本測試（字母序 JSON key）",
+      "hashKey": "ejCk326UnaZWKisg",
+      "hashIV": "q9jcZX8Ib9LM8wYk",
+      "plaintext_json": "{\"BarCode\":\"/1234567\",\"MerchantID\":\"2000132\"}",
+      "expected_base64": "r0JSyF9wVmywUav725b3rdJs3xp/ekrC/7PGb18zhKyXkPsamV9l4rPnBkaaraPcHtMSwrmSPP3wuS7b8g/aAKGs0iGiknpgpbdXKXvFrYM=",
+      "note": "Go map / Java HashMap / Swift JSONEncoder 等字母序 JSON 的語言應比對此值"
+    },
+    {
+      "name": "特殊字元測試（!*'()~）",
+      "hashKey": "ejCk326UnaZWKisg",
+      "hashIV": "q9jcZX8Ib9LM8wYk",
+      "plaintext_json": "{\"Name\":\"test!*'()~value\"}",
+      "expected_url_encoded": "%7B%22Name%22%3A%22test%21%2A%27%28%29%7Evalue%22%7D",
+      "expected_base64": "uvI4yrErM37XNQkXGAgRgBuDOiJoVs72Xn/rum9Ejl1DSna4HyLSoY7764PmhTR7JXb9jJWLSjCGcZEDeFiABg==",
+      "url_encode_expectations": {
+        "!": "%21",
+        "*": "%2A",
+        "'": "%27",
+        "(": "%28",
+        ")": "%29",
+        "~": "%7E"
+      },
+      "note": "Node.js encodeURIComponent 不編碼 !*'()，Java URLEncoder.encode 不編碼 *，需手動補 replace"
+    },
+    {
+      "name": "PKCS7 16-byte 邊界測試（plaintext 剛好 32 bytes）",
+      "hashKey": "ejCk326UnaZWKisg",
+      "hashIV": "q9jcZX8Ib9LM8wYk",
+      "plaintext_json": "{\"N\":\"1234567890\"}",
+      "expected_url_encoded": "%7B%22N%22%3A%221234567890%22%7D",
+      "expected_url_encoded_length": 32,
+      "expected_base64": "gVwWJnIpl1m3ZDypcRAjiCctilYnQhHn4h8OzJP5IxQPov7HuysXX+jPONvrHS7Z",
+      "note": "URL encode 後長度剛好 32 bytes（2 個 AES block），PKCS7 必須額外填充完整的 16-byte padding block。若 padding 實作錯誤（未補滿 block），解密端會失敗"
+    },
+    {
+      "name": "UTF-8 中文字元測試",
+      "hashKey": "ejCk326UnaZWKisg",
+      "hashIV": "q9jcZX8Ib9LM8wYk",
+      "plaintext_json": "{\"MerchantID\":\"2000132\",\"ItemName\":\"綠界科技測試商品\"}",
+      "expected_url_encoded": "%7B%22MerchantID%22%3A%222000132%22%2C%22ItemName%22%3A%22%E7%B6%A0%E7%95%8C%E7%A7%91%E6%8A%80%E6%B8%AC%E8%A9%A6%E5%95%86%E5%93%81%22%7D",
+      "expected_base64": "XeEOdHpTRvxKEqs/JD9RSd16s7VtpyWVCN6AV44pKTVKsXddZRgV+Cle9oeB2PqsEC2O0oDi4kObiCtdGznG9aAX69Kj0//VjGXhieBYZ3RuGW9v20xQyBevaBwtOvg1lYjlDw6jsgfToGMUvlGsIJ2DO6/tbXjNZumnRgj2GCSj7LLDRBU3KlkUWji16nO1",
+      "note": "驗證 UTF-8 中文內容在 AES 加密流程中的正確性。此向量使用 literal UTF-8（等同 Python ensure_ascii=False / Node.js JSON.stringify / Go SetEscapeHTML(false) 的行為）。注意：PHP 預設 json_encode() 不含 JSON_UNESCAPED_UNICODE，中文會輸出為 \\uXXXX（例如 \\u7da0\\u754c...），與此向量不同；PHP 若要匹配此向量需使用 json_encode($data, JSON_UNESCAPED_UNICODE)。使用 compact JSON（無空格）"
+    },
+    {
+      "name": "AES 解密測試（反向驗證）",
+      "hashKey": "ejCk326UnaZWKisg",
+      "hashIV": "q9jcZX8Ib9LM8wYk",
+      "direction": "decrypt",
+      "encrypted_base64": "XeEOdHpTRvxKEqs/JD9RSd16s7VtpyWVCN6AV44pKTW3DVa6yI7vKmjBRp2eulDhXoru/qBqFDBH3fEqlkMn3bbJfJBfGAq+v+SvttutYnc=",
+      "expected_decrypted": "%7B%22MerchantID%22%3A%222000132%22%2C%22BarCode%22%3A%22%2F1234567%22%7D",
+      "expected_json": "{\"MerchantID\":\"2000132\",\"BarCode\":\"/1234567\"}",
+      "note": "解密是加密的反向流程：Base64 decode → AES decrypt → 移除 PKCS7 padding → URL decode → JSON parse。此向量使用 Vector 1 的加密結果反向驗證。開發者收到 ECPay callback 時，需用此流程解密通知資料"
+    }
+  ]
+}

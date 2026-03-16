@@ -1,0 +1,85 @@
+╔═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
+║                          ECPAY SKILL GUIDE FILES - QUICK REFERENCE TABLE                                                   ║
+╚═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
+
+MAIN GUIDE FILES (00-24) - DETAILED BREAKDOWN:
+
+┌──────┬─────────────────────────────────────┬──────┬──────────┬─────────────────────────────────────┬────────┐
+│ No.  │ Filename                            │Lines │SNAPSHOT  │ Code Languages (Examples)           │XRefs   │
+├──────┼─────────────────────────────────────┼──────┼──────────┼─────────────────────────────────────┼────────┤
+│ 00   │ getting-started                     │ 968  │ Yes      │ PHP(2), Py(2), Node(2), Java(2),Go │14 xrefs│
+│ 01   │ payment-aio                         │ 960  │ Yes      │ PHP(23), Py(2), Node(1), Java(1)   │4 xrefs │
+│ 02   │ payment-ecpg                        │2957⭐ │ Yes      │ PHP(22), Py(16), Node(9), TS(8),J9 │5 xrefs │
+│ 03   │ payment-backend                     │ 461  │ Yes(2x)  │ PHP(9)                              │4 xrefs │
+│ 04   │ invoice-b2c                         │ 866  │ Yes      │ PHP(22), Py(2), TS(1)               │4 xrefs │
+│ 05   │ invoice-b2b                         │ 712  │ Yes      │ PHP(16), TS(1)                      │4 xrefs │
+│ 06   │ logistics-domestic                  │ 563  │ Yes      │ PHP(20), Py(1), Node(1), Java(1)   │4 xrefs │
+│ 07   │ logistics-allinone                  │ 578  │ Yes      │ PHP(19), Py(1), Node(1), Java(1)   │5 xrefs │
+│ 08   │ logistics-crossborder               │ 258  │ Yes      │ PHP(8), Py(2)                       │4 xrefs │
+│ 09   │ ecticket                            │ 749  │ Yes      │ PHP(6), Py(3), Node(1), Java(1)    │8 xrefs │
+│ 10   │ cart-plugins                        │ 96   │ Yes      │ None                                │3 xrefs │
+│ 11   │ cross-service-scenarios             │ 228  │ No       │ None                                │6 xrefs │
+│ 12   │ sdk-reference                       │ 200  │ No       │ PHP(2)                              │7 xrefs │
+│ 13   │ checkmacvalue                       │1074  │ No       │ PHP(1),Py(2),Node(1),TS(1),J2,C#,Go│2 xrefs │
+│ 14   │ aes-encryption                      │1169  │ No       │ PHP(1),Py(3),Node(2),TS(2),J4,C#,Go│3 xrefs │
+│ 15   │ troubleshooting                     │ 800  │ No       │ PHP(3), Py(2), Node(2), Java(2)    │10 xrefs│
+│ 16   │ go-live-checklist                   │ 209  │ Yes      │ None                                │9 xrefs │
+│ 17   │ pos-integration                     │ 87   │ Yes      │ None                                │5 xrefs │
+│ 18   │ livestream-payment                  │ 86⭐ │ Yes      │ PHP(1)                              │5 xrefs │
+│ 19   │ invoice-offline                     │ 200  │ Yes      │ PHP(4)                              │4 xrefs │
+│ 20   │ http-protocol-reference             │ 711  │ Yes(2x)  │ None                                │8 xrefs │
+│ 21   │ error-codes-reference               │ 276  │ Yes      │ None                                │5 xrefs │
+│ 22   │ webhook-events-reference            │ 826  │ Yes      │ PHP(7),Py(2),Node(2),Java(2),Go(1) │7 xrefs │
+│ 23   │ performance-scaling                 │ 143  │ No       │ Py(1), Node(1), Java(1)            │4 xrefs │
+│ 24   │ multi-language-integration          │ 790  │ No       │ TS(1), Go(2)                        │6 xrefs │
+└──────┴─────────────────────────────────────┴──────┴──────────┴─────────────────────────────────────┴────────┘
+
+LANGUAGE STANDARDS FILES (guides/lang-standards/) - QUICK VIEW:
+
+┌──────────────┬──────┬────────────┐
+│ Language     │Lines │Code Blocks │
+├──────────────┼──────┼────────────┤
+│ C            │ 304  │    14      │
+│ C++          │ 319  │    14      │
+│ C#           │ 228  │    12      │
+│ Go           │ 286  │    13      │
+│ Java         │ 276  │    14      │
+│ Kotlin       │ 247  │    13      │
+│ Node.js      │ 233  │    13      │
+│ Python       │ 250  │    12      │
+│ Ruby         │ 267  │    13      │
+│ Rust         │ 273  │    13      │
+│ Swift        │ 334  │    13      │
+│ TypeScript   │ 237  │    11      │
+└──────────────┴──────┴────────────┘
+
+KEY FINDINGS:
+
+✓ Total Files:              37 (25 main + 12 language standards)
+✓ Total Documentation:      19,497 lines
+✓ SNAPSHOT Dated:          All files: 2026-03
+✓ Most Central Guides:      14-aes-encryption, 15-troubleshooting, 16-go-live-checklist, 20-http-protocol-reference
+✓ Language Coverage:        PHP(18), Python(13), Node.js(11), Java(8), TypeScript(7), Go(5), Ruby(4), C#(3)
+✓ Largest Guide:           02-payment-ecpg.md (2,957 lines)
+✓ Smallest Main Guide:     18-livestream-payment.md (86 lines)
+✓ Largest Lang Standard:   swift.md (334 lines)
+
+CATEGORY BREAKDOWN:
+
+Payments & Authorization:   Guides 01-03 (3 files, 2,378 lines)
+Invoicing:                  Guides 04-05 (2 files, 1,578 lines)
+Logistics:                  Guides 06-08 (3 files, 1,399 lines)
+Payment Extensions:         Guides 09-10 (2 files, 845 lines)
+Technical References:       Guides 11-14 (4 files, 2,576 lines)
+Operational Guides:         Guides 15-16 (2 files, 1,009 lines)
+Specialized Payment:        Guides 17-18 (2 files, 173 lines)
+Modern Integration:         Guides 19-24 (6 files, 2,846 lines)
+
+RECOMMENDATION PATHS:
+
+For New Developers:         00 → 01-09 → 13-14 → 15 → 16
+For Payment Integration:    01 → 13 → 14 → 22 → 16
+For Non-PHP Developers:     20 → 13-14 → lang-standards/{lang} → 22
+For Multi-Service:          11 → 06 → 04 → 01 → 22
+For Go-Live:                15 → 16 → 23 → 21
+

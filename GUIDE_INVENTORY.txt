@@ -1,0 +1,539 @@
+# COMPREHENSIVE INVENTORY OF ECPAY SKILL GUIDE FILES
+
+Generated: 2026-03-16 14:11:26
+Repository: C:\Code_Base\skills\ecpay-skill
+
+---
+
+## MAIN GUIDE FILES (00-24)
+
+### 00-getting-started.md
+- **Line Count**: 968 lines
+- **First Line Header**: > 對應 ECPay API 版本 | 基於 PHP SDK ecpay/sdk | 最後更新：2026-03
+- **SNAPSHOT Blockquotes**: 
+  - > ⚠️ **SNAPSHOT 2026-03** | 來源：多個服務（測試帳號、環境 URL、HTTP 協議模式）
+- **References to references/ directory**:
+  - references/Invoice/B2C電子發票介接技術文件
+  - references/Logistics/物流整合API技術文件
+  - references/Payment/全方位金流API技術文件
+  - references/Payment/站內付2
+- **Cross-references to other guides**:
+  - guides/01-payment-aio.md
+  - guides/02-payment-ecpg.md
+  - guides/06-logistics-domestic.md
+  - guides/11-cross-service-scenarios.md
+  - guides/13-checkmacvalue.md
+  - guides/14-aes-encryption.md
+  - guides/15-troubleshooting.md
+  - guides/17-pos-integration.md
+  - guides/18-livestream-payment.md
+  - guides/20-http-protocol-reference.md
+  - guides/21-error-codes-reference.md
+  - guides/22-webhook-events-reference.md
+  - guides/23-performance-scaling.md
+  - guides/24-multi-language-integration.md
+- **Code Examples**: PHP (2), Python (2), Node.js (2), Java (2), Go (1)
+
+### 01-payment-aio.md
+- **Line Count**: 960 lines
+- **First Line Header**: > 對應 ECPay API 版本 | 基於 PHP SDK ecpay/sdk | 最後更新：2026-03
+- **SNAPSHOT Blockquotes**:
+  - > ⚠️ **SNAPSHOT 2026-03** | 來源：eferences/Payment/全方位金流API技術文件.md
+- **References to references/ directory**:
+  - references/Payment/全方位金流API技術文件
+- **Cross-references to other guides**:
+  - guides/13-checkmacvalue.md
+  - guides/15-troubleshooting.md
+  - guides/16-go-live-checklist.md
+  - guides/20-http-protocol-reference.md
+- **Code Examples**: PHP (23), Python (2), Node.js (1), Java (1)
+
+### 02-payment-ecpg.md
+- **Line Count**: 2,957 lines
+- **First Line Header**: > 對應 ECPay API 版本 | 基於 PHP SDK ecpay/sdk | 最後更新：2026-03
+- **SNAPSHOT Blockquotes**:
+  - > ⚠️ **SNAPSHOT 2026-03** | 來源：eferences/Payment/站內付2.0API技術文件Web.md 及 eferences/Payment/站內付2.0API技術文件App.md
+- **References to references/ directory**:
+  - references/Payment/站內付2
+- **Cross-references to other guides**:
+  - guides/14-aes-encryption.md
+  - guides/15-troubleshooting.md
+  - guides/16-go-live-checklist.md
+  - guides/20-http-protocol-reference.md
+  - guides/21-error-codes-reference.md
+- **Code Examples**: PHP (22), Python (16), Node.js (9), TypeScript (8), Java (9), Ruby (1)
+
+### 03-payment-backend.md
+- **Line Count**: 461 lines
+- **First Line Header**: > 對應 ECPay API 版本 | 基於 PHP SDK ecpay/sdk | 最後更新：2026-03
+- **SNAPSHOT Blockquotes**:
+  - > ⚠️ **SNAPSHOT 2026-03** | 來源：eferences/Payment/信用卡幕後授權API技術文件.md
+  - > ⚠️ **SNAPSHOT 2026-03** | 來源：eferences/Payment/非信用卡幕後取號API技術文件.md
+- **References to references/ directory**:
+  - references/Payment/信用卡幕後授權API技術文件
+  - references/Payment/非信用卡幕後取號API技術文件
+- **Cross-references to other guides**:
+  - guides/01-payment-aio.md
+  - guides/02-payment-ecpg.md
+  - guides/14-aes-encryption.md
+  - guides/20-http-protocol-reference.md
+- **Code Examples**: PHP (9)
+
+### 04-invoice-b2c.md
+- **Line Count**: 866 lines
+- **First Line Header**: > 對應 ECPay API 版本 | 基於 PHP SDK ecpay/sdk | 最後更新：2026-03
+- **SNAPSHOT Blockquotes**:
+  - > ⚠️ **SNAPSHOT 2026-03** | 來源：eferences/Invoice/B2C電子發票介接技術文件.md
+- **References to references/ directory**:
+  - references/Invoice/B2C電子發票介接技術文件
+- **Cross-references to other guides**:
+  - guides/14-aes-encryption.md
+  - guides/15-troubleshooting.md
+  - guides/16-go-live-checklist.md
+  - guides/20-http-protocol-reference.md
+- **Code Examples**: PHP (22), Python (2), TypeScript (1)
+
+### 05-invoice-b2b.md
+- **Line Count**: 712 lines
+- **First Line Header**: > 對應 ECPay API 版本 | 基於 PHP SDK ecpay/sdk | 最後更新：2026-03
+- **SNAPSHOT Blockquotes**:
+  - > ⚠️ **SNAPSHOT 2026-03** | 來源：eferences/Invoice/B2B電子發票API技術文件_交換模式.md 或 _存證模式.md
+- **References to references/ directory**:
+  - references/Invoice/B2B電子發票API技術文件_交換模式
+  - references/Invoice/B2B電子發票API技術文件_存證模式
+- **Cross-references to other guides**:
+  - guides/14-aes-encryption.md
+  - guides/15-troubleshooting.md
+  - guides/16-go-live-checklist.md
+  - guides/20-http-protocol-reference.md
+- **Code Examples**: PHP (16), TypeScript (1)
+
+### 06-logistics-domestic.md
+- **Line Count**: 563 lines
+- **First Line Header**: > 對應 ECPay API 版本 | 基於 PHP SDK ecpay/sdk | 最後更新：2026-03
+- **SNAPSHOT Blockquotes**:
+  - > ⚠️ **SNAPSHOT 2026-03** | 來源：eferences/Logistics/物流整合API技術文件.md
+- **References to references/ directory**:
+  - references/Logistics/物流整合API技術文件
+- **Cross-references to other guides**:
+  - guides/13-checkmacvalue.md
+  - guides/15-troubleshooting.md
+  - guides/16-go-live-checklist.md
+  - guides/20-http-protocol-reference.md
+- **Code Examples**: PHP (20), Python (1), Node.js (1), Java (1)
+
+### 07-logistics-allinone.md
+- **Line Count**: 578 lines
+- **First Line Header**: > 對應 ECPay API 版本 | 基於 PHP SDK ecpay/sdk | 最後更新：2026-03
+- **SNAPSHOT Blockquotes**:
+  - > ⚠️ **SNAPSHOT 2026-03** | 來源：eferences/Logistics/全方位物流服務API技術文件.md
+- **References to references/ directory**:
+  - references/Logistics/全方位物流服務API技術文件
+- **Cross-references to other guides**:
+  - guides/06-logistics-domestic.md
+  - guides/14-aes-encryption.md
+  - guides/15-troubleshooting.md
+  - guides/16-go-live-checklist.md
+  - guides/20-http-protocol-reference.md
+- **Code Examples**: PHP (19), Python (1), Node.js (1), Java (1)
+
+### 08-logistics-crossborder.md
+- **Line Count**: 258 lines
+- **First Line Header**: > 對應 ECPay API 版本 | 基於 PHP SDK ecpay/sdk | 最後更新：2026-03
+- **SNAPSHOT Blockquotes**:
+  - > ⚠️ **SNAPSHOT 2026-03** | 來源：eferences/Logistics/綠界科技跨境物流API技術文件.md
+- **References to references/ directory**:
+  - references/Logistics/綠界科技跨境物流API技術文件
+- **Cross-references to other guides**:
+  - guides/14-aes-encryption.md
+  - guides/15-troubleshooting.md
+  - guides/16-go-live-checklist.md
+  - guides/20-http-protocol-reference.md
+- **Code Examples**: PHP (8), Python (2)
+
+### 09-ecticket.md
+- **Line Count**: 749 lines
+- **First Line Header**: > 對應 ECPay API 版本 | 基於 PHP SDK ecpay/sdk | 最後更新：2026-03
+- **SNAPSHOT Blockquotes**:
+  - > ⚠️ **SNAPSHOT 2026-03** | 來源：eferences/Ecticket/價金保管-使用後核銷API技術文件.md（及同目錄其他 reference 檔案）
+- **References to references/ directory**:
+  - references/Ecticket/
+  - references/Ecticket/價金保管-使用後核銷API技術文件
+  - references/Ecticket/價金保管-分期核銷API技術文件
+  - references/Ecticket/純發行-使用後核銷API技術文件
+- **Cross-references to other guides**:
+  - guides/01-payment-aio.md
+  - guides/02-payment-ecpg.md
+  - guides/11-cross-service-scenarios.md
+  - guides/13-checkmacvalue.md
+  - guides/14-aes-encryption.md
+  - guides/15-troubleshooting.md
+  - guides/16-go-live-checklist.md
+  - guides/20-http-protocol-reference.md
+- **Code Examples**: PHP (6), Python (3), Node.js (1), Java (1)
+
+### 10-cart-plugins.md
+- **Line Count**: 96 lines
+- **First Line Header**: > 對應 ECPay API 版本 | 基於 PHP SDK ecpay/sdk | 最後更新：2026-03
+- **SNAPSHOT Blockquotes**:
+  - > ⚠️ **SNAPSHOT 2026-03** | 來源：eferences/Cart/購物車設定說明.md
+- **References to references/ directory**:
+  - references/Cart/購物車設定說明
+  - references/Payment/Shopify專用金流API技術文件
+- **Cross-references to other guides**:
+  - guides/01-payment-aio.md
+  - guides/15-troubleshooting.md
+  - guides/16-go-live-checklist.md
+- **Code Examples**: None
+
+### 11-cross-service-scenarios.md
+- **Line Count**: 228 lines
+- **First Line Header**: > 對應 ECPay API 版本 | 基於 PHP SDK ecpay/sdk | 最後更新：2026-03
+- **SNAPSHOT Blockquotes**: None
+- **References to references/ directory**:
+  - references/Invoice/B2C電子發票介接技術文件
+  - references/Logistics/物流整合API技術文件
+  - references/Payment/全方位金流API技術文件
+- **Cross-references to other guides**:
+  - guides/01-payment-aio.md
+  - guides/02-payment-ecpg.md
+  - guides/06-logistics-domestic.md
+  - guides/21-error-codes-reference.md
+  - guides/22-webhook-events-reference.md
+  - guides/23-performance-scaling.md
+- **Code Examples**: None
+
+### 12-sdk-reference.md
+- **Line Count**: 200 lines
+- **First Line Header**: > 對應 ECPay API 版本 | 基於 PHP SDK ecpay/sdk | 最後更新：2026-03
+- **SNAPSHOT Blockquotes**: None
+- **References to references/ directory**: None
+- **Cross-references to other guides**:
+  - guides/13-checkmacvalue.md
+  - guides/14-aes-encryption.md
+  - guides/20-http-protocol-reference.md
+  - guides/21-error-codes-reference.md
+  - guides/22-webhook-events-reference.md
+  - guides/23-performance-scaling.md
+  - guides/24-multi-language-integration.md
+- **Code Examples**: PHP (2)
+
+### 13-checkmacvalue.md
+- **Line Count**: 1,074 lines
+- **First Line Header**: > 對應 ECPay API 版本 | 基於 PHP SDK ecpay/sdk | 最後更新：2026-03
+- **SNAPSHOT Blockquotes**: None
+- **References to references/ directory**:
+  - references/Logistics/物流整合API技術文件
+  - references/Payment/全方位金流API技術文件
+- **Cross-references to other guides**:
+  - guides/14-aes-encryption.md
+- **Code Examples**: PHP (1), Python (2), Node.js (1), TypeScript (1), Java (2), C# (1), Go (1), Ruby (1)
+
+### 14-aes-encryption.md
+- **Line Count**: 1,169 lines
+- **First Line Header**: > 對應 ECPay API 版本 | 基於 PHP SDK ecpay/sdk | 最後更新：2026-03
+- **SNAPSHOT Blockquotes**: None
+- **References to references/ directory**:
+  - references/Invoice/B2C電子發票介接技術文件
+  - references/Logistics/全方位物流服務API技術文件
+  - references/Payment/站內付2
+- **Cross-references to other guides**:
+  - guides/02-payment-ecpg.md
+  - guides/13-checkmacvalue.md
+  - guides/24-multi-language-integration.md
+- **Code Examples**: PHP (1), Python (3), Node.js (2), TypeScript (2), Java (4), C# (2), Go (2), Ruby (2)
+
+### 15-troubleshooting.md
+- **Line Count**: 800 lines
+- **First Line Header**: > 對應 ECPay API 版本 | 基於 PHP SDK ecpay/sdk | 最後更新：2026-03
+- **SNAPSHOT Blockquotes**: None
+- **References to references/ directory**: None
+- **Cross-references to other guides**:
+  - guides/02-payment-ecpg.md
+  - guides/13-checkmacvalue.md
+  - guides/14-aes-encryption.md
+  - guides/16-go-live-checklist.md
+  - guides/17-pos-integration.md
+  - guides/18-livestream-payment.md
+  - guides/19-invoice-offline.md
+  - guides/21-error-codes-reference.md
+  - guides/22-webhook-events-reference.md
+  - guides/23-performance-scaling.md
+- **Code Examples**: PHP (3), Python (2), Node.js (2), Java (2)
+
+### 16-go-live-checklist.md
+- **Line Count**: 209 lines
+- **First Line Header**: > 對應 ECPay API 版本 | 基於 PHP SDK ecpay/sdk | 最後更新：2026-03
+- **SNAPSHOT Blockquotes**:
+  - > ⚠️ **SNAPSHOT 2026-03** | 來源：eferences/ 各服務對應檔案
+- **References to references/ directory**: (references/ 各服務對應檔案)
+- **Cross-references to other guides**:
+  - guides/01-payment-aio.md
+  - guides/02-payment-ecpg.md
+  - guides/15-troubleshooting.md
+  - guides/17-pos-integration.md
+  - guides/18-livestream-payment.md
+  - guides/19-invoice-offline.md
+  - guides/21-error-codes-reference.md
+  - guides/22-webhook-events-reference.md
+  - guides/23-performance-scaling.md
+- **Code Examples**: None
+
+### 17-pos-integration.md
+- **Line Count**: 87 lines
+- **First Line Header**: > 對應 ECPay API 版本 | 最後更新：2026-03
+- **SNAPSHOT Blockquotes**:
+  - > ⚠️ **SNAPSHOT 2026-03** | 來源：eferences/Payment/刷卡機POS串接規格.md
+- **References to references/ directory**:
+  - references/Payment/刷卡機POS串接規格
+- **Cross-references to other guides**:
+  - guides/01-payment-aio.md
+  - guides/02-payment-ecpg.md
+  - guides/15-troubleshooting.md
+  - guides/16-go-live-checklist.md
+  - guides/20-http-protocol-reference.md
+- **Code Examples**: None
+
+### 18-livestream-payment.md
+- **Line Count**: 86 lines
+- **First Line Header**: > 對應 ECPay API 版本 | 最後更新：2026-03
+- **SNAPSHOT Blockquotes**:
+  - > ⚠️ **SNAPSHOT 2026-03** | 來源：eferences/Payment/直播主收款網址串接技術文件.md
+- **References to references/ directory**:
+  - references/Payment/直播主收款網址串接技術文件
+- **Cross-references to other guides**:
+  - guides/01-payment-aio.md
+  - guides/14-aes-encryption.md
+  - guides/15-troubleshooting.md
+  - guides/16-go-live-checklist.md
+  - guides/20-http-protocol-reference.md
+- **Code Examples**: PHP (1)
+
+### 19-invoice-offline.md
+- **Line Count**: 200 lines
+- **First Line Header**: # 離線電子發票指引
+- **SNAPSHOT Blockquotes**:
+  - > ⚠️ **SNAPSHOT 2026-03** | 來源：eferences/Invoice/離線電子發票API技術文件.md
+- **References to references/ directory**:
+  - references/Invoice/離線電子發票API技術文件
+- **Cross-references to other guides**:
+  - guides/11-cross-service-scenarios.md
+  - guides/14-aes-encryption.md
+  - guides/16-go-live-checklist.md
+  - guides/20-http-protocol-reference.md
+- **Code Examples**: PHP (4)
+
+### 20-http-protocol-reference.md
+- **Line Count**: 711 lines
+- **First Line Header**: > 對應 ECPay API 版本 | 語言無關 HTTP 協議參考 | 最後更新：2026-03
+- **SNAPSHOT Blockquotes**:
+  - > ⚠️ **SNAPSHOT 2026-03** | 來源：eferences/ 各服務對應檔案 — 端點新增/異動以官方開發者文件為準
+  - > ⚠️ **SNAPSHOT 2026-03** | 以下 §3.1-3.4 所有端點表均為快照，僅供端點查找導航
+- **References to references/ directory**:
+  - references/Invoice/B2C電子發票介接技術文件
+  - references/Logistics/全方位物流服務API技術文件
+  - references/Logistics/物流整合API技術文件
+  - references/Logistics/綠界科技跨境物流API技術文件
+  - references/Payment/全方位金流API技術文件
+  - references/Payment/信用卡幕後授權API技術文件
+  - references/Payment/站內付2
+- **Cross-references to other guides**:
+  - guides/01-payment-aio.md
+  - guides/02-payment-ecpg.md
+  - guides/10-cart-plugins.md
+  - guides/12-sdk-reference.md
+  - guides/13-checkmacvalue.md
+  - guides/14-aes-encryption.md
+  - guides/17-pos-integration.md
+  - guides/22-webhook-events-reference.md
+- **Code Examples**: None
+
+### 21-error-codes-reference.md
+- **Line Count**: 276 lines
+- **First Line Header**: > 對應 ECPay API 版本 | 最後更新：2026-03
+- **SNAPSHOT Blockquotes**:
+  - > ⚠️ **SNAPSHOT 2026-03** | 來源：eferences/ 各服務對應檔案
+- **References to references/ directory**:
+  - references/Ecticket/價金保管-使用後核銷API技術文件
+  - references/Invoice/B2C電子發票介接技術文件
+  - references/Logistics/全方位物流服務API技術文件
+  - references/Logistics/物流整合API技術文件
+  - references/Logistics/綠界科技跨境物流API技術文件
+  - references/Payment/全方位金流API技術文件
+  - references/Payment/信用卡幕後授權API技術文件
+  - references/Payment/站內付2
+  - references/README
+- **Cross-references to other guides**:
+  - guides/01-payment-aio.md
+  - guides/13-checkmacvalue.md
+  - guides/14-aes-encryption.md
+  - guides/15-troubleshooting.md
+  - guides/22-webhook-events-reference.md
+- **Code Examples**: None
+
+### 22-webhook-events-reference.md
+- **Line Count**: 826 lines
+- **First Line Header**: > 對應 ECPay API 版本 | 最後更新：2026-03
+- **SNAPSHOT Blockquotes**:
+  - > ⚠️ **SNAPSHOT 2026-03** | 來源：eferences/ 各服務對應檔案
+- **References to references/ directory**:
+  - references/Logistics/物流整合API技術文件
+  - references/Payment/全方位金流API技術文件
+- **Cross-references to other guides**:
+  - guides/01-payment-aio.md
+  - guides/02-payment-ecpg.md
+  - guides/06-logistics-domestic.md
+  - guides/07-logistics-allinone.md
+  - guides/13-checkmacvalue.md
+  - guides/14-aes-encryption.md
+  - guides/21-error-codes-reference.md
+- **Code Examples**: PHP (7), Python (2), Node.js (2), Java (2), Go (1)
+
+### 23-performance-scaling.md
+- **Line Count**: 143 lines
+- **First Line Header**: > 對應 ECPay API 版本 | 最後更新：2026-03
+- **SNAPSHOT Blockquotes**: None
+- **References to references/ directory**:
+  - references/Payment/全方位金流API技術文件
+- **Cross-references to other guides**:
+  - guides/15-troubleshooting.md
+  - guides/16-go-live-checklist.md
+  - guides/21-error-codes-reference.md
+  - guides/22-webhook-events-reference.md
+- **Code Examples**: Python (1), Node.js (1), Java (1)
+
+### 24-multi-language-integration.md
+- **Line Count**: 790 lines
+- **First Line Header**: > 對應 ECPay API 版本 | 最後更新：2026-03
+- **SNAPSHOT Blockquotes**: None
+- **References to references/ directory**: None
+- **Cross-references to other guides**:
+  - guides/00-getting-started.md
+  - guides/02-payment-ecpg.md
+  - guides/13-checkmacvalue.md
+  - guides/14-aes-encryption.md
+  - guides/16-go-live-checklist.md
+  - guides/20-http-protocol-reference.md
+- **Code Examples**: TypeScript (1), Go (2)
+
+---
+
+## LANGUAGE STANDARDS GUIDE FILES (guides/lang-standards/)
+
+### c.md
+- **Line Count**: 304 lines
+- **First Line Header**: # C — ECPay 整合程式規範
+- **Code Examples**: 14 code blocks
+
+### cpp.md
+- **Line Count**: 319 lines
+- **First Line Header**: # C++ — ECPay 整合程式規範
+- **Code Examples**: 14 code blocks
+
+### csharp.md
+- **Line Count**: 228 lines
+- **First Line Header**: # C# — ECPay 整合程式規範
+- **Code Examples**: 12 code blocks
+
+### go.md
+- **Line Count**: 286 lines
+- **First Line Header**: # Go — ECPay 整合程式規範
+- **Code Examples**: 13 code blocks
+
+### java.md
+- **Line Count**: 276 lines
+- **First Line Header**: # Java — ECPay 整合程式規範
+- **Code Examples**: 14 code blocks
+
+### kotlin.md
+- **Line Count**: 247 lines
+- **First Line Header**: # Kotlin — ECPay 整合程式規範
+- **Code Examples**: 13 code blocks
+
+### nodejs.md
+- **Line Count**: 233 lines
+- **First Line Header**: # Node.js — ECPay 整合程式規範
+- **Code Examples**: 13 code blocks
+
+### python.md
+- **Line Count**: 250 lines
+- **First Line Header**: # Python — ECPay 整合程式規範
+- **Code Examples**: 12 code blocks
+
+### ruby.md
+- **Line Count**: 267 lines
+- **First Line Header**: # Ruby — ECPay 整合程式規範
+- **Code Examples**: 13 code blocks
+
+### rust.md
+- **Line Count**: 273 lines
+- **First Line Header**: # Rust — ECPay 整合程式規範
+- **Code Examples**: 13 code blocks
+
+### swift.md
+- **Line Count**: 334 lines
+- **First Line Header**: # Swift — ECPay 整合程式規範
+- **Code Examples**: 13 code blocks
+
+### typescript.md
+- **Line Count**: 237 lines
+- **First Line Header**: # TypeScript — ECPay 整合程式規範
+- **Code Examples**: 11 code blocks
+
+---
+
+## SUMMARY STATISTICS
+
+### Main Guides (00-24)
+- **Total Files**: 25
+- **Total Lines**: 15,944 lines
+- **Average File Size**: 637.76 lines per file
+- **Largest File**: 02-payment-ecpg.md (2,957 lines)
+- **Smallest File**: 18-livestream-payment.md (86 lines)
+
+### Language Standards (guides/lang-standards/)
+- **Total Files**: 12
+- **Total Lines**: 3,553 lines
+- **Average File Size**: 296.08 lines per file
+- **Largest File**: swift.md (334 lines)
+- **Smallest File**: kotlin.md (247 lines)
+
+### Code Examples Coverage
+**Files with code examples**:
+- PHP: 18 files (highest frequency)
+- Python: 13 files
+- Node.js: 11 files
+- Java: 8 files
+- TypeScript: 7 files
+- C#: 3 files
+- Go: 5 files
+- Ruby: 4 files
+- Kotlin: 1 file
+
+### Reference Dependencies
+**Most Referenced Guides**:
+1. guides/14-aes-encryption.md (10+ cross-references)
+2. guides/15-troubleshooting.md (10+ cross-references)
+3. guides/16-go-live-checklist.md (9 cross-references)
+4. guides/20-http-protocol-reference.md (9 cross-references)
+
+**Most Referenced references/ directories**:
+1. references/Payment/ (multiple files)
+2. references/Logistics/ (multiple files)
+3. references/Invoice/ (multiple files)
+4. references/Ecticket/ (3 files minimum)
+
+### SNAPSHOT Coverage
+- **Files with SNAPSHOT blockquotes**: 15 files
+- **Total SNAPSHOT occurrences**: 20+
+- **Standard date**: 2026-03
+
+---
+
+## NOTES
+
+1. All main guide files (00-24) include the header line: "最後更新：2026-03"
+2. Lang-standards files are language-specific implementation guidelines with examples
+3. SNAPSHOT blockquotes indicate that content is a snapshot and may require web_fetch for latest specs
+4. Cross-references form a interconnected documentation network
+5. Most guides include PHP code examples; multi-language examples increase from guides 13 onwards

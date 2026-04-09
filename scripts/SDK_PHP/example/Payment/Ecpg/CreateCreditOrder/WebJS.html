@@ -1,0 +1,197 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="Content-Language" content="zh-TW">
+        <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1.0, user-scalable=yes">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="format-detection" content="telephone=no">
+        <meta name="renderer" content="webkit|ie-comp|ie-stand">
+        <meta name="description" content="綠界科技 ECPay 提供信用卡刷卡、超商代收及取貨付款、ATM轉帳...等多種金流收款服務，會員可於綠界網站建立收款網址或使用API程式串接，應用彈性，收款隔日起即撥款。支付找綠界，買賣無國界。"><!-- 必填，限制 81-150 字 -->
+        <meta name="keywords" content="信用卡,ATM轉帳,超商代碼,超商條碼,applepay,googlepay,samsungpay,金流服務">
+        <title>綠界科技 ECPay - 第三方支付領導品牌</title>
+    </head>
+    <body>
+        <div style="padding: 4rem;">
+            <div style="display: grid; align-items: center; justify-content: center;">
+                <ul>
+                    <li>
+                        <!--切換付款界面語系-->
+                        <div style="margin-bottom: 1rem;">
+                            <label for="language" style="margin-right: 2px;">設定付款界面的語言：</label>
+                            <select id="language">
+                                <option value="zh-TW">繁體中文</option>
+                                <option value="en-US">English</option>
+                            </select>
+                        </div>
+                    </li>
+                    <li>
+                        <!--廠商驗證 Token-->
+                        <div style="margin-bottom: 1rem;">
+                            初始驗證Token：<input id="initToken" name="initToken" type="text" size="40"  value="" /><br>
+                            建立訂單MerchantTradeNo：<input id="merchantTradeNo" name="merchantTradeNo" type="input" value="" />
+                        </div>
+                    </li>
+                    <li>
+                        <!--取得付款方式的 PayToken-->
+                        <div style="margin-bottom: 1rem;">
+                            <div>
+                                <label for="paymentType" style="margin-right: 2px;">送出付款方式及付款資訊取得的PayToken：</label>
+                                <input id="paymentType" name="paymentType" type="hidden" value="" />
+                                <input id="btnPayToken" type="button" class="btn single btn-gray-dark" value="取得PayToken" />
+                            </div>
+                            <div style="margin-top: 1rem;">
+                                PayToken：<input id="payToken" name="payToken" type="text" size="40" value="" />
+                            </div>
+                        </div>
+                    </li>
+
+                    <li>
+                        <!--送出付款資訊-->
+                        <div style="margin-bottom: 1rem;">
+                            <input id="btnPay" type="button" class="btn single btn-gray-dark" value="模擬建立交易" />
+                        </div>
+                    </li>
+
+                    <!--模擬接收 Response-->
+                    <li>
+                        <div style="margin-bottom: 1rem;">
+                            <label for="ecpayResponse" style="margin-right: 2px; line-height: 40px;">模擬綠界回傳Response解密Data格式(非實際付款結果)：</label><br>
+                            <textarea name="" id="ecpayResponse" cols="30" rows="10" style="width: 437px; height: 132px;"></textarea>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <!--錯誤提示訊息-->
+            <div id="err"></div>
+
+            <!--渲染付款界面UI，請勿更動id-->
+            <div id="ECPayPayment"></div>
+        </div>
+    </body>
+</html>
+<!-- 綠界科技 ECPay SDK 需引用 JS 區塊 -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/node-forge@0.7.0/dist/forge.min.js"></script>
+<script src="https://ecpg.ecpay.com.tw/Scripts/sdk-1.0.0.js?t=20210121100116"></script>
+
+<script type="text/javascript">
+    var environment = 'STAGE'; // 請設定要連線的環境: 測試 STAGE ,正式 PROD
+    var envi = getEnvi(environment);
+    var _token = ''; // 請設定你取到的廠商驗證 token
+    var _payToken = ''; // 選擇付款方式並送出付款資訊的 PayToken，初始留白
+    var url = 'https://' + window.location.host;
+
+    // 模擬流程:
+    // (1)產生廠商驗證 token 並渲染 UI
+    // (2)選擇及填寫付款資訊並送出取得 PayToken
+    // (3)建立交易
+    // (4)接收綠界回傳付款結果 response
+    $(function () {
+        getInitToken()
+    })
+
+    // (1)產生廠商驗證 token 並渲染 UI
+    function getInitToken() {
+        $.get(url + '/example/Payment/Ecpg/CreateCreditOrder/GetToken.php', function(data, status){
+            let result = JSON.parse(data);
+            console.log('{"Token":' + result.Token + ', "MerchantTradeNo":' + result.MerchantTradeNo + '}')
+
+            $('#initToken').val(result.Token)
+            $('#merchantTradeNo').val(result.MerchantTradeNo)
+            _token = result.Token;
+            initECpaySDK();
+        });
+    }
+
+    // 初始化 SDK 畫面
+    function initECpaySDK() {
+        ECPay.initialize(envi, 1, function (errMsg) {
+            try {
+                createPayment();
+            } catch (err) {
+                errHandle(err);
+            }
+        })
+    }
+
+    // 切換 SDK 語系
+    $('#language').on('change', function () {
+        try {
+            if (ECPay !== undefined && _token !== '') {
+                createPayment();
+            }
+        } catch (err) {
+            errHandle(err);
+        }
+    });
+
+    // 渲染付款界面 UI
+    function createPayment() {
+        ECPay.createPayment(_token, $('#language').val(), function (errMsg) {
+            if (errMsg != null)
+                errHandle(errMsg);
+        },'V2');
+    }
+
+    // (2)選擇及填寫付款資訊並送出取得 PayToken
+    $('#btnPayToken').on('click', function () {
+        try {
+            if (ECPay !== undefined && _token !== '') {
+                ECPay.getPayToken(function (paymentInfo, errMsg) {
+                    if (errMsg != null) {
+                        errHandle(errMsg);
+                        return
+                    }
+
+                    _payToken = paymentInfo.PayToken
+                    $("#payToken").val(_payToken);
+                });
+            }
+            else {
+                errHandle('請先產生初始驗證Token後再取得PayToken');
+            }
+        } catch (err) {
+            errHandle(err);
+        }
+    });
+
+    // (3)建立交易
+    $('#btnPay').on('click', function () {
+        $.post(url + '/example/Payment/Ecpg/CreateOrder.php', { PayToken: $("#payToken").val(), MerchantTradeNo: $("#merchantTradeNo").val() }, function(response) {
+            $('#ecpayResponse').text(JSON.stringify(response, null, 3))
+        }, 'json');
+    })
+
+    // (4)接收綠界回傳付款結果 response
+    function getReponse() {
+        // 此路由為模擬綠界接收資訊並顯示前端，實際串接請參考 API 文件
+        // (參考開發文件: https://developers.ecpay.com.tw/?p=9040)
+        $.get(url + '/example/Payment/Ecpg/GetResponse.php', function(data, status) {
+            $('#ecpayResponse').text(JSON.stringify(JSON.parse(data), null, 3))
+        });
+    }
+
+    function getEnvi(env) {
+        var result = 'STAGE';
+        switch (env) {
+            case 'STAGE':
+                result = 'Stage';
+                break;
+            case 'PROD':
+                result = 'Prod';
+                break;
+        }
+        return result;
+    }
+
+    function errHandle(strErr) {
+        $('#err').empty();
+        if (strErr != null) {
+            $('#err').append('<div style="text-align: center;"><label style="color: red;">' + strErr + '</label></div>');
+        } else {
+            $('#err').append('<div style="text-align: center;"><label style="color: red;">Token取得失敗</label></div>');
+        }
+    }
+</script>

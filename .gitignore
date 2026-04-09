@@ -1,0 +1,39 @@
+# Dependencies
+vendor/
+node_modules/
+
+# IDE / AI assistant local configs
+.idea/
+.vscode/
+.lh/
+.claude/
+CLAUDE.md
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.*
+.env.local
+*.secret
+*.local
+
+# Logs
+*.log
+
+# Composer
+composer.lock
+
+# Analysis / review artifacts (do not commit)
+*_ANALYSIS.md
+*_ANALYSIS.txt
+*REVIEW*.md
+*REVIEW*.txt
+*SUMMARY*.md
+*COMPARISON*.txt
+*REPORT*.txt
+*REPORT*.md

@@ -6,6 +6,12 @@
 
 ## [Unreleased]
 
+### 修正
+
+- **README.md Windsurf 安裝段落完整重寫**（Line 112, 186–195）：原寫法 `git clone ... .windsurf/skills/ecpay` 與 `~/.codeium/windsurf/skills/ecpay` 皆非 Windsurf 官方支援路徑——`docs.windsurf.com` 明確說明 Windsurf 沒有 skills 目錄機制，官方規則系統為 `.windsurf/rules/*.md`（需 `trigger:` frontmatter）或 `AGENTS.md`（Windsurf 原生支援自動偵測）。依 Cursor 段落模式重寫為：Clone 至 `.ecpay-skill/` → 建立 `AGENTS.md` 或 `.windsurf/rules/ecpay.md` 引用。原錯誤路徑會導致 Cascade 完全不載入 ECPay Skill，使用者會誤以為已安裝
+- **README.md:227 & CONTRIBUTING.md:161 版本固定範例 `git checkout v1.5`**：v1.5 tag 從未建立，執行會報 `error: pathspec 'v1.5' did not match any file(s) known to git`。統一改寫為「先 `git tag -l` 查詢可用 tag，再 checkout 實際 tag」的通用範例，並明列目前可用 tag `v1.0` / `v2.5` / `v2.6`
+- **Git tags 補建**：本地建立 annotated tag `v2.5`（指向 `5bd6159 ECPay API Skill V2.5`）與 `v2.6`（指向 `8d50623 ECPay API Skill V2.6`），對應已發布的 V2.5 / V2.6 commit。需 `git push origin --tags` 同步至 remote 後，使用者才能透過 `git checkout v2.6` 固定版本（見 CONTRIBUTING.md §版本發布流程 的 tag push 警告）
+
 ---
 
 ## [1.5.6] — 2026-04-10 (V2.6)

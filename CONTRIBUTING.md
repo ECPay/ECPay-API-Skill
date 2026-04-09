@@ -151,15 +151,19 @@ ECPay 官方 API 變更公告請見：[developers.ecpay.com.tw](https://develope
 # Clone 後切換至特定版本
 git clone https://github.com/ECPay/ECPay-API-Skill.git ~/.codex/ecpay-skill
 cd ~/.codex/ecpay-skill
-git checkout v1.0   # 切換至 v1.0 tag
 
-# 查看所有可用版本
+# 查看所有可用版本（先確認 tag 名稱，再 checkout）
 git tag -l
+
+# 切換至指定版本（以 git tag -l 查到的實際 tag 為準）
+git checkout v2.6   # 例如：固定至 V2.6
 
 # 之後如需升級
 git fetch --tags
-git checkout v1.5   # 升級至 v1.5
+git checkout v2.7   # 升級至新版本（以實際發布 tag 為準）
 ```
+
+> 💡 目前可用 tag：`v1.0`、`v2.5`、`v2.6`。後續版本隨 release 陸續建立。
 
 > 使用 `git pull origin main` 時，會自動取得最新版本（建議開發環境使用）。生產環境建議固定 tag 以避免意外的破壞性變更。
 

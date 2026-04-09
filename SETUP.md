@@ -1,6 +1,6 @@
 # 各平台安裝指南
 
-> **版本**：V2.5
+> **版本**：V2.6
 
 > 將 ECPay Skill 安裝到 OpenAI Codex CLI、Google Gemini CLI、OpenClaw 或 ChatGPT GPTs。
 > VS Code Copilot Chat 的安裝方式請見 [vscode_copilot.md](./vscode_copilot.md)。
@@ -77,7 +77,7 @@ codex "請問綠界 AIO 金流的測試 MerchantID 是什麼？"   # 或 gemini 
 
 ## OpenClaw 安裝
 
-> 前置條件：Node ≥ 22.16（建議 Node 24）、`npm install -g openclaw@latest`。
+> 前置條件：Node 22.14+（LTS）或 Node 24（推薦）、`npm install -g openclaw@latest`。
 > 詳細說明：[docs.openclaw.ai](https://docs.openclaw.ai/start/getting-started)
 
 ### 步驟 1：Clone

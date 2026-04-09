@@ -1,6 +1,6 @@
 # Visual Studio 2026 安裝與使用指南
 
-> **版本**：V2.5
+> **版本**：V2.6
 >
 > 本指南說明如何在 **Visual Studio 2026**（v18.x）中透過 GitHub Copilot Chat 使用 ECPay API Skill。
 > Visual Studio 2022（v17.14+）亦適用相同步驟。

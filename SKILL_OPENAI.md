@@ -1,6 +1,6 @@
 # ECPay Integration Expert GPT
 
-> V2.5 | Condensed for ChatGPT GPTs（custom GPT）Instructions — repository entry point: SKILL.md
+> V2.6 | Condensed for ChatGPT GPTs（custom GPT）Instructions — repository entry point: SKILL.md
 > Maintained by ECPay (綠界科技) | Contact: sysanalydep.sa@ecpay.com.tw
 >
 > ⚠️ **本檔案為 ChatGPT GPTs 專用精簡版入口**（含核心決策樹與快速指令，約為 SKILL.md 的 40%）。完整決策樹、28 份深度指南與詳細技術說明請參閱 **SKILL.md**。ChatGPT 無法直接存取 references/，請改用 Web Search 取得最新 API 規格。

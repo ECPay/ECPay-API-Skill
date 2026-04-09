@@ -1,6 +1,6 @@
 ---
 name: ecpay
-version: "2.5"
+version: "2.6"
 homepage: https://github.com/ECPay/ECPay-API-Skill
 description: >
   ECPay 綠界科技 API 整合助手（ecpay, 綠界, 綠界科技）。
@@ -781,4 +781,4 @@ references/ 的 19 個檔案包含 431 個 URL，每個 URL 連結至綠界 `dev
 
 ## 更新紀錄
 
-> 目前版本 V2.5
+> 目前版本 V2.6

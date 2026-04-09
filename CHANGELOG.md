@@ -8,6 +8,21 @@
 
 ---
 
+## [1.5.6] — 2026-04-10 (V2.6)
+
+### 修正
+
+- **README.md:33 Claude Code 官方文件 URL**：`docs.anthropic.com/en/docs/claude-code/overview` → `code.claude.com/docs/en/overview`，原 URL 已 301 永久重定向至新網域；同時補充「或 Anthropic Console API 帳號」，與 Claude Code 官方 overview「a Claude subscription or Anthropic Console account」一致
+- **README.md:39 & SETUP.md:80 OpenClaw Node 版本需求**：原 README 寫「Node ≥ 22」涵蓋到 22.0–22.13 的不支援區間；原 SETUP 寫「Node ≥ 22.16」版本號錯誤。統一修正為 docs.openclaw.ai 官方原文「Node 22.14+（LTS）或 Node 24（推薦）」
+- **README.md:40 ChatGPT GPTs 方案名稱**：Team 方案已於 2025-08-29 由 OpenAI 正式更名為 Business（chatgpt.com/pricing 現行方案為 Free / Go / Plus / Pro / Business / Enterprise），表格方案清單由 `Plus / Pro / Team / Enterprise / Edu` 修正為 `Plus / Pro / Business / Enterprise / Edu`
+- **../CLAUDE.md（父層 skills repo）版本描述**：`ecpay-skill` 項目從 V2.3 同步至 V2.6，修正長期未同步的 doc drift
+
+### 版本同步
+
+- SKILL.md front-matter / SKILL_OPENAI.md / README.md / SETUP.md / AGENTS.md / GEMINI.md / google_AI_studio.md / vscode_copilot.md / visual_studio_2026.md / .github/copilot-instructions.md / 業務說明.md / 父層 CLAUDE.md 全數同步至 **V2.6**
+
+---
+
 ## [1.5.5] — 2026-04-09 (V2.5)
 
 ### 修正

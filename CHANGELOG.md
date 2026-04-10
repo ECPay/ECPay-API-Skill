@@ -6,6 +6,10 @@
 
 ## [Unreleased]
 
+### 新增
+
+- **`commands/README.md` 新增資料夾說明**:原本 `commands/` 目錄只有 6 個 `.md` 指令檔案,沒有任何說明告訴讀者「這是什麼、做什麼、給誰用」。新增完整白話 README.md 涵蓋:① 30 秒看懂(Claude Code Slash Commands 機制) ② 6 個指令與用途對照表 ③ 四種角色關注程度對照(業務/FAE/客戶工程師/維護者) ④ 常見誤解三點(不裝就不能用 Skill?/可執行程式?/只給 Claude 以外用?) ⑤ 安裝步驟(專案層級 vs 個人全域) ⑥ 指令檔結構說明(給維護者) ⑦ 新增指令的 7 步 SOP。讓非 Claude Code 使用者、FAE、業務人員都能清楚知道這個資料夾的內容與目的
+
 ### 修正
 
 - **`README.md:63` 安全聲明修正**:原文「本 Skill 是**純文字知識檔**（Markdown），**不含可執行程式**、不收集任何資料、不連線至第三方伺服器」不符合現況——repo 內實際有 `test-vectors/verify.py` / `verify-node.js` / `verify-go.go` / `verify-java.java` / `verify-csharp.cs` 等驗證器、`scripts/validate-*.sh` 驗證腳本、`scripts/SDK_PHP/` PHP SDK、`.github/workflows/*.yml` CI workflow 等可執行程式。修正為「本 Skill 以 **Markdown 知識檔**為核心,不收集任何資料、不連線至第三方伺服器」——核心知識庫確實是 Markdown,但不再宣稱「不含可執行程式」。其他安全斷言(不收集資料、不連線第三方、密鑰不寫入)仍為真,保留不變

@@ -69,7 +69,7 @@ jobs:
           python3 - <<'PY'
           import os, textwrap
           body = textwrap.dedent("""\
-              ## __ISSUE_TITLE__ — ECPay Skill 季度維護清單
+              ## __ISSUE_TITLE__ — ECPay API Skill 季度維護清單
 
               依 [CONTRIBUTING.md](../blob/master/CONTRIBUTING.md) §維護指引，以下 8 項任務建議每季執行：
 

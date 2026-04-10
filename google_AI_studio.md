@@ -24,7 +24,7 @@ AI 會根據綠界官方文件，給你具體的步驟和程式碼。
 
 ## 事前準備（約 3 分鐘）
 
-### 1. 下載 ECPay Skill 檔案
+### 1. 下載 ECPay API Skill 檔案
 
 1. 用瀏覽器打開 **[github.com/ECPay/ECPay-API-Skill](https://github.com/ECPay/ECPay-API-Skill)**
 2. 點綠色的 **< > Code** 按鈕

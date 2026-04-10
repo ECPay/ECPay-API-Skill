@@ -6,6 +6,12 @@
 
 ## [Unreleased]
 
+### 品牌重新命名
+
+- **全面 rebrand：`ECPay Skill` → `ECPay API Skill`**：對齊 GitHub repo 名稱 `ECPay-API-Skill`、強調本套件聚焦於 ECPay API 整合（而非泛用 skill）。README.md title 首先修正為「ECPay API Skill — 綠界科技 AI API整合助手」，並同步更新所有公開檔案內的產品名稱出現位置（共 36 處，12 個公開檔案 + 1 個本地 gitignored 業務說明.md）
+- 涵蓋檔案：`README.md`(12)、`vscode_copilot.md`(11)、`visual_studio_2026.md`(5)、`SETUP.md`(3)、`test-vectors/README.md`(2)、`google_AI_studio.md`(1)、`docs/internal/簡報-ECPay-AI-Skill套件-Slides版.md`(1)、`SECURITY.md`(1)、`CONTRIBUTING.md`(1)、`.github/workflows/quarterly-reminder.yml`(1)、`.github/copilot-instructions.md`(1)、本 CHANGELOG V2.7 entry(1)、`業務說明.md`(1,gitignored 本地同步)
+- **保留不改**：`SKILL.md` front-matter 的 `name: ecpay`(AI skill identifier,改了會破壞 AI 觸發機制)、`SKILL.md` description 內的 `ecpay, 綠界, 綠界科技` 觸發關鍵字、`CHANGELOG.md` V2.5/V2.6 等更早 release 的歷史 entries(保留當時的品牌稱呼為歷史事實)
+
 ### 改善
 
 - **`test-vectors/README.md` 完整重寫（白話版）**：原版開場只有兩行技術描述（「本目錄提供 CheckMacValue、AES、URL Encode 差異比對的測試向量」），使業務 / PM / FAE / 客戶皆無法理解 test-vectors 的用途與價值。重寫後涵蓋：① 烘焙教室比喻開場 ② 為什麼綠界 API 特別需要測試向量（Node.js `encodeURIComponent` 不編碼 `'`/`!` 的真實陷阱表格） ③ 有無測試向量的 before/after 情境對照 ④ 四種角色（業務/FAE/客戶工程師/維護者）各自的關注程度對照表 ⑤ 為什麼叫「向量」的名詞解釋。內文同時修正既有 doc drift：原寫「18 個向量（CMV 8 + AES 6 + URL 4）」更正為實際「21 個向量（CMV 8 + AES 9 含 2 個 explanatory + URL 4）」
@@ -21,7 +27,7 @@
 
 ### 修正
 
-- **README.md Windsurf 安裝段落完整重寫**（Line 112, 186–195）：原寫法 `git clone ... .windsurf/skills/ecpay` 與 `~/.codeium/windsurf/skills/ecpay` 皆非 Windsurf 官方支援路徑——`docs.windsurf.com` 明確說明 Windsurf 沒有 skills 目錄機制，官方規則系統為 `.windsurf/rules/*.md`（需 `trigger:` frontmatter）或 `AGENTS.md`（Windsurf 原生支援自動偵測）。依 Cursor 段落模式重寫為：Clone 至 `.ecpay-skill/` → 建立 `AGENTS.md` 或 `.windsurf/rules/ecpay.md` 引用。原錯誤路徑會導致 Cascade 完全不載入 ECPay Skill，使用者會誤以為已安裝
+- **README.md Windsurf 安裝段落完整重寫**（Line 112, 186–195）：原寫法 `git clone ... .windsurf/skills/ecpay` 與 `~/.codeium/windsurf/skills/ecpay` 皆非 Windsurf 官方支援路徑——`docs.windsurf.com` 明確說明 Windsurf 沒有 skills 目錄機制，官方規則系統為 `.windsurf/rules/*.md`（需 `trigger:` frontmatter）或 `AGENTS.md`（Windsurf 原生支援自動偵測）。依 Cursor 段落模式重寫為：Clone 至 `.ecpay-skill/` → 建立 `AGENTS.md` 或 `.windsurf/rules/ecpay.md` 引用。原錯誤路徑會導致 Cascade 完全不載入 ECPay API Skill，使用者會誤以為已安裝
 - **README.md:227 & CONTRIBUTING.md:161 版本固定範例 `git checkout v1.5`**：v1.5 tag 從未建立，執行會報 `error: pathspec 'v1.5' did not match any file(s) known to git`。統一改寫為「先 `git tag -l` 查詢可用 tag，再 checkout 實際 tag」的通用範例，並明列目前可用 tag `v1.0` / `v2.5` / `v2.6`
 - **Git tags 補建**：建立 annotated tag `v2.5`（指向 `5bd6159 ECPay API Skill V2.5`）與 `v2.6`（指向 `8d50623 ECPay API Skill V2.6`），對應已發布的 V2.5 / V2.6 commit。已 push 至 remote，使用者可透過 `git checkout v2.6` 固定版本
 - **`.github/workflows/validate.yml` 監聽分支錯誤**：`push: branches: - main` 改為 `- master`（同時保留 `- main` 以相容未來可能的分支改名）。原設定導致所有直接推到 `master` 的 commit 都**未觸發** CI 自動驗證——本 session 內 `5bd6159` / `8d50623` / `ff715a9` 三個 commit 皆未跑 CI，僅靠本地手動執行驗證腳本

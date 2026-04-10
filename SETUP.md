@@ -2,7 +2,7 @@
 
 > **版本**：V2.7
 
-> 將 ECPay Skill 安裝到 OpenAI Codex CLI、Google Gemini CLI、OpenClaw 或 ChatGPT GPTs。
+> 將 ECPay API Skill 安裝到 OpenAI Codex CLI、Google Gemini CLI、OpenClaw 或 ChatGPT GPTs。
 > VS Code Copilot Chat 的安裝方式請見 [vscode_copilot.md](./vscode_copilot.md)。
 > Visual Studio 2026 的安裝方式請見 [visual_studio_2026.md](./visual_studio_2026.md)。
 > Claude Code、GitHub Copilot CLI、Cursor、Windsurf 的安裝方式請見 [README.md](./README.md#安裝)。
@@ -46,7 +46,7 @@ git clone https://github.com/ECPay/ECPay-API-Skill.git .ecpay-skill
 在專案根目錄的入口文件（Codex → `AGENTS.md`、Gemini → `GEMINI.md`）末尾追加：
 
 ```markdown
-## ECPay Skill
+## ECPay API Skill
 讀取 `.ecpay-skill/<入口文件>` 作為 ECPay 整合知識庫入口。
 完整指南位於 `.ecpay-skill/guides/`（28 份），即時 API 規格索引位於 `.ecpay-skill/references/`。
 ```
@@ -324,7 +324,7 @@ cd <skill-path> && git pull origin main
 
 ### 常見問題
 
-**Q：AI 找不到 ECPay Skill？**
+**Q：AI 找不到 ECPay API Skill？**
 確認入口文件位置正確——Codex: `AGENTS.md`、Gemini: `GEMINI.md`、OpenClaw: `~/.openclaw/skills/ecpay/SKILL.md`。
 
 **Q：Skill 知識過期？**

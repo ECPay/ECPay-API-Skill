@@ -1,4 +1,4 @@
-# Copilot Instructions — ECPay Skill
+# Copilot Instructions — ECPay API Skill
 
 This is an **AI Skill repository** (Markdown knowledge base), not a traditional software project. There is no build system, no package manager, and no application code. All content is Markdown files consumed by AI coding assistants.
 

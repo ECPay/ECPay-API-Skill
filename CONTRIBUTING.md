@@ -24,7 +24,7 @@ This is a **Markdown-only AI knowledge base** (no build system, no package manag
 
 </details>
 
-感謝您有興趣為 ECPay Skill 做出貢獻！
+感謝您有興趣為 ECPay API Skill 做出貢獻！
 
 ## 回報問題
 

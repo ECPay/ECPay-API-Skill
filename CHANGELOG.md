@@ -6,9 +6,13 @@
 
 ## [Unreleased]
 
+---
+
+## [1.5.7] — 2026-04-10 (V2.7)
+
 ### 移除
 
-- **`業務說明.md` 從公開 repo 移除**：此檔案為供業務人員、專案經理、客戶成功團隊閱讀的內部對外說明文件，不屬於公開 AI skill 知識庫範圍。透過 `git rm --cached` 解除 tracking（保留本地檔案供內部使用），並加入 `.gitignore` 避免後續誤 commit。**注意：git 歷史 commit 中仍保留此檔案（如 `5bd6159`、`8d50623`），若需從 GitHub 完全清除需另行改寫歷史（`git filter-repo` + force push）**
+- **`業務說明.md` 從公開 repo 完全移除（含歷史）**：此檔案為供業務人員、專案經理、客戶成功團隊閱讀的內部對外說明文件，不屬於公開 AI skill 知識庫範圍。執行步驟：① `git rm --cached` 解除 HEAD tracking ② `.gitignore` 新增 entry 避免後續誤 commit ③ `git filter-repo --path 業務說明.md --invert-paths` 從所有歷史 commit 中清除此檔案 ④ `git push --force origin master` 與 `--force --tags` 覆寫 remote。本地檔案保留供內部使用。**副作用**：所有歷史 commit hash 全部改變（除 `v1.0` 可能維持不變），所有 fork/clone 需要重新同步
 
 ### 修正
 
@@ -22,6 +26,15 @@
 - **`.github/workflows/validate-references.yml` 監聽分支錯誤**：同上 `push: branches: - main` → `- master`
 - **`.github/workflows/quarterly-reminder.yml` issue body 連結 404**：自動建立的季度維護 issue body 內 `../blob/main/CONTRIBUTING.md` 與 `../blob/main/.github/workflows/quarterly-reminder.yml` 兩處連結指向不存在的 `main` 分支（實際為 `master`），統一改為 `../blob/master/`
 - **`.github/workflows/quarterly-reminder.yml` YAML literal block 縮排錯誤**：原 `gh issue create --body "..."` 多行字串內容（line 70+）未維持 `run: |` block 的最低 10 空格縮排，導致 YAML parser 在 line 70 終止 block 並將後續內容誤判為新 key，整個 workflow 一推送即 startup failure（push e501d7b 後 quarterly-reminder.yml #74 失敗證實）。重寫為 `python3 - <<'PY'` quoted heredoc 寫入 `/tmp/issue-body.md` 暫存檔，再用 `gh issue create --body-file` 引用：① quoted heredoc 避免 bash 對 markdown 反引號做命令替換 ② `textwrap.dedent` 移除 YAML 為維持縮排加的前綴 ③ `__ISSUE_TITLE__` 佔位符經 `os.environ` 注入避免 shell quoting 風險 ④ 直接 UTF-8 寫檔避免 stdout locale 問題
+
+### 版本同步
+
+- SKILL.md front-matter / SKILL_OPENAI.md / README.md / SETUP.md / AGENTS.md / GEMINI.md / google_AI_studio.md / vscode_copilot.md / visual_studio_2026.md / .github/copilot-instructions.md / 父層 CLAUDE.md 全數同步至 **V2.7**
+- README.md & CONTRIBUTING.md 版本固定範例更新為 `git checkout v2.7`，目前可用 tag 列表新增 `v2.7`
+
+### Git 歷史改寫
+
+- 執行 `git filter-repo --path 業務說明.md --invert-paths` 從所有歷史 commit 中清除 `業務說明.md`。所有 commit hash 改變，所有 tag（`v1.0` / `v2.5` / `v2.6` / `v2.7`）重建並 force push 至 remote
 
 ---
 

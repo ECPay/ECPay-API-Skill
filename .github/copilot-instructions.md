@@ -74,7 +74,7 @@ When changing the version number, update ALL of these:
 - `../CLAUDE.md` version and guide count (root repo instructions)
 - `CONTRIBUTING.md` version reference (English summary section)
 
-`validate-version-sync.sh` checks the canonical version pattern from SKILL.md front-matter (e.g. `V2.6`). `CHANGELOG.md` uses three-segment semver (`1.0.0`) per Keep a Changelog convention — the entry-point files and CHANGELOG may use the same or different number of segments; both must be updated when releasing.
+`validate-version-sync.sh` checks the canonical version pattern from SKILL.md front-matter (e.g. `V2.7`). `CHANGELOG.md` uses three-segment semver (`1.0.0`) per Keep a Changelog convention — the entry-point files and CHANGELOG may use the same or different number of segments; both must be updated when releasing.
 
 ### Platform Entry File Parity
 

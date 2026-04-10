@@ -156,14 +156,14 @@ cd ~/.codex/ecpay-skill
 git tag -l
 
 # 切換至指定版本（以 git tag -l 查到的實際 tag 為準）
-git checkout v2.6   # 例如：固定至 V2.6
+git checkout v2.7   # 例如：固定至 V2.7
 
 # 之後如需升級
 git fetch --tags
-git checkout v2.7   # 升級至新版本（以實際發布 tag 為準）
+git checkout v2.8   # 升級至新版本（以實際發布 tag 為準）
 ```
 
-> 💡 目前可用 tag：`v1.0`、`v2.5`、`v2.6`。後續版本隨 release 陸續建立。
+> 💡 目前可用 tag：`v1.0`、`v2.5`、`v2.6`、`v2.7`。後續版本隨 release 陸續建立。
 
 > 使用 `git pull origin main` 時，會自動取得最新版本（建議開發環境使用）。生產環境建議固定 tag 以避免意外的破壞性變更。
 

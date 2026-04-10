@@ -6,6 +6,10 @@
 
 ## [Unreleased]
 
+### 修正
+
+- **`README.md:63` 安全聲明修正**:原文「本 Skill 是**純文字知識檔**（Markdown），**不含可執行程式**、不收集任何資料、不連線至第三方伺服器」不符合現況——repo 內實際有 `test-vectors/verify.py` / `verify-node.js` / `verify-go.go` / `verify-java.java` / `verify-csharp.cs` 等驗證器、`scripts/validate-*.sh` 驗證腳本、`scripts/SDK_PHP/` PHP SDK、`.github/workflows/*.yml` CI workflow 等可執行程式。修正為「本 Skill 以 **Markdown 知識檔**為核心,不收集任何資料、不連線至第三方伺服器」——核心知識庫確實是 Markdown,但不再宣稱「不含可執行程式」。其他安全斷言(不收集資料、不連線第三方、密鑰不寫入)仍為真,保留不變
+
 ### 新增
 
 - **`test-vectors/verify-node.js` Node.js 驗證器**:堵住最大 cross-language 驗證缺口。`guides/` 教 12 種語言但 `test-vectors/` 原本只有 4 個驗證器（Python/Go/Java/C#）——Node.js/TypeScript 作為**最多陷阱的語言**(`encodeURIComponent` 不編碼 `!'()*~`、空格編成 `%20`、`Buffer` vs `String` 差異)卻沒有獨立 verifier。新增 390 行的零依賴 Node.js 實作,對照 `verify.py` 的完整邏輯,涵蓋 `phpUrlencode` / `ecpayUrlEncode` / `aesUrlEncode` / `calcCheckMacValue` / `calcEcticketCMV` / `aesEncrypt` / `aesDecrypt` 所有核心函式,21/21 vectors 本地通過

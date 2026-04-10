@@ -37,3 +37,6 @@ composer.lock
 *COMPARISON*.txt
 *REPORT*.txt
 *REPORT*.md
+
+# Internal documentation (not for public repo)
+業務說明.md

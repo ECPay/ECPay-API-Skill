@@ -6,6 +6,10 @@
 
 ## [Unreleased]
 
+### 移除
+
+- **`業務說明.md` 從公開 repo 移除**：此檔案為供業務人員、專案經理、客戶成功團隊閱讀的內部對外說明文件，不屬於公開 AI skill 知識庫範圍。透過 `git rm --cached` 解除 tracking（保留本地檔案供內部使用），並加入 `.gitignore` 避免後續誤 commit。**注意：git 歷史 commit 中仍保留此檔案（如 `5bd6159`、`8d50623`），若需從 GitHub 完全清除需另行改寫歷史（`git filter-repo` + force push）**
+
 ### 修正
 
 - **README.md Windsurf 安裝段落完整重寫**（Line 112, 186–195）：原寫法 `git clone ... .windsurf/skills/ecpay` 與 `~/.codeium/windsurf/skills/ecpay` 皆非 Windsurf 官方支援路徑——`docs.windsurf.com` 明確說明 Windsurf 沒有 skills 目錄機制，官方規則系統為 `.windsurf/rules/*.md`（需 `trigger:` frontmatter）或 `AGENTS.md`（Windsurf 原生支援自動偵測）。依 Cursor 段落模式重寫為：Clone 至 `.ecpay-skill/` → 建立 `AGENTS.md` 或 `.windsurf/rules/ecpay.md` 引用。原錯誤路徑會導致 Cascade 完全不載入 ECPay Skill，使用者會誤以為已安裝

@@ -6,6 +6,10 @@
 
 ## [Unreleased]
 
+### 移除
+
+- **`docs/internal/` 從公開 repo 移除**：此目錄內含公司內部文件（業務/行銷簡報、內部 audit report），不屬於公開 AI skill 知識庫範圍。執行步驟：① `git rm --cached docs/internal/簡報-ECPay-AI-Skill套件-Slides版.md docs/internal/簡報-ECPay-AI-Skill套件內部說明.md` 解除 HEAD tracking ② `.gitignore` 新增 `docs/internal/` entry 覆蓋整個目錄 ③ 本地檔案保留供內部使用。注意：`CALLBACK_AUDIT_REPORT.txt` 原本就被 `.gitignore` 的 `*REPORT*.txt` 規則排除，從未進入 remote。**歷史保留警告**：被 tracked 的兩份簡報檔案在舊 commit（如 `de7ee54`、`db673d5`、`afad4d8`、`97ba12a` 等）中仍存在，若需從 GitHub 完全清除需另行 `git filter-repo` 改寫歷史 + force push
+
 ### 品牌重新命名
 
 - **全面 rebrand：`ECPay Skill` → `ECPay API Skill`**：對齊 GitHub repo 名稱 `ECPay-API-Skill`、強調本套件聚焦於 ECPay API 整合（而非泛用 skill）。README.md title 首先修正為「ECPay API Skill — 綠界科技 AI API整合助手」，並同步更新所有公開檔案內的產品名稱出現位置（共 36 處，12 個公開檔案 + 1 個本地 gitignored 業務說明.md）

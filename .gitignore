@@ -40,3 +40,4 @@ composer.lock
 
 # Internal documentation (not for public repo)
 業務說明.md
+docs/internal/

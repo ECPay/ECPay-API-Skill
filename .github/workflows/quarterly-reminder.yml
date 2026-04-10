@@ -67,7 +67,7 @@ jobs:
             --label "quarterly-reminder" \
             --body "## $ISSUE_TITLE — ECPay Skill 季度維護清單
 
-依 [CONTRIBUTING.md](../blob/main/CONTRIBUTING.md) §維護指引，以下 8 項任務建議每季執行：
+依 [CONTRIBUTING.md](../blob/master/CONTRIBUTING.md) §維護指引，以下 8 項任務建議每季執行：
 
 ### 待辦清單
 
@@ -86,4 +86,4 @@ jobs:
 > 若大量 URL 同時失效（網站改版），聯繫綠界技術支援 (techsupport@ecpay.com.tw) 取得新 URL 結構。
 
 ---
-*此 Issue 由 [quarterly-reminder.yml](../blob/main/.github/workflows/quarterly-reminder.yml) 自動建立。完成後請關閉此 Issue。*"
+*此 Issue 由 [quarterly-reminder.yml](../blob/master/.github/workflows/quarterly-reminder.yml) 自動建立。完成後請關閉此 Issue。*"

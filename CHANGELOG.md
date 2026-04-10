@@ -10,7 +10,13 @@
 
 - **README.md Windsurf 安裝段落完整重寫**（Line 112, 186–195）：原寫法 `git clone ... .windsurf/skills/ecpay` 與 `~/.codeium/windsurf/skills/ecpay` 皆非 Windsurf 官方支援路徑——`docs.windsurf.com` 明確說明 Windsurf 沒有 skills 目錄機制，官方規則系統為 `.windsurf/rules/*.md`（需 `trigger:` frontmatter）或 `AGENTS.md`（Windsurf 原生支援自動偵測）。依 Cursor 段落模式重寫為：Clone 至 `.ecpay-skill/` → 建立 `AGENTS.md` 或 `.windsurf/rules/ecpay.md` 引用。原錯誤路徑會導致 Cascade 完全不載入 ECPay Skill，使用者會誤以為已安裝
 - **README.md:227 & CONTRIBUTING.md:161 版本固定範例 `git checkout v1.5`**：v1.5 tag 從未建立，執行會報 `error: pathspec 'v1.5' did not match any file(s) known to git`。統一改寫為「先 `git tag -l` 查詢可用 tag，再 checkout 實際 tag」的通用範例，並明列目前可用 tag `v1.0` / `v2.5` / `v2.6`
-- **Git tags 補建**：本地建立 annotated tag `v2.5`（指向 `5bd6159 ECPay API Skill V2.5`）與 `v2.6`（指向 `8d50623 ECPay API Skill V2.6`），對應已發布的 V2.5 / V2.6 commit。需 `git push origin --tags` 同步至 remote 後，使用者才能透過 `git checkout v2.6` 固定版本（見 CONTRIBUTING.md §版本發布流程 的 tag push 警告）
+- **Git tags 補建**：建立 annotated tag `v2.5`（指向 `5bd6159 ECPay API Skill V2.5`）與 `v2.6`（指向 `8d50623 ECPay API Skill V2.6`），對應已發布的 V2.5 / V2.6 commit。已 push 至 remote，使用者可透過 `git checkout v2.6` 固定版本
+- **`.github/workflows/validate.yml` 監聽分支錯誤**：`push: branches: - main` 改為 `- master`（同時保留 `- main` 以相容未來可能的分支改名）。原設定導致所有直接推到 `master` 的 commit 都**未觸發** CI 自動驗證——本 session 內 `5bd6159` / `8d50623` / `ff715a9` 三個 commit 皆未跑 CI，僅靠本地手動執行驗證腳本
+- **`.github/workflows/validate.yml` 觸發路徑補完**：`on.pull_request.paths` 與 `on.push.paths` 補入 `references/**`、`scripts/validate-internal-links.sh`、`scripts/validate-guides-refs-consistency.sh`、`CONTRIBUTING.md`，原設定只監聽部分路徑導致驗證漏跑
+- **`.github/workflows/validate.yml` 新增第 5 項 CI 檢查**：`scripts/validate-guides-refs-consistency.sh`（guides ↔ references ↔ scripts 五維度一致性：URL 格式、SDK 類別名、協定模式、測試帳號、SNAPSHOT 欄位名）原本存在於 scripts/ 但未被任何 workflow 呼叫，本次納入 CI
+- **`scripts/validate-guides-refs-consistency.sh` 維度 2 誤判修正**：B2C vs B2B 對照表的行（同時含 `Items[].ItemTaxType` 與 `Items[].ItemTax` 作為欄位差異說明）被原 regex 誤判為 B2B 參數表錯誤。修正為 `grep -v 'Items\[\]\.ItemTax[^T]'` 排除同時出現兩欄位的對照行
+- **`.github/workflows/validate-references.yml` 監聽分支錯誤**：同上 `push: branches: - main` → `- master`
+- **`.github/workflows/quarterly-reminder.yml` issue body 連結 404**：自動建立的季度維護 issue body 內 `../blob/main/CONTRIBUTING.md` 與 `../blob/main/.github/workflows/quarterly-reminder.yml` 兩處連結指向不存在的 `main` 分支（實際為 `master`），統一改為 `../blob/master/`
 
 ---
 

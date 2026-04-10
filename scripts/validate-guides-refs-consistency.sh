@@ -24,11 +24,11 @@ fi
 echo "── 維度 2: SNAPSHOT 欄位名驗證 ──"
 
 # B2B ItemTax vs ItemTaxType 永久守護
-# 排除比較說明文字（含 B2C、非、not、vs 的行是說明用途，不是錯誤引用）
-# 只抓 SNAPSHOT 參數表中直接使用 ItemTaxType 作為 B2B 欄位名的情況
-# 在 SNAPSHOT 參數表中，ItemTaxType 只應出現在 B2C 對照欄或說明文字中
-# 真正的錯誤是 B2B 參數表（Items[].xxx 行）直接用 ItemTaxType 作為欄位名
-b2b_snapshot_err=$(grep -n '|.*Items\[\]\.ItemTaxType' guides/05-invoice-b2b.md 2>/dev/null || true)
+# 排除 B2C vs B2B 對照表格（同一行同時出現 ItemTaxType 與 ItemTax 為對照說明，不是錯誤）
+# 只抓 B2B SNAPSHOT 參數表中單獨使用 ItemTaxType 的情況
+# 實作：先抓含 Items[].ItemTaxType 的表格行，再排除同時含 Items[].ItemTax（非 Type）的對照行
+b2b_snapshot_err=$(grep -n '|.*Items\[\]\.ItemTaxType' guides/05-invoice-b2b.md 2>/dev/null | \
+  grep -v 'Items\[\]\.ItemTax[^T]' || true)
 if [ -n "$b2b_snapshot_err" ]; then
   ERRORS+=("維度2: guides/05-invoice-b2b.md 的 SNAPSHOT 參數表使用了 ItemTaxType（B2C 欄位），B2B 應為 ItemTax:")
   while IFS= read -r line; do

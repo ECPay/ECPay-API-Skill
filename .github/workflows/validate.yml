@@ -4,9 +4,12 @@ on:
   pull_request:
     paths:
       - 'guides/**'
+      - 'references/**'
       - 'scripts/validate-ai-index.sh'
       - 'scripts/validate-version-sync.sh'
       - 'scripts/validate-agents-parity.sh'
+      - 'scripts/validate-internal-links.sh'
+      - 'scripts/validate-guides-refs-consistency.sh'
       - 'test-vectors/**'
       - 'SKILL.md'
       - 'SKILL_OPENAI.md'
@@ -14,14 +17,19 @@ on:
       - 'SETUP.md'
       - 'AGENTS.md'
       - 'GEMINI.md'
+      - 'CONTRIBUTING.md'
   push:
     branches:
+      - master
       - main
     paths:
       - 'guides/**'
+      - 'references/**'
       - 'scripts/validate-ai-index.sh'
       - 'scripts/validate-version-sync.sh'
       - 'scripts/validate-agents-parity.sh'
+      - 'scripts/validate-internal-links.sh'
+      - 'scripts/validate-guides-refs-consistency.sh'
       - 'test-vectors/**'
       - 'SKILL.md'
       - 'SKILL_OPENAI.md'
@@ -29,6 +37,7 @@ on:
       - 'SETUP.md'
       - 'AGENTS.md'
       - 'GEMINI.md'
+      - 'CONTRIBUTING.md'
 
 jobs:
   validate:
@@ -43,6 +52,8 @@ jobs:
         run: bash scripts/validate-agents-parity.sh
       - name: Validate internal cross-guide links
         run: bash scripts/validate-internal-links.sh
+      - name: Validate guides ↔ references ↔ scripts consistency
+        run: bash scripts/validate-guides-refs-consistency.sh
       - name: Set up Python
         uses: actions/setup-python@v5
         with:

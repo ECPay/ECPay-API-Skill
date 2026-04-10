@@ -692,6 +692,9 @@ A：參考 guides/16 上線檢查清單，逐項替換 MerchantID、HashKey/Hash
 **Q：AI 生成的程式碼可以直接使用嗎？**
 A：AI 基於 134 個官方驗證的 PHP 範例和 12 語言加密實作生成程式碼，品質高但仍建議人工驗證。特別是金額、加密邏輯、Callback 處理等關鍵路徑應搭配測試環境驗證。
 
+**Q：Skill 教客戶的加密程式碼（CheckMacValue / AES）怎麼保證正確？會不會有 bug？**
+A：每次 Skill 發布前都會自動跑 **21 組跨語言加密測試向量**（`test-vectors/verify.py`），涵蓋 CheckMacValue（SHA256 / MD5）、AES-128-CBC 加密/解密、URL Encode 差異等所有核心演算法。21/21 全部通過才能發布；任何加密演算法錯誤會在 CI 階段就被攔下，不會進入客戶環境。白話說明（為什麼需要、如果沒有會怎樣、誰要關心）請見 [`test-vectors/README.md`](./test-vectors/README.md)，FAE 可直接引用該文件回覆客戶的品質疑慮。
+
 **Q：API 規格更新時，AI 會讀到最新的嗎？**
 A：會。`references/` 目錄存放 431 個指向 `developers.ecpay.com.tw` 的 URL 索引（不是靜態副本），AI 會即時讀取最新官方規格。ChatGPT GPTs 因平台限制改以 Web Search 替代。
 

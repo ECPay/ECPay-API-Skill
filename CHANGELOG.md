@@ -6,6 +6,11 @@
 
 ## [Unreleased]
 
+### 改善
+
+- **`test-vectors/README.md` 完整重寫（白話版）**：原版開場只有兩行技術描述（「本目錄提供 CheckMacValue、AES、URL Encode 差異比對的測試向量」），使業務 / PM / FAE / 客戶皆無法理解 test-vectors 的用途與價值。重寫後涵蓋：① 烘焙教室比喻開場 ② 為什麼綠界 API 特別需要測試向量（Node.js `encodeURIComponent` 不編碼 `'`/`!` 的真實陷阱表格） ③ 有無測試向量的 before/after 情境對照 ④ 四種角色（業務/FAE/客戶工程師/維護者）各自的關注程度對照表 ⑤ 為什麼叫「向量」的名詞解釋。內文同時修正既有 doc drift：原寫「18 個向量（CMV 8 + AES 6 + URL 4）」更正為實際「21 個向量（CMV 8 + AES 9 含 2 個 explanatory + URL 4）」
+- **`README.md §常見問題` 新增 Q 『Skill 教客戶的加密程式碼怎麼保證正確？』**：供 FAE 直接引用回覆客戶的品質疑慮，並導引至 `test-vectors/README.md` 閱讀白話完整說明
+
 ---
 
 ## [1.5.7] — 2026-04-10 (V2.7)

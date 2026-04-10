@@ -6,6 +6,15 @@
 
 ## [Unreleased]
 
+### 新增
+
+- **`test-vectors/verify-node.js` Node.js 驗證器**:堵住最大 cross-language 驗證缺口。`guides/` 教 12 種語言但 `test-vectors/` 原本只有 4 個驗證器（Python/Go/Java/C#）——Node.js/TypeScript 作為**最多陷阱的語言**(`encodeURIComponent` 不編碼 `!'()*~`、空格編成 `%20`、`Buffer` vs `String` 差異)卻沒有獨立 verifier。新增 390 行的零依賴 Node.js 實作,對照 `verify.py` 的完整邏輯,涵蓋 `phpUrlencode` / `ecpayUrlEncode` / `aesUrlEncode` / `calcCheckMacValue` / `calcEcticketCMV` / `aesEncrypt` / `aesDecrypt` 所有核心函式,21/21 vectors 本地通過
+- **`.github/workflows/validate.yml` CI 新增 Node.js 驗證 step**:`- name: Verify test vectors (Node.js - cross-language check for JS trap family)` 加在 Python verify 之後,確保 CI 上同時跑兩個獨立語言實作的 cross-check
+
+### 改善
+
+- **`test-vectors/README.md` 新增「為什麼只有這幾個驗證器?」完整設計說明段落**:解答 FAE/客戶/維護者的常見疑問「guides 教 12 種語言但 test-vectors 只有 5 個驗證器為什麼?」。內容包含:① 為什麼不需要 12 個 verifier(靜態向量資料跨語言保證 + 語言家族策略取樣 + 維護成本) ② 5 個驗證器各自代表的語言家族與堵的陷阱類別對照表 ③ 仍有 gap 的語言清單(TypeScript/Rust/Swift/Ruby/Kotlin/C++/PHP)含各自風險等級與間接保證來源 ④ 三道防線(靜態向量資料、guides/lang-standards/、guides/20 HTTP 協議規範)
+
 ### 移除
 
 - **`docs/internal/` 從公開 repo 移除**：此目錄內含公司內部文件（業務/行銷簡報、內部 audit report），不屬於公開 AI skill 知識庫範圍。執行步驟：① `git rm --cached docs/internal/簡報-ECPay-AI-Skill套件-Slides版.md docs/internal/簡報-ECPay-AI-Skill套件內部說明.md` 解除 HEAD tracking ② `.gitignore` 新增 `docs/internal/` entry 覆蓋整個目錄 ③ 本地檔案保留供內部使用。注意：`CALLBACK_AUDIT_REPORT.txt` 原本就被 `.gitignore` 的 `*REPORT*.txt` 規則排除，從未進入 remote。**歷史保留警告**：被 tracked 的兩份簡報檔案在舊 commit（如 `de7ee54`、`db673d5`、`afad4d8`、`97ba12a` 等）中仍存在，若需從 GitHub 完全清除需另行 `git filter-repo` 改寫歷史 + force push

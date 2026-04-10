@@ -60,5 +60,7 @@ jobs:
           python-version: '3.x'
       - name: Install pycryptodome
         run: pip install "pycryptodome>=3.20,<4"
-      - name: Verify test vectors
+      - name: Verify test vectors (Python - primary)
         run: python test-vectors/verify.py
+      - name: Verify test vectors (Node.js - cross-language check for JS trap family)
+        run: node test-vectors/verify-node.js

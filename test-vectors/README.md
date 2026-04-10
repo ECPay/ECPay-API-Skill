@@ -185,9 +185,59 @@ ALL PASSED ✓
 
 ### CI 自動執行
 
-`.github/workflows/validate.yml` 的最後一步會自動執行 `python test-vectors/verify.py`，所以：
-- Push 任何 commit → CI 自動跑 → 失敗會在 commit 旁顯示紅燈
+`.github/workflows/validate.yml` 會自動執行**兩個**驗證腳本:
+- `python test-vectors/verify.py`(主驗證 — Python 基準實作)
+- `node test-vectors/verify-node.js`(Node.js cross-check — 堵 JS 陷阱家族)
+
+所以:
+- Push 任何 commit → CI 自動跑兩個驗證器 → 失敗會在 commit 旁顯示紅燈
 - 開 PR → CI 自動跑 → 失敗會擋住合併
+
+---
+
+## 🤔 為什麼只有這幾個驗證器？不是說支援 12 種語言嗎？
+
+> **短答**：`guides/13-checkmacvalue.md` / `guides/14-aes-encryption.md` / `guides/24-multi-language-integration.md` **教 12 種語言的實作**（PHP、Python、Node.js、TypeScript、Java、C#、Go、C++、Rust、Swift、Kotlin、Ruby），但 `test-vectors/` 只有 **5 個驗證器**（Python + Node.js + Go + Java + C#）。這是刻意的**策略取樣設計**。
+
+### 為什麼不需要 12 個驗證器?
+
+測試向量的 JSON 資料檔（`checkmacvalue.json` / `aes-encryption.json` / `url-encode-comparison.json`）是**靜態的「輸入 + 預期輸出」**。任何語言實作跑過這些輸入,能算出相同預期輸出,就代表該語言的演算法是對的。
+
+不需要 12 個驗證器的原因：
+- **測試向量本身是跨語言的保證**：JSON 資料檔中標準答案是由官方 PHP SDK 算出來的,任何語言只要跑出相同結果,就代表正確
+- **「語言家族」策略取樣即可**：類似的語言家族(例如 Python/Ruby/PHP 都是「插入順序 JSON key」)只要一個代表通過,整族就有信心
+- **維護成本**：12 個驗證器代表每次改演算法要同步 12 份 300-600 行程式碼,維護不可行
+
+### 為什麼挑選這 5 個語言?(每個代表一個家族)
+
+| 驗證器 | 代表家族 | 堵什麼陷阱 |
+|---|---|---|
+| **`verify.py`**(Python) | 插入順序 JSON key + urllib | **主驗證器**,CI 基準 |
+| **`verify-node.js`**(Node.js) | **JavaScript 陷阱家族**(最多陷阱) | `encodeURIComponent` 不編碼 `!'()*~`、空格編成 `%20`、`JSON.stringify` 預設行為、`Buffer` vs `String` 差異 |
+| **`verify-go.go`**(Go) | **字母序 JSON key 家族** | Go `map` 自動字母序、`net/url.QueryEscape` 細節 |
+| **`verify-java.java`**(Java) | 字母序 JSON key 家族(JVM) | `HashMap` 自動字母序、`URLEncoder` 差異 |
+| **`verify-csharp.cs`**(C#) | **.NET URL 編碼家族**(源頭) | `ecpayUrlEncode` 函式原本就是為對齊 .NET 的 `HttpUtility.UrlEncode` 行為而加上 `%21→!`、`%2A→*` 等替換——C# 是這個邏輯的源頭語言 |
+
+### 目前仍有 Gap 的語言
+
+這些語言在 `guides/` 有完整教學,但**沒有獨立 verifier**：
+
+| 語言 | 風險等級 | 間接保證來源 |
+|---|---|---|
+| **TypeScript** | 🟢 低 | 同 Node.js runtime,`verify-node.js` 已涵蓋 |
+| **Rust** | 🟡 中 | 靠 `guides/13` + `guides/14` + `guides/20 §HTTP 協議` 規範;空格編成 `%20` 陷阱與 Node.js 同族,可參考 `verify-node.js` 的處理邏輯 |
+| **Swift** | 🟡 中 | 同上;`guides/lang-standards/swift.md` 有完整 `CharacterSet` 自建範例 |
+| **Ruby** | 🟢 低 | 插入順序家族,同 Python 行為;`guides/lang-standards/ruby.md` 有範例 |
+| **Kotlin** | 🟢 低 | JVM 家族,同 Java 行為 |
+| **C++** | 🔴 高 | 無標準 URL encode 函式,需自實作。靠 `guides/lang-standards/cpp.md` + SDK_PHP 對照 |
+| **PHP** | 🟢 低 | **`scripts/SDK_PHP/` 是 reference implementation 本身**,測試向量的標準答案就是從這裡算出來的;PHP 不需要獨立 verifier |
+
+### 如果你用的語言沒有 verifier,怎麼信任 Skill 的教學?
+
+三道防線：
+1. **靜態向量資料**:`test-vectors/*.json` 的「輸入 + 預期輸出」是語言無關的硬性規格,你自己實作完在本地跑一次比對就知道對不對
+2. **guides/ 詳細範例**:`guides/lang-standards/{rust,swift,ruby,kotlin,cpp}.md` 有完整語言特定實作,含語言 stdlib 的坑
+3. **HTTP 協議規範**:`guides/20-http-protocol-reference.md` 描述「位元組層級」該產生什麼,最後防線——不管什麼語言,只要最終 HTTP request 的 bytes 對,就過
 
 ---
 
@@ -196,15 +246,16 @@ ALL PASSED ✓
 | 檔案 | 角色 | 給誰看？ |
 |---|---|---|
 | `README.md` | 本檔案 — 完整白話說明 | 所有人 |
-| `verify.py` | 主要驗證腳本，跑全部 21 組向量（Python 3，需 `pycryptodome`） | CI + 維護者 |
-| `checkmacvalue.json` | CheckMacValue 8 組測試向量的「輸入 + 預期輸出」資料 | `verify.py` 讀取；維護者新增向量時編輯 |
+| `verify.py` | **CI 主驗證器** — Python 3 基準實作,跑全部 21 組向量（需 `pycryptodome`） | CI + 維護者 |
+| `verify-node.js` | **CI 次驗證器** — Node.js cross-check,堵 JS 陷阱家族(`encodeURIComponent` 不編碼 `!'()*~` 等) | CI + 維護者 + Node.js/TypeScript 開發者 |
+| `checkmacvalue.json` | CheckMacValue 8 組測試向量的「輸入 + 預期輸出」資料 | 所有 verifier 讀取;維護者新增向量時編輯 |
 | `aes-encryption.json` | AES 加密/解密 9 組測試向量資料 | 同上 |
 | `url-encode-comparison.json` | URL Encode 函式比對 4 組向量資料 | 同上 |
-| `verify-go.go` | Go 語言實作版驗證（選配） | 想在 Go 環境獨立跑驗證的開發者 |
-| `verify-java.java` | Java 語言實作版驗證（選配） | Java 開發者 |
-| `verify-csharp.cs` | C# 語言實作版驗證（選配） | .NET 開發者 |
+| `verify-go.go` | Go 語言實作版驗證（選配,字母序 JSON key 家族代表） | 想在 Go 環境獨立跑驗證的開發者 |
+| `verify-java.java` | Java 語言實作版驗證（選配,JVM 家族代表） | Java 開發者 |
+| `verify-csharp.cs` | C# 語言實作版驗證（選配,.NET URL 編碼源頭） | .NET 開發者 |
 
-> 三個 JSON 檔案是**人類可讀的資料檔**，`verify.py` 讀取這些資料並依 `guides/13` / `guides/14` 教的演算法實際計算，比對預期結果。三個 `verify-*.{go,java,cs}` 是選配的「第二意見」，讓你在對應語言環境裡獨立跑一遍驗證，雙重把關。
+> 三個 JSON 檔案是**人類可讀的資料檔**,`verify.py` 與 `verify-node.js` 讀取這些資料並依 `guides/13` / `guides/14` 教的演算法實際計算,比對預期結果。`verify-go.go` / `verify-java.java` / `verify-csharp.cs` 是選配的「第二意見」,讓你在對應語言環境裡獨立跑一遍驗證,雙重把關。
 
 ---
 

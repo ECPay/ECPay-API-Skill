@@ -17,6 +17,7 @@
 - **`scripts/validate-guides-refs-consistency.sh` 維度 2 誤判修正**：B2C vs B2B 對照表的行（同時含 `Items[].ItemTaxType` 與 `Items[].ItemTax` 作為欄位差異說明）被原 regex 誤判為 B2B 參數表錯誤。修正為 `grep -v 'Items\[\]\.ItemTax[^T]'` 排除同時出現兩欄位的對照行
 - **`.github/workflows/validate-references.yml` 監聽分支錯誤**：同上 `push: branches: - main` → `- master`
 - **`.github/workflows/quarterly-reminder.yml` issue body 連結 404**：自動建立的季度維護 issue body 內 `../blob/main/CONTRIBUTING.md` 與 `../blob/main/.github/workflows/quarterly-reminder.yml` 兩處連結指向不存在的 `main` 分支（實際為 `master`），統一改為 `../blob/master/`
+- **`.github/workflows/quarterly-reminder.yml` YAML literal block 縮排錯誤**：原 `gh issue create --body "..."` 多行字串內容（line 70+）未維持 `run: |` block 的最低 10 空格縮排，導致 YAML parser 在 line 70 終止 block 並將後續內容誤判為新 key，整個 workflow 一推送即 startup failure（push e501d7b 後 quarterly-reminder.yml #74 失敗證實）。重寫為 `python3 - <<'PY'` quoted heredoc 寫入 `/tmp/issue-body.md` 暫存檔，再用 `gh issue create --body-file` 引用：① quoted heredoc 避免 bash 對 markdown 反引號做命令替換 ② `textwrap.dedent` 移除 YAML 為維持縮排加的前綴 ③ `__ISSUE_TITLE__` 佔位符經 `os.environ` 注入避免 shell quoting 風險 ④ 直接 UTF-8 寫檔避免 stdout locale 問題
 
 ---
 

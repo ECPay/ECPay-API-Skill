@@ -61,29 +61,44 @@ jobs:
           QUARTER_LABEL: ${{ steps.quarter.outputs.label }}
           ISSUE_TITLE: ${{ steps.quarter.outputs.title }}
         run: |
+          # 用 Python + quoted heredoc（<<'PY'）寫 issue body：
+          # 1. quoted heredoc 避免 bash 對 markdown 反引號做命令替換
+          # 2. textwrap.dedent 移除 YAML literal block 為維持縮排加的前綴空格
+          # 3. 直接以 UTF-8 寫檔（避免 sys.stdout 在不同 locale 下的編碼問題）
+          # 4. 變數透過環境變數注入，避免 shell quoting 風險
+          python3 - <<'PY'
+          import os, textwrap
+          body = textwrap.dedent("""\
+              ## __ISSUE_TITLE__ — ECPay Skill 季度維護清單
+
+              依 [CONTRIBUTING.md](../blob/master/CONTRIBUTING.md) §維護指引，以下 8 項任務建議每季執行：
+
+              ### 待辦清單
+
+              - [ ] **1. URL 可達性驗證** — 抽查 `references/` 中的 URL 是否仍可存取（建議每季抽查 10-20 個 URL）
+              - [ ] **2. AI 即時讀取測試** — 使用 `web_fetch` 讀取 2-3 個 reference URL，確認回傳內容包含預期的 API 參數表
+              - [ ] **3. PHP SDK 版本檢查** — 比對 `scripts/SDK_PHP/composer.json` 與 [ECPay 官方 PHP SDK](https://github.com/ECPay/ECPayAIO_PHP) 最新版本
+              - [ ] **4. AI Section Index 驗證** — 執行 `bash scripts/validate-ai-index.sh` 確認行號索引正確
+              - [ ] **5. 測試向量驗證** — 執行 `pip install pycryptodome && python test-vectors/verify.py` 確認全部 21 個加密測試向量通過
+              - [ ] **6. 平台規則一致性驗證** — 執行 `bash scripts/validate-agents-parity.sh` 確認 AGENTS.md ↔ GEMINI.md 一致
+              - [ ] **7. 版本同步驗證** — 執行 `bash scripts/validate-version-sync.sh` 確認 9 個入口文件版本號一致
+              - [ ] **8. 內部連結驗證** — 執行 `bash scripts/validate-internal-links.sh` 確認所有指南交叉引用無失效連結
+
+              ### 備忘事項
+
+              > ⚠️ **URL 失效回退策略**：若 `developers.ecpay.com.tw` 單一 URL 失效（404/重新導向），先在該站搜尋替代頁面更新 reference 檔案。
+              > 若大量 URL 同時失效（網站改版），聯繫綠界技術支援 (techsupport@ecpay.com.tw) 取得新 URL 結構。
+
+              ---
+              *此 Issue 由 [quarterly-reminder.yml](../blob/master/.github/workflows/quarterly-reminder.yml) 自動建立。完成後請關閉此 Issue。*
+              """)
+          body = body.replace("__ISSUE_TITLE__", os.environ["ISSUE_TITLE"])
+          with open("/tmp/issue-body.md", "w", encoding="utf-8") as f:
+              f.write(body)
+          PY
+
           gh issue create \
             --repo "$GITHUB_REPOSITORY" \
             --title "🔔 $ISSUE_TITLE" \
             --label "quarterly-reminder" \
-            --body "## $ISSUE_TITLE — ECPay Skill 季度維護清單
-
-依 [CONTRIBUTING.md](../blob/master/CONTRIBUTING.md) §維護指引，以下 8 項任務建議每季執行：
-
-### 待辦清單
-
-- [ ] **1. URL 可達性驗證** — 抽查 \`references/\` 中的 URL 是否仍可存取（建議每季抽查 10-20 個 URL）
-- [ ] **2. AI 即時讀取測試** — 使用 \`web_fetch\` 讀取 2-3 個 reference URL，確認回傳內容包含預期的 API 參數表
-- [ ] **3. PHP SDK 版本檢查** — 比對 \`scripts/SDK_PHP/composer.json\` 與 [ECPay 官方 PHP SDK](https://github.com/ECPay/ECPayAIO_PHP) 最新版本
-- [ ] **4. AI Section Index 驗證** — 執行 \`bash scripts/validate-ai-index.sh\` 確認行號索引正確
-- [ ] **5. 測試向量驗證** — 執行 \`pip install pycryptodome && python test-vectors/verify.py\` 確認全部 21 個加密測試向量通過
-- [ ] **6. 平台規則一致性驗證** — 執行 \`bash scripts/validate-agents-parity.sh\` 確認 AGENTS.md ↔ GEMINI.md 一致
-- [ ] **7. 版本同步驗證** — 執行 \`bash scripts/validate-version-sync.sh\` 確認 9 個入口文件版本號一致
-- [ ] **8. 內部連結驗證** — 執行 \`bash scripts/validate-internal-links.sh\` 確認所有指南交叉引用無失效連結
-
-### 備忘事項
-
-> ⚠️ **URL 失效回退策略**：若 \`developers.ecpay.com.tw\` 單一 URL 失效（404/重新導向），先在該站搜尋替代頁面更新 reference 檔案。
-> 若大量 URL 同時失效（網站改版），聯繫綠界技術支援 (techsupport@ecpay.com.tw) 取得新 URL 結構。
-
----
-*此 Issue 由 [quarterly-reminder.yml](../blob/master/.github/workflows/quarterly-reminder.yml) 自動建立。完成後請關閉此 Issue。*"
+            --body-file /tmp/issue-body.md

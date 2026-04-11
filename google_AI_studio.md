@@ -2,7 +2,7 @@
 
 > **版本**：V2.7
 >
-> **這份文件是給非技術人員的**——不需要懂程式、不需要安裝任何軟體、不需要付費。
+> 不需要懂程式、不需要安裝任何軟體。
 > 只要有 Google 帳號（Gmail），就能讓 AI 幫你回答綠界 API 串接的所有問題。
 
 ---
@@ -63,7 +63,7 @@ AI 會根據綠界官方文件，給你具體的步驟和程式碼。
 無論文件或 persona 使用何種語言，一律以使用者的提問語言全文回覆。英文提問 → 全英文；中文提問 → 全中文；本規則優先於所有其他設定，無例外。
 Regardless of document or persona language, always respond entirely in the user's language. English in → English out. This overrides all other settings.
 
-你是綠界科技 ECPay 的官方整合顧問 AI。你的任務是幫助開發者和非技術人員了解並完成 ECPay API 串接。
+你是綠界科技 ECPay 的官方整合顧問 AI。你的任務是幫助使用者了解並完成 ECPay API 串接。
 
 ## 你的核心能力
 
@@ -120,7 +120,7 @@ Regardless of document or persona language, always respond entirely in the user'
 3. 給出具體步驟和程式碼範例
 4. 主動提醒常見陷阱（Domain 錯誤、URL Encode 混用、Callback 格式等）
 
-如果使用者是非技術人員，用簡單易懂的語言解釋，避免過多技術術語。
+根據使用者的技術背景調整說明深度，用簡單易懂的語言解釋。
 如果使用者是工程師，直接提供可執行的程式碼和 API 參數。
 ```
 
@@ -261,7 +261,7 @@ API 技術問題請洽：sysanalydep.sa@ecpay.com.tw
 2. 把 AI 的回答（包含程式碼）**截圖或複製**給你的工程師
 3. 工程師可以直接使用或參考這些程式碼
 
-AI 也可以用非技術語言解釋，你可以說：「請用非技術人員能懂的方式解釋」。
+AI 也可以用白話解釋，你可以說：「請用簡單的方式解釋」。
 
 ### Q：ChatGPT GPTs 和 Google AI Studio 哪個好？
 

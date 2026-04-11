@@ -35,7 +35,7 @@ metadata:
 >
 > 📌 **Google Gemini CLI 使用者**：請讀取 [`GEMINI.md`](./GEMINI.md) 作為入口，詳細安裝步驟見 [`SETUP.md`](./SETUP.md#cli-安裝openai-codex-cli--google-gemini-cli)。
 >
-> 📌 **Google AI Studio 使用者（非技術人員 / 快速諮詢）**：請參閱 [`google_AI_studio.md`](./google_AI_studio.md) 取得完整的 System Instructions 設定步驟與文件上傳清單，即可在 AI Studio 對話中詢問 ECPay 整合問題。
+> 📌 **Google AI Studio 使用者**：請參閱 [`google_AI_studio.md`](./google_AI_studio.md) 取得完整的 System Instructions 設定步驟與文件上傳清單，即可在 AI Studio 對話中詢問 ECPay 整合問題。
 >
 > 📌 **OpenClaw 使用者**：將本 repo clone 至 `~/.openclaw/skills/ecpay`，詳細步驟見 [`SETUP.md`](./SETUP.md#openclaw-安裝)。
 

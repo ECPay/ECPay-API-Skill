@@ -27,7 +27,7 @@
 
 | 平台 | 需求 | 安裝指引 |
 |------|------|---------|
-| **Google AI Studio** | Google 帳號 | [SETUP.md §Google AI Studio](./SETUP.md#google-ai-studio免費適合非技術人員快速測試) |
+| **Google AI Studio** | Google 帳號 | [SETUP.md §Google AI Studio](./SETUP.md#google-ai-studio) |
 | **VS Code Copilot Chat** | VS Code + GitHub Copilot 訂閱 | [vscode_copilot.md](./vscode_copilot.md) |
 | **Visual Studio 2026** | Visual Studio 2026 (v18.0+) + GitHub Copilot | [visual_studio_2026.md](./visual_studio_2026.md) |
 | Claude Code | Claude 訂閱或 Anthropic Console API 帳號 | [安裝文件](https://code.claude.com/docs/en/overview) |
@@ -95,7 +95,7 @@ flowchart LR
 
 **三步驟（純文字版）**：① `git clone` 安裝 Skill → ② 用自然語言描述需求（例：「我要信用卡收款」）→ ③ AI 直接產出可用程式碼 + 串接指引
 
-> 💡 **給非技術人員**：安裝後你不需要懂程式。只要用中文告訴 AI「我要信用卡收款」，它就會產出完整的程式碼和步驟說明，交給工程師即可。
+> 💡 安裝後用中文告訴 AI「我要信用卡收款」，它就會產出完整的程式碼和步驟說明。
 
 ### 1. 安裝
 
@@ -103,9 +103,9 @@ flowchart LR
 >
 > | 平台 | 安裝指令 | 驗證方式 |
 > |------|---------|---------|
-> | **Google AI Studio**（非技術人員推薦） | 上傳檔案 + 貼 System Instructions，見 [SETUP.md](./SETUP.md#google-ai-studio免費適合非技術人員快速測試) | 問「測試 MerchantID？」→ `3002607` |
-> | **VS Code Copilot Chat**（非技術人員也適用） | 下載 ZIP → 用 VS Code 開啟資料夾 → 自動載入，見 [vscode_copilot.md](./vscode_copilot.md) | 同上 |
-> | **Visual Studio 2026**（C#/.NET 推薦） | Clone 至專案 + 建立 `.github/copilot-instructions.md`，見 [visual_studio_2026.md](./visual_studio_2026.md) | 同上 |
+> | **Google AI Studio** | 上傳檔案 + 貼 System Instructions，見 [SETUP.md](./SETUP.md#google-ai-studio) | 問「測試 MerchantID？」→ `3002607` |
+> | **VS Code Copilot Chat** | 下載 ZIP → 用 VS Code 開啟資料夾 → 自動載入，見 [vscode_copilot.md](./vscode_copilot.md) | 同上 |
+> | **Visual Studio 2026** | Clone 至專案 + 建立 `.github/copilot-instructions.md`，見 [visual_studio_2026.md](./visual_studio_2026.md) | 同上 |
 > | Claude Code | `git clone ...ECPay-API-Skill.git ~/.claude/skills/ecpay` | 同上 |
 > | GitHub Copilot CLI | Clone 後將 `.github/copilot-instructions.md` 內容貼至目標專案 | 同上 |
 > | Cursor | Clone 至專案 + 建立 `AGENTS.md` 引用 | 同上 |
@@ -126,7 +126,7 @@ git clone https://github.com/ECPay/ECPay-API-Skill.git .claude/skills/ecpay
 
 > 驗證：開啟 Claude Code，輸入 `/ecpay` 或問「What skills are available?」，確認 ECPay API Skill 出現在清單中。
 
-**VS Code Copilot Chat**（非技術人員也適用，圖形介面操作）
+**VS Code Copilot Chat**
 
 > 💡 **最簡單的安裝方式**：下載 ZIP → 解壓縮 → 用 VS Code 開啟資料夾 → 自動載入，不需要終端機操作。
 > 完整圖文步驟見 **[vscode_copilot.md](./vscode_copilot.md)**。

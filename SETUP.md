@@ -9,13 +9,13 @@
 
 ## 概覽
 
-| 平台 | 入口文件 | 安裝核心步驟 | 適合對象 | 跳轉 |
-|------|---------|------------|---------|------|
-| **Google AI Studio** | `SKILL.md` + `SKILL_OPENAI.md` | 上傳檔案 + 貼 System Instructions | **非技術人員首選（免費）** | [§Google AI Studio](#google-ai-studio免費適合非技術人員快速測試) |
-| ChatGPT GPTs | `SKILL_OPENAI.md` | Instructions + Knowledge Files 上傳 | 需長期使用或分享團隊 | [§ChatGPT GPTs 建置](#chatgpt-gpts-建置) |
-| OpenAI Codex CLI | `AGENTS.md` | Clone + AGENTS.md 引用 | 工程師 | [§CLI 安裝](#cli-安裝openai-codex-cli--google-gemini-cli) |
-| Google Gemini CLI | `GEMINI.md` | Clone + GEMINI.md 引用 | 工程師 | [§CLI 安裝](#cli-安裝openai-codex-cli--google-gemini-cli) |
-| OpenClaw | `SKILL.md` | Clone → skills watcher 自動偵測 | 工程師 | [§OpenClaw 安裝](#openclaw-安裝) |
+| 平台 | 入口文件 | 安裝核心步驟 | 跳轉 |
+|------|---------|------------|------|
+| **Google AI Studio** | `SKILL.md` + `SKILL_OPENAI.md` | 上傳檔案 + 貼 System Instructions | [§Google AI Studio](#google-ai-studio) |
+| ChatGPT GPTs | `SKILL_OPENAI.md` | Instructions + Knowledge Files 上傳 | [§ChatGPT GPTs 建置](#chatgpt-gpts-建置) |
+| OpenAI Codex CLI | `AGENTS.md` | Clone + AGENTS.md 引用 | [§CLI 安裝](#cli-安裝openai-codex-cli--google-gemini-cli) |
+| Google Gemini CLI | `GEMINI.md` | Clone + GEMINI.md 引用 | [§CLI 安裝](#cli-安裝openai-codex-cli--google-gemini-cli) |
+| OpenClaw | `SKILL.md` | Clone → skills watcher 自動偵測 | [§OpenClaw 安裝](#openclaw-安裝) |
 
 ---
 
@@ -107,9 +107,9 @@ Skills watcher 自動偵測新 `SKILL.md`，下個新 session 生效，不需重
 
 ---
 
-## Google AI Studio（免費、適合非技術人員快速測試）
+## Google AI Studio
 
-> **適合對象**：非技術人員、PM、業務、想快速了解 ECPay API 串接的人。
+> 不需要安裝任何軟體，用瀏覽器即可操作。
 > **優點**：免費、免安裝、有 Google 帳號即可使用、支援中文對話。
 > **限制**：非持久化（每次需重新設定），適合測試和諮詢，不適合長期使用。長期使用建議改用 ChatGPT GPTs（§ChatGPT GPTs 建置）。
 

@@ -28,7 +28,7 @@ The critical pattern: **guides/ tells you HOW to integrate; references/ gives yo
 - **`AGENTS.md`** — Condensed entry point for OpenAI Codex CLI. Contains role, decision tree, critical rules, and test accounts.
 - **`GEMINI.md`** — Condensed entry point for Google Gemini CLI. Mirrors AGENTS.md with Gemini-specific notes (Google Search instead of web_fetch).
 - **`commands/`** (6 files) — Claude Code slash commands. Navigation only, ≤20 lines each. Do not duplicate SKILL.md logic.
-- **`test-vectors/`** — Deterministic test vectors for CheckMacValue (SHA256/MD5), AES encryption, and URL encoding comparison. Run `python test-vectors/verify.py` (requires `pycryptodome`) to validate all 18 vectors.
+- **`test-vectors/`** — Deterministic test vectors for CheckMacValue (SHA256/MD5), AES encryption, and URL encoding comparison. Run `python test-vectors/verify.py` (requires `pycryptodome`) to validate all 21 vectors.
 - **`scripts/SDK_PHP/`** — Official ECPay PHP SDK with 134 verified examples. Read-only reference; do not modify.
 
 ## Validation Commands
@@ -45,6 +45,9 @@ bash scripts/validate-agents-parity.sh
 
 # Validate all internal cross-guide links (no broken references)
 bash scripts/validate-internal-links.sh
+
+# Validate guides ↔ references ↔ scripts cross-consistency
+bash scripts/validate-guides-refs-consistency.sh
 
 # Verify all 21 test vectors (CheckMacValue, AES, URL encoding)
 pip install pycryptodome && python test-vectors/verify.py

@@ -25,19 +25,19 @@
 
 使用本 Skill 需要以下任一 AI 程式開發助手：
 
-| 平台 | 需求 | 適合對象 | 安裝指引 |
-|------|------|---------|---------|
-| **Google AI Studio** | Google 帳號（免費） | **非技術人員首選** | [SETUP.md §Google AI Studio](./SETUP.md#google-ai-studio免費適合非技術人員快速測試) |
-| **VS Code Copilot Chat** | VS Code + GitHub Copilot 訂閱 | **非技術人員也適用** | [vscode_copilot.md](./vscode_copilot.md) |
-| **Visual Studio 2026** | Visual Studio 2026 (v18.0+) + GitHub Copilot（[Free 方案](https://learn.microsoft.com/en-us/visualstudio/ide/copilot-free-plan)可用） | **C# / .NET 工程師推薦** | [visual_studio_2026.md](./visual_studio_2026.md) |
-| Claude Code | Claude Pro / Max / Team / Enterprise 訂閱（或 Anthropic Console API 帳號） | 工程師 | [安裝文件](https://code.claude.com/docs/en/overview) |
-| GitHub Copilot CLI | GitHub Copilot（[Free 方案](https://docs.github.com/en/copilot/get-started/plans)可用，每月 50 次 premium requests） | 工程師 | [安裝文件](https://docs.github.com/en/copilot/how-tos/copilot-cli/set-up-copilot-cli/install-copilot-cli) |
-| Cursor | Cursor（Free Hobby 方案可用；Pro $20/月完整體驗） | 工程師 | [下載頁面](https://cursor.com/download) |
-| Windsurf | Windsurf（Free 方案含有限額度；Pro $20/月完整體驗） | 工程師 | [下載頁面](https://windsurf.com/download) |
-| OpenAI Codex CLI | OpenAI 帳號；`npm install -g @openai/codex` | 工程師 | [SETUP.md §CLI](./SETUP.md#cli-安裝openai-codex-cli--google-gemini-cli) |
-| Google Gemini CLI | Google 帳號；`npm install -g @google/gemini-cli` | 工程師 | [SETUP.md §CLI](./SETUP.md#cli-安裝openai-codex-cli--google-gemini-cli) |
-| OpenClaw | Node 22.14+ (LTS) 或 Node 24（推薦）；OpenClaw 安裝完成（免費開源的 AI agent 平台，支援 WhatsApp / Telegram / LINE / Slack / Discord 等通訊頻道；[docs.openclaw.ai](https://docs.openclaw.ai)） | 工程師 | [SETUP.md §OpenClaw](./SETUP.md#openclaw-安裝) |
-| ChatGPT GPTs（custom GPT）| 可建立 GPTs 的 ChatGPT 方案：Plus / Pro / Business / Enterprise / Edu（原 Team 方案已於 2025-08-29 更名為 Business；依工作區權限）| 需長期使用或分享 | [GPT Builder](https://chatgpt.com/gpts/editor) |
+| 平台 | 需求 | 安裝指引 |
+|------|------|---------|
+| **Google AI Studio** | Google 帳號（免費） | [SETUP.md §Google AI Studio](./SETUP.md#google-ai-studio免費適合非技術人員快速測試) |
+| **VS Code Copilot Chat** | VS Code + GitHub Copilot 訂閱 | [vscode_copilot.md](./vscode_copilot.md) |
+| **Visual Studio 2026** | Visual Studio 2026 (v18.0+) + GitHub Copilot（[Free 方案](https://learn.microsoft.com/en-us/visualstudio/ide/copilot-free-plan)可用） | [visual_studio_2026.md](./visual_studio_2026.md) |
+| Claude Code | Claude Pro / Max / Team / Enterprise 訂閱（或 Anthropic Console API 帳號） | [安裝文件](https://code.claude.com/docs/en/overview) |
+| GitHub Copilot CLI | GitHub Copilot（[Free 方案](https://docs.github.com/en/copilot/get-started/plans)可用，每月 50 次 premium requests） | [安裝文件](https://docs.github.com/en/copilot/how-tos/copilot-cli/set-up-copilot-cli/install-copilot-cli) |
+| Cursor | Cursor（Free Hobby 方案可用；Pro $20/月完整體驗） | [下載頁面](https://cursor.com/download) |
+| Windsurf | Windsurf（Free 方案含有限額度；Pro $20/月完整體驗） | [下載頁面](https://windsurf.com/download) |
+| OpenAI Codex CLI | OpenAI 帳號；`npm install -g @openai/codex` | [SETUP.md §CLI](./SETUP.md#cli-安裝openai-codex-cli--google-gemini-cli) |
+| Google Gemini CLI | Google 帳號；`npm install -g @google/gemini-cli` | [SETUP.md §CLI](./SETUP.md#cli-安裝openai-codex-cli--google-gemini-cli) |
+| OpenClaw | Node 22.14+ (LTS) 或 Node 24（推薦）；OpenClaw 安裝完成（免費開源的 AI agent 平台，支援 WhatsApp / Telegram / LINE / Slack / Discord 等通訊頻道；[docs.openclaw.ai](https://docs.openclaw.ai)） | [SETUP.md §OpenClaw](./SETUP.md#openclaw-安裝) |
+| ChatGPT GPTs（custom GPT）| 可建立 GPTs 的 ChatGPT 方案：Plus / Pro / Business / Enterprise / Edu（原 Team 方案已於 2025-08-29 更名為 Business；依工作區權限）| [GPT Builder](https://chatgpt.com/gpts/editor) |
 
 ## 這是什麼？
 

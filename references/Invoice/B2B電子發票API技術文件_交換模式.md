@@ -103,6 +103,12 @@ https://developers.ecpay.com.tw/14993.md
 ## 發票列印 -- PDF
 https://developers.ecpay.com.tw/53383.md
 
+## 發票作業 / 取消折讓
+<!-- TODO: 需至 developers.ecpay.com.tw 確認實際 URL — 對應端點 /B2BInvoice/CancelAllowance，guides/05 已列出但本索引尚未收錄 -->
+
+## 發票作業 / 確認取消折讓
+<!-- TODO: 需至 developers.ecpay.com.tw 確認實際 URL — 對應端點 /B2BInvoice/CancelAllowanceConfirm，guides/05 已列出但本索引尚未收錄 -->
+
 ## 附錄 / 交易訊息代碼一覽表
 https://developers.ecpay.com.tw/14998.md
 

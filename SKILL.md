@@ -46,8 +46,7 @@ metadata:
 你是綠界科技 ECPay 的專業整合顧問。幫助開發者無痛串接金流、物流、電子發票、
 電子票證等所有 ECPay 服務。僅支援新台幣 (TWD)。
 
-**⚠️ 語言強制規則（Language Enforcement — MUST）**：**一律以使用者提問的語言全文回覆**，包含說明、程式碼注解與所有文字。英文提問 → 全英文；中文提問 → 全中文；其他語言同理。**本規則優先於 persona 設定，無例外。** API 欄位名稱、端點 URL、程式碼識別符保持原始格式不翻譯。
-*MUST respond entirely in the user's language — overrides persona. English in → English out; Chinese in → Chinese out. No exceptions.*
+**⚠️ 語言強制規則**：見上方 CRITICAL 區塊。API 欄位名稱、端點 URL、程式碼識別符保持原始格式不翻譯。
 
 本 Skill 透過自然語言接收需求，不定義形式引數。使用者透過對話描述需求，AI 依據決策樹選擇方案。
 
@@ -312,7 +311,7 @@ HTTP 協議細節（端點/認證/回應格式）？→ 讀 guides/20-http-proto
 |-----------|--------|
 | CheckMacValue 驗證失敗 | guides/13 + guides/15 §1 |
 | AES 解密結果亂碼 | guides/14 §常見錯誤 |
-| Callback 收不到 | guides/15 §2 + guides/22 失敗恢復策略 |
+| Callback 收不到 | guides/15 §2 + guides/22 §Callback 回應格式速查 |
 | 如何退款 | guides/01 §信用卡請款 / 退款 / 取消 / guides/02 §請款 / 退款 |
 | 如何查訂單 | guides/01 §查詢訂單 / guides/02 §查詢 |
 | 如何對帳 | guides/01 §對帳（domain: vendor.ecpay.com.tw）|
@@ -344,10 +343,13 @@ HTTP 協議細節（端點/認證/回應格式）？→ 讀 guides/20-http-proto
 | 服務 | Callback 類型 | 讀取方式 | 必要回應 | RtnCode 型別 |
 |-----|:---:|---------|---------|:-----------:|
 | AIO 金流（CMV-SHA256）| Form POST | `$_POST` / `req.body`（urlencoded） | 純文字 `1\|OK` | 字串 `'1'` |
+| 國內物流（CMV-MD5）| Form POST | `$_POST` / `req.body`（urlencoded） | 純文字 `1\|OK` | 字串 `'1'` |
 | ECPG ReturnURL（S2S）| JSON POST | `php://input` / `req.body`（json） | 純文字 `1\|OK` | 整數 `1` |
 | ECPG OrderResultURL（前端）| Form POST + ResultData | `$_POST['ResultData']` → json_decode | HTML 結果頁（無需 `1\|OK`） | 整數 `1` |
+| 信用卡幕後授權（S2S）| JSON POST | `php://input` / `req.body`（json） | 純文字 `1\|OK` | 整數 `1` |
+| 非信用卡幕後取號（S2S）| JSON POST | `php://input` / `req.body`（json） | 純文字 `1\|OK` | 整數 `1` |
 | 全方位物流 v2 | JSON POST | `php://input` / `req.body`（json） | AES 加密 JSON（三層結構） | 整數 `1` |
-| B2C 電子發票 | Form POST | `$_POST` / `req.body`（urlencoded） | 純文字 `1\|OK` | 整數 `1` |
+| B2C 電子發票（AllowanceByCollegiate 限定）| Form POST | `$_POST` / `req.body`（urlencoded） | 純文字 `1\|OK` | 字串 `'1'` |
 | 電子票證 | JSON POST | `php://input` / `req.body`（json） | AES 加密 JSON + CheckMacValue | 整數 `1` |
 | 直播收款（ReturnURL）| JSON POST | `php://input` / `req.body`（json） | 純文字 `1\|OK`（⚠️ 請求格式同電子票證，但回應不同） | 整數 `1` |
 
@@ -364,7 +366,7 @@ HTTP 協議細節（端點/認證/回應格式）？→ 讀 guides/20-http-proto
 | Node.js | `encodeURIComponent()` 空格為 `%20` 非 `+` | 替換 `%20` → `+` | guides/13 §Node.js |
 | Java | CMV: `HashMap` 不保證 key 順序。AES: `URLEncoder.encode` 不編碼 `!*` | CMV: 用 `TreeMap`。AES: 補 `.replace("!", "%21").replace("*", "%2A")` | guides/13 §Java, guides/14 §Java |
 | C# | CMV: `WebUtility.UrlEncode` 不編碼 `~`。AES: `JsonSerializer` 預設轉義 `<>&+'` | CMV: 補 `~→%7e`。AES: 用 `UnsafeRelaxedJsonEscaping` | guides/13 §C#, guides/24 §C# |
-| Go | CMV/AES: `url.QueryEscape` 不編碼 `!'()*~`。AES: `json.Marshal` 預設轉義 `<>&` | 補全 6 字元替換；`SetEscapeHTML(false)` | guides/13 §Go, guides/24 §Go |
+| Go | CMV: `url.QueryEscape` 不編碼 `~`（需補 `~→%7e`）。AES: `url.QueryEscape` 不編碼 `~`（需補 `~→%7E`）；`json.Marshal` 預設轉義 `<>&` | CMV: 補 `~→%7e`。AES: 補 `~→%7E`；`SetEscapeHTML(false)` | guides/13 §Go, guides/24 §Go |
 | Kotlin | CMV: `URLEncoder.encode` 不編碼 `~`。AES: 不編碼 `!*` | CMV: 補 `~→%7e`。AES: 補 `!→%21`, `*→%2A` | guides/13 §Kotlin, guides/14 §Kotlin |
 | Ruby | `CGI.escape` vs `URI.encode_www_form_component` 行為不同 | 使用 `CGI.escape`，替換 `~` → `%7e` | guides/13 §Ruby |
 | Rust | `form_urlencoded` crate 不編碼 `~` | 手動替換 `~` → `%7e`（CMV）或 `%7E`（AES） | guides/13 §Rust |
@@ -406,15 +408,15 @@ HTTP 協議細節（端點/認證/回應格式）？→ 讀 guides/20-http-proto
 - **送出前驗證與消毒所有使用者輸入**：`ItemName`、`TradeDesc` 應過濾 HTML 標籤與控制字元（`\x00-\x1F`）；`MerchantTradeNo` 應限制為英數字（長度上限 20 字元）；金額 `TotalAmount` 必須為正整數。不做驗證可能觸發 WAF 攔截或 CheckMacValue 不符
 - **MerchantTradeDate 必須使用 UTC+8 時區**：格式為 `yyyy/MM/dd HH:mm:ss`。伺服器若在海外或使用 UTC，必須先轉換為台灣時間，否則 ECPay 會拒絕超過允許時差的訂單
 - **比對 RtnCode 時建議使用防禦性轉型**：`Number(rtnCode) === 1`（JavaScript）或等效寫法，避免因字串/數字型別差異導致判斷錯誤。AIO/國內物流 Callback 的 RtnCode 為字串 `'1'`，ECPG/發票解密後為整數 `1`
-- **語言強制規則（Language Enforcement）**：**一律以使用者的提問語言全文回覆**，不受 skill 文件或 persona 語言影響。英文提問 → 全英文；中文提問 → 全中文。本規則優先順序最高，凌駕 persona 設定。*Always respond in the user's language — overrides persona. English in → English out.*
+- **語言強制規則**：見文件頂部 CRITICAL 區塊（本規則優先順序最高）
 
 > **AI 注意**：大多數請求只需載入 SKILL.md + 1-2 份 guide。
 > **guides/ 參數表為 SNAPSHOT（2026-03）**—��穩定度高（改動機率 < 5%），可作為流程理解的參考。
 > **預設行為：有 web_fetch 能力時，一律先從 references/ 取得即時規格再回答。** guides/ 僅作為 web_fetch 失敗時的備援，且必須告知使���者資料來自 SNAPSHOT。
 > **唯一可省略 web_fetch**：純概念說明（如「什麼是站內付？」）且���涉及具體參數值、端點路徑、或程式碼生成。
 > guides/13、14、24 有 AI Section Index（行號索引），若只需單一語言可用 offset/limit 讀取特定行範圍。
-> AES vs CMV 對比表見 guides/14 line 79-163。
-> guides/24 有約 999 行，建議使用 AI Section Index 的行號範圍只讀取目標語言的 E2E 區段。
+> AES vs CMV 對比表見 guides/14 §AES vs CMV URL Encode 對比表（line 129-226）。
+> guides/24 有約 1700 行，建議使用 AI Section Index 的行號範圍只讀取目標語言的 E2E 區段。
 
 ### 步驟 2.5：確認 HTTP 協議規格（非 PHP 語言必讀）
 
@@ -488,7 +490,7 @@ HTTP 協議細節（端點/認證/回應格式）？→ 讀 guides/20-http-proto
 
 > 其他陷阱（PKCS7 padding、JSON key 順序、compact JSON、`'` 編碼、HTML 轉義、hex 大小寫、timing-safe 比較）：見 guides/14 各語言章節。
 
-### AI 常犯錯誤 Top 10（生成程式碼前自檢）
+### AI 常犯錯誤清單（生成程式碼前自檢）
 
 | # | 錯誤 | 後果 | 防範 |
 |---|------|------|------|
@@ -518,6 +520,7 @@ HTTP 協議細節（端點/認證/回應格式）？→ 讀 guides/20-http-proto
 | 物流 | logistics-stage.ecpay.com.tw | logistics.ecpay.com.tw |
 | 電子發票 | einvoice-stage.ecpay.com.tw | einvoice.ecpay.com.tw |
 | 電子票證 | ecticket-stage.ecpay.com.tw | ecticket.ecpay.com.tw |
+| 直播收款 | ecpayment-stage.ecpay.com.tw | ecpayment.ecpay.com.tw |
 | 特店後台 | vendor-stage.ecpay.com.tw | vendor.ecpay.com.tw |
 
 ### 測試帳號

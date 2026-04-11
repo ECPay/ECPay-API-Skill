@@ -31,6 +31,9 @@ https://developers.ecpay.com.tw/8312.md
 ## 查詢及通知 / 物流狀態通知
 https://developers.ecpay.com.tw/8317.md
 
+## 建立測試訂單 / CreateTestData
+<!-- TODO: 需至 developers.ecpay.com.tw 確認實際 URL — 對應端點 /CrossBorder/CreateTestData，guides/08 已列出但本索引尚未收錄 -->
+
 ## 附錄 / 交易訊息代碼一覽表
 https://developers.ecpay.com.tw/8329.md
 

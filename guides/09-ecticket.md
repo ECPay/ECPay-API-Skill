@@ -175,6 +175,7 @@ ECTICKET_URL = 'https://ecticket-stage.ecpay.com.tw'
 
 def ecticket_url_encode(s: str) -> str:
     """ECTicket URL encode：urlencode → 補 ~ 編碼，不做 .NET 字元還原（與 AIO 的 ecpayUrlEncode 不同）
+    功能等效於 guides/14 的 aes_url_encode — 兩者都對應 PHP urlencode()，只做 URL 編碼，不做 lowercase 和 .NET 字元替換。
     Python quote_plus 已正確編碼 !*'() 等字元（與 PHP urlencode 行為一致），僅需手動補 ~ 的編碼。"""
     return urllib.parse.quote_plus(str(s)).replace('~', '%7E')
 

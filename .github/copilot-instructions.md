@@ -46,7 +46,7 @@ bash scripts/validate-agents-parity.sh
 # Validate all internal cross-guide links (no broken references)
 bash scripts/validate-internal-links.sh
 
-# Verify all 18 test vectors (CheckMacValue, AES, URL encoding)
+# Verify all 21 test vectors (CheckMacValue, AES, URL encoding)
 pip install pycryptodome && python test-vectors/verify.py
 
 # Manually trigger URL check (also runs weekly via GitHub Actions)

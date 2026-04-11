@@ -267,7 +267,7 @@ POS 刷卡機的串接規格包含：
 | 2 | 使用 **AES-JSON + CheckMacValue（ECTicket 式 SHA256）**雙重驗證（與電子票證相同協議）|
 | 3 | 外層 JSON 需包含 `CheckMacValue`（公式同 ECTicket，非 AIO）|
 | 4 | **ECPay 通知格式**（你收到的）：JSON POST，Data 欄位為 AES 加密 JSON，外層含 ECTicket 式 CheckMacValue（與電子票證相同協議）。**你必須回應**：純文字 `1\|OK`（⚠️ 與電子票證不同——電子票證回應需 AES 加密 JSON + CheckMacValue）|
-| 5 | API 端點：`https://payment.ecpay.com.tw/`（詳見 `references/Payment/直播主收款網址串接技術文件.md`）|
+| 5 | API 端點：`https://ecpayment.ecpay.com.tw/`（測試環境：`https://ecpayment-stage.ecpay.com.tw/`）（詳見 `references/Payment/直播主收款網址串接技術文件.md`）|
 
 > ⚠️ **直播收款的協議混淆**：雖然直播收款的 Callback 使用 ECTicket 式 CheckMacValue，但回應格式為 `1|OK`（不同於電子票證的 AES JSON 回應）。
 >

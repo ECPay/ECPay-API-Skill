@@ -6,7 +6,7 @@ Java: line 406-491 | C#: line 493-554 | Go: line 556-669
 C: line 671-873 | C++: line 875-1028 | Rust: line 1030-1095
 Swift: line 1097-1197 | Kotlin: line 1199-1254 | Ruby: line 1256-1304
 Test vectors: line 1306-1471 | 常見錯誤: line 1473-1481
-CI/自動化驗證: test-vectors/aes-encryption.json (6 vectors) + test-vectors/url-encode-comparison.json (4 vectors) + test-vectors/verify.py
+CI/自動化驗證: test-vectors/aes-encryption.json (9 vectors) + test-vectors/url-encode-comparison.json (4 vectors) + test-vectors/verify.py
 -->
 
 **快速跳轉**: [Python](#python) | [Node.js](#nodejs) | [TypeScript](#typescript) | [Java](#java) | [C#](#c) | [Go](#go) | [C](#c-1) | [C++](#c-2) | [Rust](#rust) | [Swift](#swift) | [Kotlin](#kotlin) | [Ruby](#ruby)
@@ -26,11 +26,11 @@ CI/自動化驗證: test-vectors/aes-encryption.json (6 vectors) + test-vectors/
 
 ## 概述
 
-> 💡 **驗證提醒**：完成任何語言的實作後，務必使用 `test-vectors/aes-encryption.json` 的 6 個測試向量 + `test-vectors/url-encode-comparison.json` 的 4 個向量驗證輸出。執行 `python test-vectors/verify.py` 可一次驗證所有向量。
+> 💡 **驗證提醒**：完成任何語言的實作後，務必使用 `test-vectors/aes-encryption.json` 的 9 個測試向量 + `test-vectors/url-encode-comparison.json` 的 4 個向量驗證輸出。執行 `python test-vectors/verify.py` 可一次驗證所有向量。
 
 AES-128-CBC 加密用於站內付 2.0、電子發票、全方位物流、跨境物流、電子票證。前四項服務不使用 CheckMacValue；電子票證同時使用 AES 加密與 CheckMacValue（雙重驗證），詳見 [guides/09](./09-ecticket.md)。
 
-> 💡 **驗證你的實作**：完成後使用 [`test-vectors/aes-encryption.json`](../test-vectors/aes-encryption.json)（6 個向量）和 [`test-vectors/url-encode-comparison.json`](../test-vectors/url-encode-comparison.json)（4 個向量）驗證正確性，或執行 `python test-vectors/verify.py` 自動化驗證。
+> 💡 **驗證你的實作**：完成後使用 [`test-vectors/aes-encryption.json`](../test-vectors/aes-encryption.json)（9 個向量）和 [`test-vectors/url-encode-comparison.json`](../test-vectors/url-encode-comparison.json)（4 個向量）驗證正確性，或執行 `python test-vectors/verify.py` 自動化驗證。
 
 ## AES 和 CheckMacValue 有什麼不同？
 

@@ -4,6 +4,13 @@ on:
   schedule:
     # 每季第一個月 1 日 09:00 UTC (1月/4月/7月/10月)
     - cron: '0 9 1 1,4,7,10 *'
+  push:
+    branches: [master, main]
+    paths:
+      - '.github/workflows/quarterly-reminder.yml'
+  pull_request:
+    paths:
+      - '.github/workflows/quarterly-reminder.yml'
   workflow_dispatch:
     inputs:
       reason:
@@ -15,8 +22,28 @@ permissions:
   issues: write
 
 jobs:
+  # Job 1: 驗證 workflow 語法正確（push/PR 時執行，確認修改不會壞）
+  validate-syntax:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate workflow YAML syntax
+        run: python3 -c "import yaml; yaml.safe_load(open('.github/workflows/quarterly-reminder.yml', encoding='utf-8'))"
+      - name: Dry-run quarter determination
+        run: |
+          MONTH=$(date +%-m)
+          YEAR=$(date +%Y)
+          if [ "$MONTH" -eq 1 ]; then Q="Q1"
+          elif [ "$MONTH" -eq 4 ]; then Q="Q2"
+          elif [ "$MONTH" -eq 7 ]; then Q="Q3"
+          else Q="Q4"
+          fi
+          echo "Dry-run OK: would create ${YEAR} ${Q} issue"
+
+  # Job 2: 實際建立 Issue（僅 schedule/workflow_dispatch 觸發）
   create-reminder:
     runs-on: ubuntu-latest
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     steps:
       - name: Determine quarter
         id: quarter

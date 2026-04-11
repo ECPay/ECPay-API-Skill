@@ -18,6 +18,7 @@ on:
       - 'AGENTS.md'
       - 'GEMINI.md'
       - 'CONTRIBUTING.md'
+      - '.github/workflows/**'
   push:
     branches:
       - master
@@ -38,12 +39,33 @@ on:
       - 'AGENTS.md'
       - 'GEMINI.md'
       - 'CONTRIBUTING.md'
+      - '.github/workflows/**'
 
 jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Validate workflow YAML syntax
+        run: |
+          echo "Checking all workflow YAML files for syntax errors..."
+          python3 << 'PYEOF'
+          import yaml, glob, sys
+          failed = False
+          for f in sorted(glob.glob('.github/workflows/*.yml')):
+              try:
+                  with open(f, encoding='utf-8') as fh:
+                      yaml.safe_load(fh)
+                  print(f'  OK: {f}')
+              except yaml.YAMLError as e:
+                  print(f'FAIL: {f}: {e}')
+                  failed = True
+          if failed:
+              print('::error::One or more workflow YAML files have syntax errors')
+              sys.exit(1)
+          PYEOF
+
       - name: Validate AI Section Index line numbers
         run: bash scripts/validate-ai-index.sh
       - name: Validate version sync across all 9 files

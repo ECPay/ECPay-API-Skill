@@ -1,0 +1,12 @@
+# Enforce LF line endings for files that run on Linux CI
+*.sh        text eol=lf
+*.py        text eol=lf
+*.js        text eol=lf
+*.yml       text eol=lf
+*.yaml      text eol=lf
+
+# Markdown content — auto (display only, no execution risk)
+*.md        text auto
+
+# Ensure consistent behavior across platforms
+.gitattributes text eol=lf

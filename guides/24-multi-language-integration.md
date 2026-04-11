@@ -1,16 +1,16 @@
 > 對應 ECPay API 版本 | 最後更新：2026-03
 
-<!-- AI Section Index（精確行號，2026-03-23 校準）
-Go E2E: line 136-490 (CMV: 138-270, AES: 271-490)
-Java E2E + 差異指南: line 491-710 (CMV E2E: 493-667, AES 差異: 668-710)
-C# E2E + 差異指南: line 711-873 (CMV E2E: 713-832, AES 差異: 833-873)
-TypeScript 完整 E2E + 型別定義: line 874-1124
-Kotlin 差異指南: line 1126-1170 | Ruby 差異指南: line 1171-1213
-Swift 差異指南: line 1214-1255 | Rust 差異指南: line 1256-1298
-Mobile App: line 1299-1354 | 非 PHP CMV Checklist: line 1356-1375
-非 PHP AES-JSON Checklist: line 1376-1394
-E2E 組裝步驟: line 1395-1407 | C/C++ 注意事項: line 1408-1676
-跨語言測試: line 1677-1684 | Production 環境切換: line 1685-1699
+<!-- AI Section Index（精確行號，2026-04-11 校準）
+Go E2E: line 136-488 (CMV: 138-270, AES: 271-488)
+Java E2E + 差異指南: line 491-709 (CMV E2E: 493-667, AES 差異: 668-709)
+C# E2E + 差異指南: line 711-872 (CMV E2E: 713-832, AES 差異: 833-872)
+TypeScript 完整 E2E + 型別定義: line 874-1123
+Kotlin 差異指南: line 1126-1169 | Ruby 差異指南: line 1171-1212
+Swift 差異指南: line 1214-1254 | Rust 差異指南: line 1256-1297
+Mobile App: line 1299-1354 | 非 PHP CMV Checklist: line 1356-1374
+非 PHP AES-JSON Checklist: line 1376-1393
+E2E 組裝步驟: line 1395-1406 | C/C++ 注意事項: line 1408-1675
+跨語言測試: line 1677-1683 | Production 環境切換: line 1685-1699
 -->
 
 # 多語言整合完整指南
@@ -39,18 +39,18 @@ E2E 組裝步驟: line 1395-1407 | C/C++ 注意事項: line 1408-1676
 
 | 語言 | CMV-SHA256 (AIO) | AES-JSON (發票) | 類型 | 位置 / 行號 |
 |------|:-:|:-:|:-:|---------|
-| **Go** | ✅ Web Server | ✅ B2C 發票 | 完整 E2E | line 136-490 |
-| **Java** | ✅ Web Server | ✅ | E2E + 差異指南 | line 491-710 |
-| **C#** | ✅ Web Server | ✅ | E2E + 差異指南 | line 711-873 |
-| **TypeScript** | ✅ Web Server | → Node.js | 完整範例 | line 874-1124 |
-| **Kotlin** | ✅ | ✅ | 差異指南 | line 1126-1170 |
-| **Ruby** | ✅ | ✅ | 差異指南 | line 1171-1213 |
-| **Swift** | ✅ | ✅ | 差異指南 | line 1214-1255 |
-| **Rust** | ✅ | ✅ | 差異指南 | line 1256-1298 |
+| **Go** | ✅ Web Server | ✅ B2C 發票 | 完整 E2E | line 136-488 |
+| **Java** | ✅ Web Server | ✅ | E2E + 差異指南 | line 491-709 |
+| **C#** | ✅ Web Server | ✅ | E2E + 差異指南 | line 711-872 |
+| **TypeScript** | ✅ Web Server | → Node.js | 完整範例 | line 874-1123 |
+| **Kotlin** | ✅ | ✅ | 差異指南 | line 1126-1169 |
+| **Ruby** | ✅ | ✅ | 差異指南 | line 1171-1212 |
+| **Swift** | ✅ | ✅ | 差異指南 | line 1214-1254 |
+| **Rust** | ✅ | ✅ | 差異指南 | line 1256-1297 |
 | **Python** | ✅ | ✅ | 完整 E2E | → [guides/00](./00-getting-started.md) §Quick Start |
 | **Node.js** | ✅ | ✅ | 完整 E2E | → [guides/00](./00-getting-started.md) §Quick Start |
 | **Mobile App** | — | — | iOS + Android 指引 | line 1299-1354 |
-| **C/C++** | ✅ minimal | ✅ minimal | 最小骨架 | line 1408-1676 |
+| **C/C++** | ✅ minimal | ✅ minimal | 最小骨架 | line 1408-1675 |
 
 > **只需看你的語言**：使用 AI Section Index 行號範圍只讀取對應區段，不需載入全文。
 > **只需加密函式？** → [guides/13 CheckMacValue](./13-checkmacvalue.md) 或 [guides/14 AES](./14-aes-encryption.md)（12 語言全覆蓋）。

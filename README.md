@@ -288,83 +288,22 @@ git checkout v2.8   # 升級至新版本（以實際發布 tag 為準）
 
 ### 3. 使用範例
 
-> 💡 **提問技巧**：提問時請明確說明要串接的**服務名稱**（例：`AIO 全方位金流`、`站內付 2.0`、`電子發票 B2C`、`國內超商物流`），AI 才能精準選用對應規格。若同時安裝多個支付服務的 Skill（如 TapPay、LinePay 等），請加上「**ECPay**」或「**綠界**」確認 Skill 來源。
+> 💡 以下範例可**直接複製貼上**給任何 AI 助手使用（含免費模型）。每個 Prompt 已包含完整的測試帳號、環境網址、加密規則與注意事項，無需額外補充即可產出可用程式碼。
 
-#### 金流 — AIO 全方位金流
+**完整 Prompt 範例集（36 個詳盡範例）** → [`docs/prompt-examples.md`](docs/prompt-examples.md)
 
-💬 「幫我用 Go 寫一個完整的 ECPay AIO 信用卡一次付清串接」
-
-💬 「我想用綠界 AIO 提供 ATM 虛擬帳號付款，Python Flask」
-
-💬 「用 TypeScript 串接綠界 AIO 超商代碼繳費」
-
-💬 「我的 SaaS 要用 ECPay AIO 做定期定額訂閱扣款，Java Spring Boot」
-
-💬 「綠界 AIO 信用卡分期付款怎麼串？C# ASP.NET」
-
-💬 「想在我的網站加上 ECPay BNPL 先買後付，Ruby on Rails」
-
-#### 金流 — 站內付 2.0
-
-💬 「我要用 Node.js 串接綠界站內付 2.0 信用卡付款（React 前後端分離架構）」
-
-💬 「ECPay 站內付綁卡快速付款怎麼做？Vue + Express」
-
-💬 「我的 iOS App 要用 ECPay 站內付 2.0 串接信用卡付款（使用 App SDK 方案）」
-
-#### 金流 — 幕後授權 / 查詢 / 退款
-
-💬 「後台自動扣款不需消費者操作，要用 ECPay 幕後授權 API 還是站內付 2.0 綁卡代扣？Kotlin」
-
-💬 「怎麼用 Python 查詢綠界 AIO 訂單狀態？」
-
-💬 「客戶要求退款，ECPay AIO 信用卡如何發起退款？Node.js（請區分當日取消與事後請退）」
-
-#### 電子發票
-
-💬 「用 Python 串接綠界 B2C 電子發票開立」
-
-💬 「我們公司對公司交易，要用 ECPay 開 B2B 電子發票，Java」
-
-💬 「綠界發票折讓怎麼做？消費者部分退貨需要開折讓」
-
-#### 物流
-
-💬 「我要用 C# 串接 ECPay 超商取貨付款（7-11 / 全家）」
-
-💬 「用 Go 串接綠界宅配物流，需要列印託運單」
-
-💬 「ECPay 跨境物流怎麼串？要寄到香港和馬來西亞」
-
-#### 電子票證
-
-💬 「我們要用綠界做演唱會電子票券，Rust」
-
-#### 跨服務整合
-
-💬 「我需要用綠界做完整電商：收款後自動開發票再出貨，Python Django」
-
-#### 除錯與排查
-
-💬 「ECPay AIO 的 CheckMacValue 驗證一直失敗，錯誤碼 10400002」
-
-💬 「綠界 AES 解密回來是亂碼，站內付 2.0 回呼解不開」
-
-💬 「ECPay AIO 的 ReturnURL Callback 一直收不到，伺服器 IP 已開放了」
-
-💬 「綠界站內付 2.0 的 CreatePayment API 一直 404，GetToken 成功但建立交易失敗」
-
-#### 上線與環境切換
-
-💬 「綠界測試環境都通了，要怎麼安全切換到正式環境？」
-
-#### 特殊場景
-
-💬 「門市要用 ECPay POS 刷卡機，怎麼串接？」
-
-💬 「直播賣東西想用綠界收款網址讓觀眾直接付款」
-
-💬 「Apple Pay 可以用 ECPay 收嗎？Swift iOS App」
+| 分類 | 範例數 | 涵蓋語言 | 連結 |
+|------|--------|---------|------|
+| [金流 — AIO 全方位金流](docs/prompt-examples.md#金流--aio-全方位金流) | 7 | Go, Python, TypeScript, Java, C#, Ruby, Kotlin | 信用卡、ATM、超商代碼、分期、定期定額、BNPL、TWQR |
+| [金流 — 站內付 2.0](docs/prompt-examples.md#金流--站內付-20) | 4 | Node.js+React, Vue+Express, Swift, Kotlin | 前後端分離、綁卡快速付、iOS/Android App |
+| [金流 — 幕後授權 / 查詢 / 退款](docs/prompt-examples.md#金流--幕後授權--查詢--退款) | 4 | Python, Node.js, Go | 幕後取號、訂單查詢、退款、定期定額管理 |
+| [電子發票](docs/prompt-examples.md#電子發票) | 4 | Python, Java, C#, Rust | B2C 開立、B2B 開立、折讓、作廢+查詢 |
+| [物流](docs/prompt-examples.md#物流) | 4 | C#, Go, TypeScript, PHP | 超商取貨付款、宅配+列印、跨境物流、狀態查詢 |
+| [電子票證](docs/prompt-examples.md#電子票證) | 2 | Rust, C++ | 票券發行、核銷+退票 |
+| [跨服務整合](docs/prompt-examples.md#跨服務整合) | 2 | Python Django, Node.js | 收款+發票+出貨、訂閱制+自動開發票 |
+| [除錯與排查](docs/prompt-examples.md#除錯與排查) | 5 | 通用 | CheckMacValue 失敗、AES 解密亂碼、404 錯誤、Callback 收不到、驗證重試 |
+| [上線與環境切換](docs/prompt-examples.md#上線與環境切換) | 1 | 通用 | 測試→正式完整檢查清單 |
+| [特殊場景](docs/prompt-examples.md#特殊場景) | 3 | Node.js, Ruby, Swift | POS 刷卡��、直播收款、Apple Pay |
 
 ## 涵蓋服務
 

@@ -380,7 +380,8 @@ HTTP 協議細節（端點/認證/回應格式）？→ 讀 guides/20-http-proto
 - **不可假設所有 API 回應都是 JSON**（AIO 回 HTML/URL-encoded/pipe-separated）
 - **不可在前端或版本控制中暴露** HashKey/HashIV
 - **不可將 ATM RtnCode=2 或 CVS RtnCode=10100073 視為錯誤**（代表取號成功，消費者尚未付款）
-- **guides/ 參數表為 SNAPSHOT（2026-03）**：整合流程理解和初步開發可直接使用。**正式上線前應**從 references/ 即時 web_fetch 官方最新規格確認端點路徑和參數定義
+- **生成程式碼或回答 API 規格問題時，必須 web_fetch references/ 中的對應 URL**：不可僅依賴 guides/ SNAPSHOT 或 AI 自身記憶回答。唯一可省略 web_fetch 的情況是：(1) 純概念說明且不涉及具體參數值，或 (2) web_fetch 失敗後的備援（但必須告知使用者）
+- **URL 來源白名單（強制）**：回覆中引用的所有 ECPay 技術文件 URL **必須來自 references/ 檔案中列出的 431 個 URL**。禁止引用 AI 記憶中的 URL、第三方部落格、Stack Overflow、或任何非 `developers.ecpay.com.tw` 網域的連結作為 API 規格來源。若需要的 URL 不在 references/ 中，應告知使用者「此資訊未收錄於官方索引，建議至 developers.ecpay.com.tw 搜尋確認」
 - **生成程式碼時必須標註資料來源**：在程式碼註解中標明參數值取自 SNAPSHOT 或 web_fetch（例如 `// Source: web_fetch references/Payment/... 2026-03-06`），方便開發者日後驗證
 - **不可將 ECPG 所有端點都打向 ecpg domain**（查詢/請退款走 `ecpayment`；Token 類及 CreatePayment 走 `ecpg`，詳見 guides/02 端點表）
 - **不可省略 Callback 回應**：CMV-SHA256（AIO）回 `1|OK`、**站內付 2.0 ReturnURL** 回 `1|OK`（官方規格 9058.md）、**站內付 2.0 OrderResultURL** 回 HTML 頁面（前端跳轉，不重試）、信用卡幕後授權回 `1|OK`（官方規格 45907.md）、非信用卡幕後取號回 `1|OK`、國內物流 CMV-MD5 回 `1|OK`、全方位/跨境物流 v2 回 **AES 加密 JSON**（三層結構）、電子票證回 **AES 加密 JSON + CheckMacValue**（Data 內 `{"RtnCode": 1, "RtnMsg": "成功"}`）、**直播收款** 回 `1|OK`（⚠️ callback 格式與電子票證相同：JSON POST + AES 解密 Data + ECTicket 式 CheckMacValue SHA256；但回應為純文字 `1|OK`，與電子票證不同）、**B2C 發票線上折讓（AllowanceByCollegiate）回 `1|OK`**（⚠️ Callback 為 Form POST + CheckMacValue **MD5**，是發票中唯一帶 CheckMacValue 的 API，詳見 [guides/04](./guides/04-invoice-b2c.md)）。**`1|OK` 常見錯誤格式**（會導致系統重發 4 次）：`"1|OK"`（含引號）、`1|ok`（小寫 ok）、`1OK`（缺分隔）、帶空白或換行
@@ -408,9 +409,9 @@ HTTP 協議細節（端點/認證/回應格式）？→ 讀 guides/20-http-proto
 - **語言強制規則（Language Enforcement）**：**一律以使用者的提問語言全文回覆**，不受 skill 文件或 persona 語言影響。英文提問 → 全英文；中文提問 → 全中文。本規則優先順序最高，凌駕 persona 設定。*Always respond in the user's language — overrides persona. English in → English out.*
 
 > **AI 注意**：大多數請求只需載入 SKILL.md + 1-2 份 guide。
-> **guides/ 參數表為 SNAPSHOT（2026-03）**——穩定度高（改動機率 < 5%），**開發與原型驗證可直接使用，無需先 web_fetch**。
-> **必須 web_fetch 的情況**：(1) 生成正式環境 API 呼叫程式碼、(2) 正式上線前最終確認、(3) API 回傳不符預期、(4) 需確認最新業務規則（如金額範圍）。
-> **無需 web_fetch 的情況**：學習串接流程、概念說明、原型開發、已知參數未變動且僅用於解說時。
+> **guides/ 參數表為 SNAPSHOT（2026-03）**—��穩定度高（改動機率 < 5%），可作為流程理解的參考。
+> **預設行為：有 web_fetch 能力時，一律先從 references/ 取得即時規格再回答。** guides/ 僅作為 web_fetch 失敗時的備援，且必須告知使���者資料來自 SNAPSHOT。
+> **唯一可省略 web_fetch**：純概念說明（如「什麼是站內付？」）且���涉及具體參數值、端點路徑、或程式碼生成。
 > guides/13、14、24 有 AI Section Index（行號索引），若只需單一語言可用 offset/limit 讀取特定行範圍。
 > AES vs CMV 對比表見 guides/14 line 79-163。
 > guides/24 有約 999 行，建議使用 AI Section Index 的行號範圍只讀取目標語言的 E2E 區段。
@@ -745,9 +746,11 @@ references/ 的 19 個檔案包含 431 個 URL，每個 URL 連結至綠界 `dev
 │             摘取所有注意事項，告知開發者關鍵限制
 ├── 4. 結合 guides/ 的整合知識 + 即時規格 + 注意事項回答開發者
 └── 5. 開發者問到 references/ 未收錄的 API？
-       → 直接 web_fetch https://developers.ecpay.com.tw 搜尋該功能
-       → 若找到，回答並建議維護者將 URL 補入 references/
-       → 若找不到，告知開發者聯繫綠界客服 (02-2655-1775) 確認
+       → ⚠️ 禁止從 AI 記憶中編造或猜測 URL
+       → 可嘗試 web_fetch https://developers.ecpay.com.tw 首頁搜尋
+       → 若找到 developers.ecpay.com.tw 下的頁面，可引用但須註明「此 URL 未收錄於 references/ 索引，請自行確認有效性」
+       → 若找不到，告知��發者聯繫綠界客服 (02-2655-1775) 確認
+       → 禁止引用非 ecpay.com.tw 網域的第三方連結作為 API 規格來源
 ```
 
 #### 各 AI 平台即時讀取工具

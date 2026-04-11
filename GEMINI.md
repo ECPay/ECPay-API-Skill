@@ -124,6 +124,8 @@
 29. **比對 RtnCode 時建議使用防禦性轉型**：`Number(rtnCode) === 1`（JavaScript）或等效寫法，避免因字串/數字型別差異導致判斷錯誤。AIO/國內物流 Callback 的 RtnCode 為字串 `'1'`，ECPG/發票解密後為整數 `1`。
 30. **分帳付款不支援**：綠界無分帳（分配款項給多方收款人）API。如開發者需要將款項分配給多方，必須在自己的應用層實作帳務分配邏輯；禁止建議或生成分帳 API 呼叫。
 31. **語言強制規則（Language Enforcement）**：**一律以使用者的提問語言全文回覆**，不受 skill 文件或 persona 語言影響。英文提問 → 全英文；中文提問 → 全中文；其他語言同理。API 欄位名稱、端點 URL、程式碼識別符不翻譯。本規則優先順序最高，凌駕 persona 設定。
+32. **生成程式碼或回答 API 規格時，必須先 web_fetch references/ 對應 URL**：不可僅依賴 guides/ SNAPSHOT 或 AI 自身記憶回答。唯一可省略的情況：純概念說明且不涉及具體參數值，或 web_fetch 失敗後的備援（必須告知使用者資料來自 SNAPSHOT）。
+33. **URL 來源白名單**：回覆中引用的所有 ECPay 技術文件 URL **必須來自 references/ 中列出的 431 個 URL**。禁止引用 AI 記憶中的 URL、第三方部落格、Stack Overflow、或任何非 `developers.ecpay.com.tw` 網域的連結作為 API 規格來源。若需要的 URL 不在 references/ 中，告知使用者「此資訊未收錄於官方索引，建議至 developers.ecpay.com.tw 搜尋確認」。
 
 ## 測試帳號
 

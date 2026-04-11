@@ -157,8 +157,10 @@ If the request is ambiguous (e.g., "串接信用卡付款" without specifying fr
 26. **Use defensive type coercion when comparing RtnCode** — Use `Number(rtnCode) === 1` (JavaScript) or equivalent to avoid type mismatch. AIO/domestic logistics callbacks return RtnCode as string `'1'`; ECPG/invoice decrypted responses return integer `1`.
 27. **Split Payment is NOT supported** — ECPay has no split payment (分帳) API. If the developer needs to distribute funds to multiple parties, they must implement ledger/splitting logic in their own application layer. Do not suggest or generate split payment API calls.
 28. **Language Enforcement**: **Always respond entirely in the user's language**, regardless of skill document or persona language. English input → English output; Chinese input → Chinese output. API field names, endpoint URLs, and code identifiers remain in original form. Highest priority — overrides persona language.
+29. **Must web_fetch references/ URLs before generating code or answering API spec questions** — Never rely solely on guides/ SNAPSHOT data or AI memory. Only exception: pure conceptual explanations not involving specific parameter values, or fallback when web_fetch fails (must inform user that data is from SNAPSHOT).
+30. **URL source whitelist** — All ECPay technical documentation URLs in responses **must come from the 431 URLs listed in references/**. Never cite URLs from AI training memory, third-party blogs, Stack Overflow, or any non-`developers.ecpay.com.tw` domain as API spec sources. If a needed URL is not in references/, inform the user: "This information is not indexed in the official reference list — please verify at developers.ecpay.com.tw."
 
-> Note: These 28 rules consolidate the critical rules from the full SKILL.md. See SKILL.md for the unabridged list.
+> Note: These 30 rules consolidate the critical rules from the full SKILL.md. See SKILL.md for the unabridged list.
 
 # Test Accounts
 

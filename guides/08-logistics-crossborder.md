@@ -15,7 +15,7 @@
 
 > 跨境物流的 **callback 回應**也需要 AES 加密 JSON（三層結構），與全方位物流相同，不同於國內物流的 `1|OK`。
 
-完整錯誤碼參考見 [guides/21](./21-error-codes-reference.md)。
+完整錯誤碼參考見 [guides/20](./20-error-codes-reference.md)。
 
 ## 前置需求
 
@@ -33,7 +33,7 @@
 
 | 項目 | 規格 |
 |------|------|
-| 協議模式 | AES-JSON — 詳見 [guides/20-http-protocol-reference.md](./20-http-protocol-reference.md) |
+| 協議模式 | AES-JSON — 詳見 [guides/19-http-protocol-reference.md](./19-http-protocol-reference.md) |
 | HTTP 方法 | POST |
 | Content-Type | `application/json` |
 | 認證 | AES-128-CBC 加密 Data 欄位 — 詳見 [guides/14-aes-encryption.md](./14-aes-encryption.md) |
@@ -43,7 +43,7 @@
 | Revision | `1.0.0` |
 | Timestamp 驗證 | **10 分鐘**內有效(⚠️ 全方位物流為 5 分鐘,與本服務**不同**;ECPG 亦為 10 分鐘。無論哪種,每次送出前均需**即時呼叫 `time()`**,不可預先計算或快取) |
 | 回應結構 | 三層 JSON（TransCode → 解密 Data → RtnCode） |
-| Callback 回應 | AES 加密 JSON（三層結構，與全方位物流相同）— 詳見 [guides/22](./22-webhook-events-reference.md) |
+| Callback 回應 | AES 加密 JSON（三層結構，與全方位物流相同）— 詳見 [guides/21](./21-webhook-events-reference.md) |
 
 <!-- Revision 欄位於跨境物流官方文件中未明確記載，建議依全方位物流文件設定 -->
 <!-- ⚠️ 跨境物流 Timestamp 驗證時間為 10 分鐘（全方位物流為 5 分鐘），注意差異 -->
@@ -329,7 +329,7 @@ $response = $postService->post($input, 'https://logistics-stage.ecpay.com.tw/Cro
 > 1. 驗證 MerchantID 為自己的
 > 2. 比對物流單號與訂單記錄
 > 3. 防重複處理（記錄已處理的 LogisticsID）
-> 4. 異常時仍回應 AES 加密 JSON（避免重送風暴）— 格式同全方位物流，見 [guides/22](./22-webhook-events-reference.md)
+> 4. 異常時仍回應 AES 加密 JSON（避免重送風暴）— 格式同全方位物流，見 [guides/21](./21-webhook-events-reference.md)
 > 5. 記錄完整日誌（遮蔽 HashKey/HashIV）
 
 ### Callback 回應範例

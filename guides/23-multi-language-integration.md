@@ -61,7 +61,7 @@ E2E 組裝步驟: line 1395-1406 | C/C++ 注意事項: line 1408-1675
 - **Kotlin/Ruby/Swift/Rust** 提供差異指南——與 Go 基底的關鍵差異（依賴、API 差異、注意事項），搭配 guides/13-14 語言專屬加密函式組裝完整實作
 - **Python/Node.js** 完整 E2E 已在 [guides/00](./00-getting-started.md) §Quick Start 提供
 - **C/C++** 提供最小骨架——因系統層級語言的串接場景較少，僅提供核心加密 + HTTP 框架
-- AI 生成其他語言程式碼時，會基於本指南的 E2E 結構 + guides/13-14 的加密實作 + guides/20 的 HTTP 協議規格進行翻譯
+- AI 生成其他語言程式碼時，會基於本指南的 E2E 結構 + guides/13-14 的加密實作 + guides/19 的 HTTP 協議規格進行翻譯
 
 > ### ⚠️ AI 組裝指令（差異指南使用規則）
 >
@@ -87,7 +87,7 @@ E2E 組裝步驟: line 1395-1406 | C/C++ 注意事項: line 1408-1675
 > ⚠️ **遇到加密問題需要自行除錯時，必須讀 [guides/13](./13-checkmacvalue.md)（CheckMacValue 完整實作 + 測試向量）和 [guides/14](./14-aes-encryption.md)（AES 完整實作 + 常見錯誤）**，Quick Start 範例不含完整的錯誤排查函式。
 
 **前置條件**：
-- 已讀 [guides/20-http-protocol-reference.md](./20-http-protocol-reference.md)（HTTP 協議規格）
+- 已讀 [guides/19-http-protocol-reference.md](./19-http-protocol-reference.md)（HTTP 協議規格）
 - 已讀 [guides/13-checkmacvalue.md](./13-checkmacvalue.md)（CMV-SHA256/CMV-MD5 認證）或 [guides/14-aes-encryption.md](./14-aes-encryption.md)（AES-JSON 認證）
 
 **涵蓋語言**：Go（完整 E2E）、Java/C#/Kotlin/Ruby/Swift/Rust（差異指南）、TypeScript（型別定義）+ 全 12 語言通用參考
@@ -1527,7 +1527,7 @@ int main(void) {
 }
 ```
 
-> **ReturnURL Callback**：ECPay 伺服器交易完成後會 POST 至 `ReturnURL`，你的 C 伺服器（或其他語言）必須回應純字串 `1|OK`（無 HTML、無 BOM）。見 [guides/22 §CMV-SHA256 Callback](./22-webhook-events-reference.md)。
+> **ReturnURL Callback**：ECPay 伺服器交易完成後會 POST 至 `ReturnURL`，你的 C 伺服器（或其他語言）必須回應純字串 `1|OK`（無 HTML、無 BOM）。見 [guides/21 §CMV-SHA256 Callback](./21-webhook-events-reference.md)。
 
 ### AES-JSON — B2C 發票開立最小骨架（C + libcurl + cJSON）
 
@@ -1694,6 +1694,6 @@ int main(void) {
 - [guides/00-getting-started.md](./00-getting-started.md) — 入門：PHP/Node.js/Python Quick Start
 - [guides/13-checkmacvalue.md](./13-checkmacvalue.md) — CheckMacValue 12 語言實作
 - [guides/14-aes-encryption.md](./14-aes-encryption.md) — AES 加解密 12 語言實作
-- [guides/20-http-protocol-reference.md](./20-http-protocol-reference.md) — HTTP 協議參考
+- [guides/19-http-protocol-reference.md](./19-http-protocol-reference.md) — HTTP 協議參考
 - [guides/16-go-live-checklist.md](./16-go-live-checklist.md) — 上線檢查清單
 - `references/` — 官方 API 文件 URL 索引（生成程式碼前應 web_fetch 取得最新規格）

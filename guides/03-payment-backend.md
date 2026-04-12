@@ -11,7 +11,7 @@
 > - **信用卡幕後授權**(BackAuth):`'ChoosePayment' => ['Credit' => []]`(**物件**,且**巢狀於 `OrderInfo` 內**,官方規格 45958.md)
 > - **非信用卡幕後取號**(GenPaymentCode):`'ChoosePayment' => 'ATM'` 或 `'CVS'`(**頂層字串**,與 AIO 相同)
 >
-> 從 AIO 複製範例到幕後授權時請先修改 `ChoosePayment` 欄位格式與所在層級,否則會收到 `TransCode ≠ 1`。所有 Callback 回應格式與重試機制對照見 [guides/22 Webhook Events](./22-webhook-events-reference.md)。
+> 從 AIO 複製範例到幕後授權時請先修改 `ChoosePayment` 欄位格式與所在層級,否則會收到 `TransCode ≠ 1`。所有 Callback 回應格式與重試機制對照見 [guides/21 Webhook Events](./21-webhook-events-reference.md)。
 
 ### ⚠️ AES-JSON 開發者必讀：雙層錯誤檢查
 
@@ -23,7 +23,7 @@
 > 只有 `TransCode === 1` **且** `RtnCode === 1` 時，交易才真正成功。
 > 僅 `TransCode === 1` 但 `RtnCode !== 1` 時，讀 `RtnMsg` 查業務層錯誤原因。
 >
-> 完整錯誤碼參考見 [guides/21](./21-error-codes-reference.md)。TransCode ≠ 1 排查流程見 [guides/15 §15](./15-troubleshooting.md#15-站內付20-transcode-1-診斷流程)。
+> 完整錯誤碼參考見 [guides/20](./20-error-codes-reference.md)。TransCode ≠ 1 排查流程見 [guides/15 §15](./15-troubleshooting.md#15-站內付20-transcode-1-診斷流程)。
 >
 > ⚠️ **RqHeader 跨服務差異**：幕後授權/取號的 RqHeader **只有 `Timestamp`**，不需要 `Revision`。其他 AES-JSON 服務不同：B2C 發票需 `Revision: "3.0.0"`、全方位物流需 `Revision: "1.0.0"`。混用 RqHeader 格式會導致 TransCode ≠ 1。
 
@@ -128,7 +128,7 @@ $response = $postService->post($input, 'https://ecpayment-stage.ecpay.com.tw/1.0
 > | `MerchantTradeNo` 重複錯誤 | 每次請求需用新的唯一交易號 |
 > | ⚠️ 不需要填 `Revision` | 幕後授權/取號不需要 `RqHeader.Revision`（不同於全方位物流的 `1.0.0`）|
 >
-> TransCode ≠ 1 完整排查流程見 [guides/15 §15](./15-troubleshooting.md#15-站內付20-transcode-1-診斷流程)。RtnCode 錯誤碼查詢見 [guides/21](./21-error-codes-reference.md)。
+> TransCode ≠ 1 完整排查流程見 [guides/15 §15](./15-troubleshooting.md#15-站內付20-transcode-1-診斷流程)。RtnCode 錯誤碼查詢見 [guides/20](./20-error-codes-reference.md)。
 
 > ℹ️ **BackAuth 直接回應新增欄位（2025/04 起）**：`$response` 解密後的 `OrderInfo` 現包含 `ProcessFee`（Int，處理費），與既有的 `ChargeFee`（手續費）並列。生成程式碼時請一併處理。
 
@@ -196,7 +196,7 @@ echo '1|OK';
 
 | 項目 | 規格 |
 |------|------|
-| 協議模式 | AES-JSON — 詳見 [guides/20-http-protocol-reference.md](./20-http-protocol-reference.md) |
+| 協議模式 | AES-JSON — 詳見 [guides/19-http-protocol-reference.md](./19-http-protocol-reference.md) |
 | HTTP 方法 | POST |
 | Content-Type | `application/json` |
 | 認證 | AES-128-CBC 加密 Data 欄位 — 詳見 [guides/14-aes-encryption.md](./14-aes-encryption.md) |
@@ -205,7 +205,7 @@ echo '1|OK';
 | 測試環境（CreatePaymentWithCardID 綁卡代扣系列） | `https://ecpg-stage.ecpay.com.tw` |
 | 正式環境（CreatePaymentWithCardID 綁卡代扣系列） | `https://ecpg.ecpay.com.tw` |
 | 回應結構 | 三層 JSON（TransCode → 解密 Data → RtnCode） |
-| Callback 回應 | 信用卡幕後授權：`1\|OK`（官方規格 45907.md）；非信用卡幕後取號：`1\|OK`（回應格式與 AIO ReturnURL 相同，純字串 `1\|OK`）— 詳見 [guides/22](./22-webhook-events-reference.md) |
+| Callback 回應 | 信用卡幕後授權：`1\|OK`（官方規格 45907.md）；非信用卡幕後取號：`1\|OK`（回應格式與 AIO ReturnURL 相同，純字串 `1\|OK`）— 詳見 [guides/21](./21-webhook-events-reference.md) |
 
 ### 端點 URL 一覽
 

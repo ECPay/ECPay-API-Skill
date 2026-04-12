@@ -84,9 +84,9 @@ metadata:
 |------|---------|
 | **PHP** | guides/00 Quick Start → guides/01 或 02（SDK 已封裝加密） |
 | **Python / Node.js** | guides/00 Quick Start → [guides/13](./guides/13-checkmacvalue.md) → [guides/01](./guides/01-payment-aio.md) |
-| **Go / Java / C# / TypeScript** | [guides/13](./guides/13-checkmacvalue.md) → [guides/14](./guides/14-aes-encryption.md) → [guides/24](./guides/24-multi-language-integration.md)（完整 E2E） |
-| **Kotlin / Ruby / Swift / Rust** | [guides/13](./guides/13-checkmacvalue.md) → [guides/14](./guides/14-aes-encryption.md) → [guides/24](./guides/24-multi-language-integration.md)（差異指南） |
-| **C / C++** | [guides/13](./guides/13-checkmacvalue.md) → [guides/14](./guides/14-aes-encryption.md) → [guides/20](./guides/20-http-protocol-reference.md)（HTTP 協議自行整合） |
+| **Go / Java / C# / TypeScript** | [guides/13](./guides/13-checkmacvalue.md) → [guides/14](./guides/14-aes-encryption.md) → [guides/23](./guides/23-multi-language-integration.md)（完整 E2E） |
+| **Kotlin / Ruby / Swift / Rust** | [guides/13](./guides/13-checkmacvalue.md) → [guides/14](./guides/14-aes-encryption.md) → [guides/23](./guides/23-multi-language-integration.md)（差異指南） |
+| **C / C++** | [guides/13](./guides/13-checkmacvalue.md) → [guides/14](./guides/14-aes-encryption.md) → [guides/19](./guides/19-http-protocol-reference.md)（HTTP 協議自行整合） |
 
 #### 新手推薦（不確定選哪個？看這裡）
 
@@ -162,7 +162,7 @@ ECPay 金流有兩種合約模式，**API 技術規格相同**，差異在於商
 
 #### 全服務端點速查
 
-> 查找特定 API 端點？[guides/20 §3 全服務端點速查總表](./guides/20-http-protocol-reference.md) 提供 150+ 端點 × 7 個 Domain 的一頁總覽。
+> 查找特定 API 端點？[guides/19 §3 全服務端點速查總表](./guides/19-http-protocol-reference.md) 提供 150+ 端點 × 7 個 Domain 的一頁總覽。
 
 #### 金流決策樹
 
@@ -171,7 +171,7 @@ ECPay 金流有兩種合約模式，**API 技術規格相同**，差異在於商
 > 如果開發者不確定需要什麼，請先問這三個問題：
 > 1. **需要收款嗎？** → 是：見下方金流決策樹；否：跳到發票/物流/電子票證決策樹
 > 2. **消費者會看到付款畫面嗎？** → 是：AIO（guides/01）或站內付 2.0（guides/02）；否：幕後授權（guides/03）
-> 3. **用 PHP 嗎？** → 是：直接用官方 SDK 範例；否：必讀 guides/13 + guides/14 + guides/20（⚠️ 兩份加密指南 URL encode 邏輯不同：AIO/物流用 guides/13 的 `ecpayUrlEncode`；站內付/幕後授權/發票用 guides/14 的 `aesUrlEncode`；不可混用）
+> 3. **用 PHP 嗎？** → 是：直接用官方 SDK 範例；否：必讀 guides/13 + guides/14 + guides/19（⚠️ 兩份加密指南 URL encode 邏輯不同：AIO/物流用 guides/13 的 `ecpayUrlEncode`；站內付/幕後授權/發票用 guides/14 的 `aesUrlEncode`；不可混用）
 >
 > | 你的情境 | 建議路徑 | 預估時間 |
 > |---------|---------|:-------:|
@@ -185,7 +185,7 @@ ECPay 金流有兩種合約模式，**API 技術規格相同**，差異在於商
 ├── 收款 + 發票 + 出貨（完整電商）→ 讀 guides/11 [預計 2-3h]
 ├── 消費者在網頁/App 付款
 │   ├── 要綠界標準付款頁 → AIO（讀 guides/01）[預計 30m]
-│   │   └── ⚠️ ReturnURL 有 10 秒超時限制，耗時邏輯需用佇列處理（見 guides/23）
+│   │   └── ⚠️ ReturnURL 有 10 秒超時限制，耗時邏輯需用佇列處理（見 guides/22）
 │   ├── 要嵌入式體驗 → 站內付 2.0 — **首次串接讀 guides/02a（25-45 分鐘，非 PHP 約 45 分鐘）**；完整參考讀 guides/02（1 小時）
 │   │   ├── ⚠️ 比 AIO 複雜：需手動處理 AES 加解密、雙 Domain 路由、ThreeDURL 判斷、兩種 Callback 格式
 │   │   ├── 📋 **串接前先確認**（讀 guides/02a §首次串接快速路徑）：後端 ReturnURL/OrderResultURL 端點均可接收 POST、前端已備妥引入外部 JS 的頁面、AES 加密函式已備妥（非 PHP）
@@ -195,7 +195,7 @@ ECPay 金流有兩種合約模式，**API 技術規格相同**，差異在於商
 │   │   ├── ⚠️ Callback 雙格式：ReturnURL 是 JSON POST（讀 `php://input`，回應 `1|OK`）；OrderResultURL 是 Form POST（讀 `$_POST['ResultData']`，不需回應 `1|OK`）
 │   │   ├── ⚠️ ATM/CVS/Barcode：CreatePayment 後 Data 含付款指示（虛擬帳號/超商代碼）需顯示給消費者，ReturnURL **非同步**在消費者繳費後才到（見 guides/02 §非信用卡付款；**SPA/React/Vue 快速路徑** → [guides/02b](./guides/02b-ecpg-atm-cvs-spa.md)）
 │   │   ├── ⚠️ Apple Pay：必須先完成域名驗證 + Merchant ID 申請 + 憑證上傳，按鈕才會顯示（見 guides/02 §Apple Pay 整合前置準備）
-│   │   ├── ⚠️ Callback 同樣有 10 秒超時限制，耗時邏輯需用佇列處理（見 guides/23）
+│   │   ├── ⚠️ Callback 同樣有 10 秒超時限制，耗時邏輯需用佇列處理（見 guides/22）
 │   │   └── 🆘 **串接卡住？快速對照**：404→§14 | TransCode≠1→§15 | ThreeDURL沒處理→§16 | Callback格式→§17 | 全部不通→§18 | ATM/CVS沒收到ReturnURL→§30（guides/15）
 │   ├── 不確定
 │   │   ├── 前後端分離（React/Vue/Angular/SPA）→ 推薦站內付 2.0；如需 ATM/CVS 付款方式，讀 guides/02b（SPA 快速路徑）
@@ -211,14 +211,14 @@ ECPay 金流有兩種合約模式，**API 技術規格相同**，差異在於商
 ├── 實體門市刷卡 → POS 刷卡機（讀 guides/17-hardware-services.md §POS 刷卡機串接指引）[預計 2h]
 ├── 直播電商收款 → 直播收款（讀 guides/17-hardware-services.md §直播收款指引）[預計 1h]
 ├── Shopify → 購物車模組（讀 guides/10-cart-plugins.md #Shopify，API 規格見 references/Payment/Shopify專用金流API技術文件.md）
-├── Mobile App（iOS/Android）→ 站內付 2.0（讀 guides/02c-ecpg-app-production.md + guides/24 Mobile App 區段）
+├── Mobile App（iOS/Android）→ 站內付 2.0（讀 guides/02c-ecpg-app-production.md + guides/23 Mobile App 區段）
 ├── Apple Pay → 優先站內付 2.0（完整 iOS SDK 支援，讀 guides/02c §Apple Pay）；AIO 亦可（ChoosePayment=ApplePay，讀 guides/01）[預計 30m-1h]
 ├── TWQR 行動支付 → AIO（ChoosePayment=TWQR）（讀 guides/01 §TWQR 範例）[預計 30m]
 ├── 微信支付 → AIO（ChoosePayment=WeiXin）（讀 guides/01 §微信支付範例）[預計 30m]
 ├── 銀聯卡
 │   ├── 站內付 2.0 → ChoosePaymentList="6"，UnionPayInfo（讀 guides/02）[預計 1h]
 │   └── AIO 信用卡頁面 → ChoosePayment=Credit，UnionPay=1（讀 guides/01 §信用卡一次付清參數）[預計 30m]
-├── 非 PHP 語言完整範例 → 讀 guides/24-multi-language-integration.md（Go/Java/C#/TS/Kotlin/Ruby E2E + Mobile App）
+├── 非 PHP 語言完整範例 → 讀 guides/23-multi-language-integration.md（Go/Java/C#/TS/Kotlin/Ruby E2E + Mobile App）
 ├── 查詢訂單狀態 → AIO: guides/01 QueryTradeInfo 區段 / 站內付: guides/02 查詢區段
 ├── 下載對帳檔 → guides/01 對帳區段（注意 domain 為 vendor.ecpay.com.tw）
 ├── 平台商多商戶（PlatformID）→ 特約合作模式，需另簽平台商合約。參數已含在 guides/01、guides/02 參數表中，搜尋 PlatformID
@@ -243,7 +243,7 @@ ECPay 金流有兩種合約模式，**API 技術規格相同**，差異在於商
 需要開發票？
 ├── 賣給消費者 → B2C（讀 guides/04-invoice-b2c.md）
 ├── 賣給企業 → B2B（讀 guides/05-invoice-b2b.md）
-└── 無網路環境 → 離線發票（讀 guides/19-invoice-offline.md）
+└── 無網路環境 → 離線發票（讀 guides/18-invoice-offline.md）
 ```
 
 #### 其他決策樹
@@ -255,7 +255,7 @@ ECPay 金流有兩種合約模式，**API 技術規格相同**，差異在於商
 購物車平台？→ 讀 guides/10-cart-plugins.md
 收款+發票+出貨？→ 讀 guides/11-cross-service-scenarios.md
 PHP SDK 範例/用法？→ 讀 guides/12-sdk-reference.md
-HTTP 協議細節（端點/認證/回應格式）？→ 讀 guides/20-http-protocol-reference.md
+HTTP 協議細節（端點/認證/回應格式）？→ 讀 guides/19-http-protocol-reference.md
 ```
 
 #### 退款/作廢/取消決策樹
@@ -280,14 +280,14 @@ HTTP 協議細節（端點/認證/回應格式）？→ 讀 guides/20-http-proto
 ├── CheckMacValue 驗證失敗 → 讀 guides/13 + guides/15 排查流程
 ├── AES 解密結果亂碼/失敗 → 讀 guides/14 常見錯誤 + 測試向量
 ├── 站內付 GetToken RtnCode ≠ 1（無明確錯誤訊息）→ **ConsumerInfo 物件缺失或 Email/Phone 未填**（讀 guides/02 ⓪ ConsumerInfo 規則）
-├── 收到錯誤碼 → 讀 guides/21 錯誤碼反向索引
-├── Callback/Webhook 收不到 → 讀 guides/22 失敗恢復策略
+├── 收到錯誤碼 → 讀 guides/20 錯誤碼反向索引
+├── Callback/Webhook 收不到 → 讀 guides/21 失敗恢復策略
 ├── 上線後交易異常 → 讀 guides/16 上線後觀察清單
 ├── 測試串接 → guides/00 Quick Start + 上方測試帳號，上線前逐項讀 guides/16 checklist
 └── 不確定該讀哪份文件 → 讀 guides/00 總覽
 ```
 
-> **⚡ 效能提醒**：預估日交易量 >1,000 筆、有高併發需求、或遇到 API 被限速（HTTP 403 Forbidden）？→ 請先讀 [guides/23](./guides/23-performance-scaling.md)（Rate Limiting 門檻值 + Callback 佇列架構 + 批次 API 最佳實踐）。
+> **⚡ 效能提醒**：預估日交易量 >1,000 筆、有高併發需求、或遇到 API 被限速（HTTP 403 Forbidden）？→ 請先讀 [guides/22](./guides/22-performance-scaling.md)（Rate Limiting 門檻值 + Callback 佇列架構 + 批次 API 最佳實踐）。
 
 #### 快速指令（跨平台）
 
@@ -299,7 +299,7 @@ HTTP 協議細節（端點/認證/回應格式）？→ 讀 guides/20-http-proto
 | 情境 | Claude Code `/` 指令 | 對應 guide |
 |------|---------------------|------------|
 | 串接金流（收款、查詢、退款、Callback） | `/ecpay-pay` | guides/01, 02, 03, 22 |
-| 串接電子發票 | `/ecpay-invoice` | guides/04, 05, 19 |
+| 串接電子發票 | `/ecpay-invoice` | guides/04, 05, 18 |
 | 串接物流（國內/全方位/跨境） | `/ecpay-logistics` | guides/06, 07, 08 |
 | 串接電子票證 | `/ecpay-ecticket` | guides/09 |
 | 除錯 + 加密驗證 | `/ecpay-debug` | guides/13, 14, 15, 21 |
@@ -311,20 +311,20 @@ HTTP 協議細節（端點/認證/回應格式）？→ 讀 guides/20-http-proto
 |-----------|--------|
 | CheckMacValue 驗證失敗 | guides/13 + guides/15 §1 |
 | AES 解密結果亂碼 | guides/14 §常見錯誤 |
-| Callback 收不到 | guides/15 §2 + guides/22 §Callback 回應格式速查 |
+| Callback 收不到 | guides/15 §2 + guides/21 §Callback 回應格式速查 |
 | 如何退款 | guides/01 §信用卡請款 / 退款 / 取消 / guides/02 §請款 / 退款 |
 | 如何查訂單 | guides/01 §查詢訂單 / guides/02 §查詢 |
 | 如何對帳 | guides/01 §對帳（domain: vendor.ecpay.com.tw）|
 | 如何開發票 | guides/04 (B2C) / guides/05 (B2B) |
-| 處理 Callback / Webhook | guides/22（各服務 callback 回應格式彙總）|
+| 處理 Callback / Webhook | guides/21（各服務 callback 回應格式彙總）|
 | 測試帳號是什麼 | guides/00 §測試帳號 |
 | 上線前檢查 / 切換正式環境 | guides/16 |
-| 日交易 > 1,000 筆 / 高併發 / Rate Limiting | guides/23 §Rate Limiting + §Webhook 佇列架構 |
+| 日交易 > 1,000 筆 / 高併發 / Rate Limiting | guides/22 §Rate Limiting + §Webhook 佇列架構 |
 | 站內付 2.0 404 / Domain 打錯 | guides/02 端點表（ecpg vs ecpayment）+ guides/16 §URL 對照 |
 | 站內付 GetTokenbyTrade RtnCode ≠ 1（無明確錯誤） | guides/02 §GetTokenbyTrade Data 必填欄位速查 — **ConsumerInfo 物件缺失或 Email/Phone 未填**（最常見根因）|
-| AES-JSON 雙層錯誤檢查 | guides/21 §錯誤碼閱讀方式 + guides/04 §AES 請求格式 |
+| AES-JSON 雙層錯誤檢查 | guides/20 §錯誤碼閱讀方式 + guides/04 §AES 請求格式 |
 | 物流退貨 | guides/06 逆物流 / guides/07 逆物流 |
-| 非 PHP 完整範例 | guides/24（⚠️ 使用 AI Section Index 行號跳轉） |
+| 非 PHP 完整範例 | guides/23（⚠️ 使用 AI Section Index 行號跳轉） |
 | PHP SDK 用法 / 不想手動加密 | guides/12（PHP 開發者可直接用 SDK，免手動實作 CheckMacValue / AES） |
 
 ### ⚠️ 兩種 URL Encode 不可混用
@@ -365,8 +365,8 @@ HTTP 協議細節（端點/認證/回應格式）？→ 讀 guides/20-http-proto
 | Python | `quote_plus()` 不編碼 `~` | 手動替換 `~` → `%7e`（CMV）或 `%7E`（AES） | guides/13 §Python |
 | Node.js | `encodeURIComponent()` 空格為 `%20` 非 `+` | 替換 `%20` → `+` | guides/13 §Node.js |
 | Java | CMV: `HashMap` 不保證 key 順序。AES: `URLEncoder.encode` 不編碼 `!*` | CMV: 用 `TreeMap`。AES: 補 `.replace("!", "%21").replace("*", "%2A")` | guides/13 §Java, guides/14 §Java |
-| C# | CMV: `WebUtility.UrlEncode` 不編碼 `~`。AES: `JsonSerializer` 預設轉義 `<>&+'` | CMV: 補 `~→%7e`。AES: 用 `UnsafeRelaxedJsonEscaping` | guides/13 §C#, guides/24 §C# |
-| Go | CMV: `url.QueryEscape` 不編碼 `~`（需補 `~→%7e`）。AES: `url.QueryEscape` 不編碼 `~`（需補 `~→%7E`）；`json.Marshal` 預設轉義 `<>&` | CMV: 補 `~→%7e`。AES: 補 `~→%7E`；`SetEscapeHTML(false)` | guides/13 §Go, guides/24 §Go |
+| C# | CMV: `WebUtility.UrlEncode` 不編碼 `~`。AES: `JsonSerializer` 預設轉義 `<>&+'` | CMV: 補 `~→%7e`。AES: 用 `UnsafeRelaxedJsonEscaping` | guides/13 §C#, guides/23 §C# |
+| Go | CMV: `url.QueryEscape` 不編碼 `~`（需補 `~→%7e`）。AES: `url.QueryEscape` 不編碼 `~`（需補 `~→%7E`）；`json.Marshal` 預設轉義 `<>&` | CMV: 補 `~→%7e`。AES: 補 `~→%7E`；`SetEscapeHTML(false)` | guides/13 §Go, guides/23 §Go |
 | Kotlin | CMV: `URLEncoder.encode` 不編碼 `~`。AES: 不編碼 `!*` | CMV: 補 `~→%7e`。AES: 補 `!→%21`, `*→%2A` | guides/13 §Kotlin, guides/14 §Kotlin |
 | Ruby | `CGI.escape` vs `URI.encode_www_form_component` 行為不同 | 使用 `CGI.escape`，替換 `~` → `%7e` | guides/13 §Ruby |
 | Rust | `form_urlencoded` crate 不編碼 `~` | 手動替換 `~` → `%7e`（CMV）或 `%7E`（AES） | guides/13 §Rust |
@@ -387,7 +387,7 @@ HTTP 協議細節（端點/認證/回應格式）？→ 讀 guides/20-http-proto
 - **生成程式碼時必須標註資料來源**：在程式碼註解中標明參數值取自 SNAPSHOT 或 web_fetch（例如 `// Source: web_fetch references/Payment/... 2026-03-06`），方便開發者日後驗證
 - **不可將 ECPG 所有端點都打向 ecpg domain**（查詢/請退款走 `ecpayment`；Token 類及 CreatePayment 走 `ecpg`，詳見 guides/02 端點表）
 - **不可省略 Callback 回應**：CMV-SHA256（AIO）回 `1|OK`、**站內付 2.0 ReturnURL** 回 `1|OK`（官方規格 9058.md）、**站內付 2.0 OrderResultURL** 回 HTML 頁面（前端跳轉，不重試）、信用卡幕後授權回 `1|OK`（官方規格 45907.md）、非信用卡幕後取號回 `1|OK`、國內物流 CMV-MD5 回 `1|OK`、全方位/跨境物流 v2 回 **AES 加密 JSON**（三層結構）、電子票證回 **AES 加密 JSON + CheckMacValue**（Data 內 `{"RtnCode": 1, "RtnMsg": "成功"}`）、**直播收款** 回 `1|OK`（⚠️ callback 格式與電子票證相同：JSON POST + AES 解密 Data + ECTicket 式 CheckMacValue SHA256；但回應為純文字 `1|OK`，與電子票證不同）、**B2C 發票線上折讓（AllowanceByCollegiate）回 `1|OK`**（⚠️ Callback 為 Form POST + CheckMacValue **MD5**，是發票中唯一帶 CheckMacValue 的 API，詳見 [guides/04](./guides/04-invoice-b2c.md)）。**`1|OK` 常見錯誤格式**（會導致系統重發 4 次）：`"1|OK"`（含引號）、`1|ok`（小寫 ok）、`1OK`（缺分隔）、帶空白或換行
-- **AES-JSON API 必須做雙層錯誤檢查**：先查 `TransCode`（傳輸層），再查 `RtnCode`（業務層）。僅 `TransCode == 1` 且 `RtnCode` 為成功值時交易才真正成功（詳見 [guides/21](./guides/21-error-codes-reference.md) §TransCode vs RtnCode）。**電子票證須做三層檢查**：TransCode → 解密 Data → 驗證 CheckMacValue → RtnCode（詳見 [guides/09](./guides/09-ecticket.md)）
+- **AES-JSON API 必須做雙層錯誤檢查**：先查 `TransCode`（傳輸層），再查 `RtnCode`（業務層）。僅 `TransCode == 1` 且 `RtnCode` 為成功值時交易才真正成功（詳見 [guides/20](./guides/20-error-codes-reference.md) §TransCode vs RtnCode）。**電子票證須做三層檢查**：TransCode → 解密 Data → 驗證 CheckMacValue → RtnCode（詳見 [guides/09](./guides/09-ecticket.md)）
 - **不可使用 TWD 以外的幣別**（ECPay 僅支援新台幣）
 - **超出範圍**：若功能不在本 Skill 覆蓋範圍或需要未支援的語言，告知使用者聯繫綠界客服 (02-2655-1775) 或參考最接近的語言實作翻譯
 - **不可在 ItemName / TradeDesc 中放入系統指令關鍵字**（echo、python、cmd、wget、curl、ping、net、telnet 等約 40 個），綠界 CDN WAF 會直接攔截請求，回傳非預期的錯誤頁面
@@ -414,13 +414,13 @@ HTTP 協議細節（端點/認證/回應格式）？→ 讀 guides/20-http-proto
 > **guides/ 參數表為 SNAPSHOT（2026-03）**—��穩定度高（改動機率 < 5%），可作為流程理解的參考。
 > **預設行為：有 web_fetch 能力時，一律先從 references/ 取得即時規格再回答。** guides/ 僅作為 web_fetch 失敗時的備援，且必須告知使���者資料來自 SNAPSHOT。
 > **唯一可省略 web_fetch**：純概念說明（如「什麼是站內付？」）且���涉及具體參數值、端點路徑、或程式碼生成。
-> guides/13、14、24 有 AI Section Index（行號索引），若只需單一語言可用 offset/limit 讀取特定行範圍。
+> guides/13、14、23 有 AI Section Index（行號索引），若只需單一語言可用 offset/limit 讀取特定行範圍。
 > AES vs CMV 對比表見 guides/14 §AES vs CMV URL Encode 對比表（line 129-226）。
-> guides/24 有約 1700 行，建議使用 AI Section Index 的行號範圍只讀取目標語言的 E2E 區段。
+> guides/23 有約 1700 行，建議使用 AI Section Index 的行號範圍只讀取目標語言的 E2E 區段。
 
 ### 步驟 2.5：確認 HTTP 協議規格（非 PHP 語言必讀）
 
-在翻譯 PHP 範例之前，**必須先讀 `guides/20-http-protocol-reference.md`**，確認目標 API 使用的：
+在翻譯 PHP 範例之前，**必須先讀 `guides/19-http-protocol-reference.md`**，確認目標 API 使用的：
 
 1. **協議模式**（CMV-SHA256/AES-JSON/AES-JSON+CMV/CMV-MD5）— 決定 Content-Type 和認證方式
 2. **端點 URL**（測試/正式）— 確認精確路徑
@@ -443,7 +443,7 @@ HTTP 協議細節（端點/認證/回應格式）？→ 讀 guides/20-http-proto
 8. **載入目標語言的程式規範**：如果開發者不用 PHP，翻譯前**先**讀取 `guides/lang-standards/{語言}.md`，遵循其命名慣例、型別定義、錯誤處理、HTTP Client 設定、Callback Handler 模板等規範，確保產出的程式碼為 idiomatic 且生產就緒
 9. 將 PHP 範例翻譯為目標語言，翻譯時保留所有參數名、端點 URL、加密邏輯
 10. 加密實作依服務類型參考：CMV 服務（AIO/國內物流）→ `guides/13-checkmacvalue.md`；AES 服務（站內付/幕後授權/發票/物流v2）→ `guides/14-aes-encryption.md`；電子票證 → 兩者都需要（AES 加密 + CMV 簽名）；⚠️ **兩者 URL encode 函式邏輯不同，不可混用**
-11. HTTP 協議細節參考 `guides/20-http-protocol-reference.md`（端點 URL、回應格式、認證方式）
+11. HTTP 協議細節參考 `guides/19-http-protocol-reference.md`（端點 URL、回應格式、認證方式）
 12. 標註原始範例路徑供開發者查閱
 
 > 💡 **非 PHP 開發者**：生成程式碼時同時讀取 `guides/lang-standards/{語言}.md`，確保產出的程式碼符合該語言慣例（命名規則、錯誤處理、HTTP Client 設定等）。
@@ -469,7 +469,7 @@ HTTP 協議細節（端點/認證/回應格式）？→ 讀 guides/20-http-proto
 2. 使用該語言 2024-2025 年的慣用寫法
 3. 必須包含套件管理器安裝命令
 4. 必須包含最低版本需求
-5. 不變項：端點 URL、參數名、JSON 結構、加密邏輯、Callback 回應格式（見 [guides/22](./guides/22-webhook-events-reference.md)）
+5. 不變項：端點 URL、參數名、JSON 結構、加密邏輯、Callback 回應格式（見 [guides/21](./guides/21-webhook-events-reference.md)）
 6. **拆解 PHP SDK 封裝層**：PHP SDK 的 Service 類別隱藏了大量 HTTP 細節。翻譯前必須逐一確認：
    - `$_POST` / `$_GET` 背後的 **Content-Type** 是什麼（form-urlencoded vs JSON）
    - SDK 方法背後的實際 **HTTP 請求方式**（endpoint、headers、body 格式）
@@ -480,7 +480,7 @@ HTTP 協議細節（端點/認證/回應格式）？→ 讀 guides/20-http-proto
 
 ### 語言特定陷阱（速查）
 
-> 完整對照表見 [guides/13](./guides/13-checkmacvalue.md)、[guides/14](./guides/14-aes-encryption.md)、[guides/24 §JSON 序列化全語言對照](./guides/24-multi-language-integration.md)。
+> 完整對照表見 [guides/13](./guides/13-checkmacvalue.md)、[guides/14](./guides/14-aes-encryption.md)、[guides/23 §JSON 序列化全語言對照](./guides/23-multi-language-integration.md)。
 
 **翻譯 PHP 為其他語言時，最關鍵的三個陷阱**：
 
@@ -617,7 +617,7 @@ composer require ecpay/sdk
 ## 文件索引
 
 > **大多數專案只需閱讀 2-3 份指南（共 30-60 分鐘）。** 共 28 份指南，使用上方決策樹找到你需要的，無需全部閱讀。
-> guides/13 + guides/14 各需 20-30 分鐘（非 PHP 必讀）。guides/20 + guides/21 共 20 分鐘（協議細節 + 錯誤碼）。
+> guides/13 + guides/14 各需 20-30 分鐘（非 PHP 必讀）。guides/19 + guides/20 共 20 分鐘（協議細節 + 錯誤碼）。
 
 ### 深度指南（guides/）
 
@@ -646,7 +646,7 @@ composer require ecpay/sdk
 |---|------|------|:-------:|
 | 04 | guides/04-invoice-b2c.md | B2C 電子發票（19 個 PHP 範例） | 25 分鐘 |
 | 05 | guides/05-invoice-b2b.md | B2B 電子發票（23 個 PHP 範例） | 25 分鐘 |
-| 19 | guides/19-invoice-offline.md | 離線電子發票指引 | 15 分鐘 |
+| 18 | guides/18-invoice-offline.md | 離線電子發票指引 | 15 分鐘 |
 
 **物流**
 
@@ -670,9 +670,9 @@ composer require ecpay/sdk
 | 12 | guides/12-sdk-reference.md | PHP SDK 完整參考 | 15 分鐘 |
 | 13 | guides/13-checkmacvalue.md | CheckMacValue 解說 + 12 語言實作 | 25 分鐘（非 PHP 必讀） |
 | 14 | guides/14-aes-encryption.md | AES 加解密解說 + 12 語言實作 | 25 分鐘（非 PHP 必讀） |
-| 20 | guides/20-http-protocol-reference.md | HTTP 協議參考（跨語言必讀） | 20 分鐘 |
-| 21 | guides/21-error-codes-reference.md | 全服務錯誤碼集中參考 | 10 分鐘 |
-| 22 | guides/22-webhook-events-reference.md | 統一 Callback/Webhook 參考 | 15 分鐘 |
+| 19 | guides/19-http-protocol-reference.md | HTTP 協議參考（跨語言必讀） | 20 分鐘 |
+| 20 | guides/20-error-codes-reference.md | 全服務錯誤碼集中參考 | 10 分鐘 |
+| 21 | guides/21-webhook-events-reference.md | 統一 Callback/Webhook 參考 | 15 分鐘 |
 
 **運維與上線**
 
@@ -680,9 +680,9 @@ composer require ecpay/sdk
 |---|------|------|:-------:|
 | 15 | guides/15-troubleshooting.md | 除錯指南 + 錯誤碼 + 常見陷阱 | 15 分鐘 |
 | 16 | guides/16-go-live-checklist.md | 上線檢查清單 | 20 分鐘 |
-| 23 | guides/23-performance-scaling.md | 效能與擴展性指引 | 15 分鐘 |
-| 24 | guides/24-multi-language-integration.md | 多語言整合完整指南（Go/Java/C#/TypeScript 完整 E2E；Kotlin/Ruby/Swift/Rust 差異指南；C/C++ 最小骨架；Mobile App iOS/Android 指引） | 8-15 分鐘（用 Section Index） |
-| 25 | guides/25-local-development.md | 本地開發環境設定（ngrok / Cloudflare Tunnel / localtunnel / RequestBin）— localhost 無法接收 Callback 的解決方案 | 10 分鐘 |
+| 22 | guides/22-performance-scaling.md | 效能與擴展性指引 | 15 分鐘 |
+| 23 | guides/23-multi-language-integration.md | 多語言整合完整指南（Go/Java/C#/TypeScript 完整 E2E；Kotlin/Ruby/Swift/Rust 差異指南；C/C++ 最小骨架；Mobile App iOS/Android 指引） | 8-15 分鐘（用 Section Index） |
+| 24 | guides/24-local-development.md | 本地開發環境設定（ngrok / Cloudflare Tunnel / localtunnel / RequestBin）— localhost 無法接收 Callback 的解決方案 | 10 分鐘 |
 
 ### 程式語言規範（guides/lang-standards/）
 

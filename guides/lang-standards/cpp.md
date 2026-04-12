@@ -2,7 +2,7 @@
 
 > 本檔為 AI 生成 ECPay 整合程式碼時的 C++ 專屬規範。
 > 加密函式：[guides/13 §C++](../13-checkmacvalue.md) + [guides/14 §C++](../14-aes-encryption.md)
-> E2E 範例：[guides/24](../24-multi-language-integration.md)
+> E2E 範例：[guides/23](../23-multi-language-integration.md)
 
 ## 版本與環境
 
@@ -92,7 +92,7 @@ struct AioParams {
 
 // AES-JSON 請求以 nlohmann::json 直接組裝：
 // { "MerchantID": "...", "RqHeader": { "Timestamp": ..., "Revision": "..." }, "Data": "..." }
-// RqHeader.Revision 依服務填入（詳見 guides/14 §使用場景 / guides/20 §2.1 AES-JSON）：
+// RqHeader.Revision 依服務填入（詳見 guides/14 §使用場景 / guides/19 §2.1 AES-JSON）：
 //   發票 B2C: "3.0.0" | 發票 B2B: "1.0.0"（且必填 RqID UUID v4）
 //   全方位物流 / 跨境物流: "1.0.0"
 //   站內付 2.0 / 幕後授權 / 幕後取號 / 電子票證 / 直播收款: 不使用（省略 key）
@@ -184,7 +184,7 @@ nlohmann::json callAesApi(
 ## HTTP Client 設定（libcurl RAII）
 
 > **主要推薦**：libcurl（C/C++ 通用，guides/13 及 guides/14 的 C++ 區段均使用 OpenSSL + libcurl）。
-> **替代方案**：[cpr](https://github.com/libcpr/cpr)（C++ 封裝 libcurl，API 更簡潔）— guides/24 C++ CMake 範例使用 cpr。兩者皆可，同一專案內保持一致。
+> **替代方案**：[cpr](https://github.com/libcpr/cpr)（C++ 封裝 libcurl，API 更簡潔）— guides/23 C++ CMake 範例使用 cpr。兩者皆可，同一專案內保持一致。
 
 ```cpp
 #include <curl/curl.h>

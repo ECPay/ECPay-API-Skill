@@ -176,7 +176,7 @@ $response = $postService->post($input, 'https://logistics-stage.ecpay.com.tw/Exp
 >
 > | 症狀 | 最可能原因 |
 > |------|----------|
-> | RtnCode ≠ 1 | 查 [guides/21 §物流錯誤碼](./21-error-codes-reference.md)；常見：收件人資料缺漏 |
+> | RtnCode ≠ 1 | 查 [guides/20 §物流錯誤碼](./20-error-codes-reference.md)；常見：收件人資料缺漏 |
 > | 回應格式看不懂 | 物流回應是 pipe-separated 字串（非 JSON），用 `parse_str` 或字串分割解析 |
 > | MerchantTradeNo 重複 | 每次建單要用新的交易編號 |
 
@@ -233,7 +233,7 @@ def logistics_notify():
     logistics_id = params.get('AllPayLogisticsID', '')
     status_msg   = params.get('RtnMsg', '')
 
-    # 常見狀態碼（完整列表見 guides/21）
+    # 常見狀態碼（完整列表見 guides/20）
     STATUS_MAP = {
         '300': '訂單處理中（已收到訂單資料）',
         '2067': '消費者已取貨（7-ELEVEN）',
@@ -290,7 +290,7 @@ app.post('/ecpay/logistics-notify', (req, res) => {
 > |------|----------|
 > | 狀態通知從未收到 | ServerReplyURL 不可公開訪問；確認建單時的 ServerReplyURL 正確 |
 > | 重複收到相同通知 | 沒有回應 `1|OK` |
-> | 狀態碼看不懂 | 查 [guides/21 §物流狀態碼](./21-error-codes-reference.md) |
+> | 狀態碼看不懂 | 查 [guides/20 §物流狀態碼](./20-error-codes-reference.md) |
 >
 > ⚠️ **物流狀態通知重試機制**：若未正確回應 `1|OK`，系統重發 3 次後延至隔天，從貨態更新日起維持 3 天發送。
 
@@ -312,7 +312,7 @@ app.post('/ecpay/logistics-notify', (req, res) => {
 
 | 項目 | 規格 |
 |------|------|
-| 協議模式 | CMV-MD5 — 詳見 [guides/20-http-protocol-reference.md](./20-http-protocol-reference.md) |
+| 協議模式 | CMV-MD5 — 詳見 [guides/19-http-protocol-reference.md](./19-http-protocol-reference.md) |
 | HTTP 方法 | POST |
 | Content-Type | `application/x-www-form-urlencoded` |
 | 認證 | CheckMacValue（**MD5**，非 SHA256） — 詳見 [guides/13-checkmacvalue.md](./13-checkmacvalue.md) |
@@ -443,9 +443,9 @@ try {
 | RtnCode | 回應代碼（1=成功） |
 | RtnMsg | 回應訊息 |
 
-> 🔍 **建單失敗？** ①`RtnCode ≠ 1`→查 [guides/21 §物流錯誤碼](./21-error-codes-reference.md)；②確認收件人 `ReceiverStoreID` 已從電子地圖取得（不可手填猜測）；③ `MerchantTradeNo` 不可重複。
+> 🔍 **建單失敗？** ①`RtnCode ≠ 1`→查 [guides/20 §物流錯誤碼](./20-error-codes-reference.md)；②確認收件人 `ReceiverStoreID` 已從電子地圖取得（不可手填猜測）；③ `MerchantTradeNo` 不可重複。
 >
-> ⚠️ 常見物流訂單建立失敗原因：收件人資料格式錯誤（手機非 09 開頭 10 碼、地址超長）、門市代號無效或暫停服務。建議送出前驗證欄位格式，並處理 API 回傳的錯誤碼（見 [guides/21](./21-error-codes-reference.md)）。
+> ⚠️ 常見物流訂單建立失敗原因：收件人資料格式錯誤（手機非 09 開頭 10 碼、地址超長）、門市代號無效或暫停服務。建議送出前驗證欄位格式，並處理 API 回傳的錯誤碼（見 [guides/20](./20-error-codes-reference.md)）。
 
 ### 表單模式建單
 

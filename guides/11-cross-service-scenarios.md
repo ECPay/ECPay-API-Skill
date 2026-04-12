@@ -28,7 +28,7 @@
 | AIO 收款 + Callback | [guides/01](./01-payment-aio.md) | 45m |
 | B2C 發票開立 | [guides/04](./04-invoice-b2c.md) | 30m |
 | 國內物流建單 | [guides/06](./06-logistics-domestic.md) | 30m |
-| Callback 統一處理 | [guides/22](./22-webhook-events-reference.md) | 20m |
+| Callback 統一處理 | [guides/21](./21-webhook-events-reference.md) | 20m |
 | 合計 | — | ~2h |
 
 ### 完整流程
@@ -132,7 +132,7 @@ ECPAY_LOGISTICS_HASH_IV=v77hoKGq4kWxNNIS
 
 - **三組不同帳號**：金流、發票、物流各有獨立的 MerchantID / HashKey / HashIV，務必分開管理
 - **付款確認後再開票出貨**：務必在 RtnCode=1 且 SimulatePaid=0 後才執行
-- **高併發場景**：當跨服務 callback 量大或需批次開票/建單時，參見 [guides/23 效能與擴展](./23-performance-scaling.md) 的佇列架構與限流策略
+- **高併發場景**：當跨服務 callback 量大或需批次開票/建單時，參見 [guides/22 效能與擴展](./22-performance-scaling.md) 的佇列架構與限流策略
 
 > ⚠️ 跨服務流程中，所有 `MerchantTradeDate` 必須使用 **UTC+8 台灣時間**（格式：`yyyy/MM/dd HH:mm:ss`）。
 
@@ -164,7 +164,7 @@ ECPAY_LOGISTICS_HASH_IV=v77hoKGq4kWxNNIS
 
 #### Callback 回應格式差異
 
-> 各服務 Callback 回應格式完整對照表見 [guides/22-webhook-events-reference.md](./22-webhook-events-reference.md) §Callback 總覽表。
+> 各服務 Callback 回應格式完整對照表見 [guides/21-webhook-events-reference.md](./21-webhook-events-reference.md) §Callback 總覽表。
 > 重點提醒：AIO 金流回應 `1|OK`，國內物流回應 `1|OK`，站內付 2.0 / 信用卡幕後授權回應 `1|OK`，全方位/跨境物流回應 AES 加密 JSON，電子票證回應 AES 加密 JSON + ECTicket 式 CMV。
 
 #### 冪等性與事件驅動建議
@@ -175,8 +175,8 @@ ECPAY_LOGISTICS_HASH_IV=v77hoKGq4kWxNNIS
 
 #### 延伸參考
 
-- 詳細 callback 欄位定義：見 [guides/22-webhook-events-reference.md](./22-webhook-events-reference.md)
-- 錯誤碼排查：見 [guides/21-error-codes-reference.md](./21-error-codes-reference.md)
+- 詳細 callback 欄位定義：見 [guides/21-webhook-events-reference.md](./21-webhook-events-reference.md)
+- 錯誤碼排查：見 [guides/20-error-codes-reference.md](./20-error-codes-reference.md)
 
 ## 場景二：訂閱制（定期定額 + 每期開發票）
 
@@ -318,7 +318,7 @@ ECPAY_LOGISTICS_MERCHANT_ID / ECPAY_LOGISTICS_HASH_KEY / ECPAY_LOGISTICS_HASH_IV
 ECPAY_INVOICE_MERCHANT_ID / ECPAY_INVOICE_HASH_KEY / ECPAY_INVOICE_HASH_IV
 ```
 
-> 完整環境設定範例見 [guides/00](./00-getting-started.md) 和 [guides/24](./24-multi-language-integration.md)。
+> 完整環境設定範例見 [guides/00](./00-getting-started.md) 和 [guides/23](./23-multi-language-integration.md)。
 
 ## 跨服務錯誤恢復
 
@@ -364,8 +364,8 @@ ECPAY_INVOICE_MERCHANT_ID / ECPAY_INVOICE_HASH_KEY / ECPAY_INVOICE_HASH_IV
 - 站內付 2.0：[guides/02-payment-ecpg.md](./02-payment-ecpg.md)
 - B2C 發票：[guides/04-invoice-b2c.md](./04-invoice-b2c.md)
 - 國內物流：[guides/06-logistics-domestic.md](./06-logistics-domestic.md)
-- 效能與擴展：[guides/23-performance-scaling.md](./23-performance-scaling.md)
-- Callback 參考：[guides/22-webhook-events-reference.md](./22-webhook-events-reference.md)
+- 效能與擴展：[guides/22-performance-scaling.md](./22-performance-scaling.md)
+- Callback 參考：[guides/21-webhook-events-reference.md](./21-webhook-events-reference.md)
 - API 規格（金流）：`references/Payment/全方位金流API技術文件.md`
 - API 規格（發票）：`references/Invoice/B2C電子發票介接技術文件.md`
 - API 規格（物流）：`references/Logistics/物流整合API技術文件.md`

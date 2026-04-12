@@ -2,7 +2,7 @@
 
 > 本檔為 AI 生成 ECPay 整合程式碼時的 Rust 專屬規範。
 > 加密函式：[guides/13 §Rust](../13-checkmacvalue.md) + [guides/14 §Rust](../14-aes-encryption.md)
-> E2E 範例：[guides/24 §Rust](../24-multi-language-integration.md)
+> E2E 範例：[guides/23 §Rust](../23-multi-language-integration.md)
 
 ## 版本與環境
 
@@ -347,7 +347,7 @@ error!(trans_code = result.trans_code, rtn_code = %rtn_code, "ECPay API 錯誤")
 ```
 
 > **替代方案**：`form_urlencoded` crate（url crate 生態）將空格編碼為 `+` 且自動編碼 `~`→`%7E`，
-> 行為更接近 PHP `urlencode`，可減少手動替換步驟。guides/24 E2E 範例使用 `form_urlencoded`；
+> 行為更接近 PHP `urlencode`，可減少手動替換步驟。guides/23 E2E 範例使用 `form_urlencoded`；
 > guides/13、guides/14 的加密函式使用 `urlencoding`。兩者皆可，但同一專案內應保持一致。
 
 ### aes_url_encode 完整實作（AES-JSON 服務）

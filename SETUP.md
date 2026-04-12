@@ -168,7 +168,7 @@ Skills watcher 自動偵測新 `SKILL.md`，下個新 session 生效，不需重
 | 4 | `guides/01-payment-aio.md` | AIO 金流（最常用） | ~66 KB |
 | 5 | `guides/02a-ecpg-quickstart.md` | 站內付 2.0 首次串接 | ~79 KB |
 | 6 | `guides/15-troubleshooting.md` | 除錯指南 | ~56 KB |
-| 7 | `guides/20-http-protocol-reference.md` | HTTP 協議規格 | ~50 KB |
+| 7 | `guides/19-http-protocol-reference.md` | HTTP 協議規格 | ~50 KB |
 
 **建議加上傳（依需求選擇）**
 
@@ -271,10 +271,10 @@ AI 的回答基於上傳的官方文件，準確度高。但涉及具體 API 參
 | 8 | `guides/13-checkmacvalue.md` | CheckMacValue 12 語言 |
 | 9 | `guides/14-aes-encryption.md` | AES 12 語言 |
 | 10 | `guides/15-troubleshooting.md` | 除錯 |
-| 11 | `guides/20-http-protocol-reference.md` | HTTP 協議 |
-| 12 | `guides/21-error-codes-reference.md` | 錯誤碼 |
-| 13 | `guides/22-webhook-events-reference.md` | Webhook |
-| 14 | `guides/24-multi-language-integration.md` | 多語言 E2E |
+| 11 | `guides/19-http-protocol-reference.md` | HTTP 協議 |
+| 12 | `guides/20-error-codes-reference.md` | 錯誤碼 |
+| 13 | `guides/21-webhook-events-reference.md` | Webhook |
+| 14 | `guides/23-multi-language-integration.md` | 多語言 E2E |
 
 **建議上傳（擴充）— 6 個**
 
@@ -284,8 +284,8 @@ AI 的回答基於上傳的官方文件，準確度高。但涉及具體 API 參
 | 16 | `guides/05-invoice-b2b.md` | B2B 發票 |
 | 17 | `guides/06-logistics-domestic.md` | 國內物流 |
 | 18 | `guides/07-logistics-allinone.md` | 全方位物流 |
-| 19 | `guides/09-ecticket.md` | 電子票證 |
-| 20 | `guides/11-cross-service-scenarios.md` | 跨服務整合 |
+| 18 | `guides/09-ecticket.md` | 電子票證 |
+| 19 | `guides/11-cross-service-scenarios.md` | 跨服務整合 |
 
 > 共 20 個，達 Knowledge Files 上限。`guides/02b`、`02c`、`guides/16` 為選用，可替換低優先度檔案。
 

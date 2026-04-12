@@ -2,7 +2,7 @@
 
 > 本檔為 AI 生成 ECPay 整合程式碼時的 Ruby 專屬規範。
 > 加密函式：[guides/13 §Ruby](../13-checkmacvalue.md) + [guides/14 §Ruby](../14-aes-encryption.md)
-> E2E 範例：[guides/24 §Ruby](../24-multi-language-integration.md)
+> E2E 範例：[guides/23 §Ruby](../23-multi-language-integration.md)
 
 ## 版本與環境
 

@@ -98,7 +98,7 @@ python test-vectors/verify.py
 | **業務 / PM / 主管** | ❌ 不用動手。但可以知道「我們有 21 組自動化加密測試把關，Skill 每次發布前都要全數通過才能上架」——這是內部品質保證機制，客戶或主管問起時可以自信地引用 |
 | **FAE / 客戶支援** | ❌ 不用動手。客戶問「你們的 Skill 會不會有加密 bug？」時，你可以回答：**「Skill 每次發布前會自動跑 21 組跨語言加密測試向量（CheckMacValue、AES、URL Encode 三大類），全數通過才能發布。任何加密演算法錯誤會在 CI 階段就被攔下，不會進入正式環境。」** |
 | **使用 Skill 串接綠界的客戶工程師** | ❌ 不用自己跑。但你**可以參考** `test-vectors/*.json`：裡面的每一組都有明確的「輸入 → 預期輸出」，複製過來就能當自家程式碼的單元測試 |
-| **Skill 維護者** | ✅ **必須跑**。修改 `guides/13`、`guides/14`、`guides/24` 或 `scripts/SDK_PHP/` 後，commit 前請先在本地執行 `python test-vectors/verify.py` 確認 21/21 通過。CI 也會在 push 後再把關一次 |
+| **Skill 維護者** | ✅ **必須跑**。修改 `guides/13`、`guides/14`、`guides/23` 或 `scripts/SDK_PHP/` 後，commit 前請先在本地執行 `python test-vectors/verify.py` 確認 21/21 通過。CI 也會在 push 後再把關一次 |
 
 ---
 
@@ -139,7 +139,7 @@ python test-vectors/verify.py
 | 8 | 📖 **pkcs7-exact-block-boundary**（說明性） | 不執行驗證，純粹說明 PKCS7 整塊邊界的 padding 行為 |
 | 9 | **ECPG 金流帳號測試** | GetTokenbyTrade 請求格式（站內付 2.0 Token 生成） |
 
-> 📖 **什麼是「說明性向量」？**：Vector 7 和 8 不做實際的加密計算驗證，而是在 JSON 裡詳細描述一種**跨語言踩坑情境**，供 `guides/13`/`14`/`24` 交叉引用。它們是為了教學而存在的「案例說明」，不是斷言。verify.py 執行時會顯示 `SKIP (explanatory)`。
+> 📖 **什麼是「說明性向量」？**：Vector 7 和 8 不做實際的加密計算驗證，而是在 JSON 裡詳細描述一種**跨語言踩坑情境**，供 `guides/13`/`14`/`23` 交叉引用。它們是為了教學而存在的「案例說明」，不是斷言。verify.py 執行時會顯示 `SKIP (explanatory)`。
 
 ### 3️⃣ URL Encode 函式比對（4 組）
 
@@ -197,7 +197,7 @@ ALL PASSED ✓
 
 ## 🤔 為什麼只有這幾個驗證器？不是說支援 12 種語言嗎？
 
-> **短答**：`guides/13-checkmacvalue.md` / `guides/14-aes-encryption.md` / `guides/24-multi-language-integration.md` **教 12 種語言的實作**（PHP、Python、Node.js、TypeScript、Java、C#、Go、C++、Rust、Swift、Kotlin、Ruby），但 `test-vectors/` 只有 **5 個驗證器**（Python + Node.js + Go + Java + C#）。這是刻意的**策略取樣設計**。
+> **短答**：`guides/13-checkmacvalue.md` / `guides/14-aes-encryption.md` / `guides/23-multi-language-integration.md` **教 12 種語言的實作**（PHP、Python、Node.js、TypeScript、Java、C#、Go、C++、Rust、Swift、Kotlin、Ruby），但 `test-vectors/` 只有 **5 個驗證器**（Python + Node.js + Go + Java + C#）。這是刻意的**策略取樣設計**。
 
 ### 為什麼不需要 12 個驗證器?
 
@@ -225,7 +225,7 @@ ALL PASSED ✓
 | 語言 | 風險等級 | 間接保證來源 |
 |---|---|---|
 | **TypeScript** | 🟢 低 | 同 Node.js runtime,`verify-node.js` 已涵蓋 |
-| **Rust** | 🟡 中 | 靠 `guides/13` + `guides/14` + `guides/20 §HTTP 協議` 規範;空格編成 `%20` 陷阱與 Node.js 同族,可參考 `verify-node.js` 的處理邏輯 |
+| **Rust** | 🟡 中 | 靠 `guides/13` + `guides/14` + `guides/19 §HTTP 協議` 規範;空格編成 `%20` 陷阱與 Node.js 同族,可參考 `verify-node.js` 的處理邏輯 |
 | **Swift** | 🟡 中 | 同上;`guides/lang-standards/swift.md` 有完整 `CharacterSet` 自建範例 |
 | **Ruby** | 🟢 低 | 插入順序家族,同 Python 行為;`guides/lang-standards/ruby.md` 有範例 |
 | **Kotlin** | 🟢 低 | JVM 家族,同 Java 行為 |
@@ -237,7 +237,7 @@ ALL PASSED ✓
 三道防線：
 1. **靜態向量資料**:`test-vectors/*.json` 的「輸入 + 預期輸出」是語言無關的硬性規格,你自己實作完在本地跑一次比對就知道對不對
 2. **guides/ 詳細範例**:`guides/lang-standards/{rust,swift,ruby,kotlin,cpp}.md` 有完整語言特定實作,含語言 stdlib 的坑
-3. **HTTP 協議規範**:`guides/20-http-protocol-reference.md` 描述「位元組層級」該產生什麼,最後防線——不管什麼語言,只要最終 HTTP request 的 bytes 對,就過
+3. **HTTP 協議規範**:`guides/19-http-protocol-reference.md` 描述「位元組層級」該產生什麼,最後防線——不管什麼語言,只要最終 HTTP request 的 bytes 對,就過
 
 ---
 
@@ -280,4 +280,4 @@ ALL PASSED ✓
 - [guides/13-checkmacvalue.md](../guides/13-checkmacvalue.md) §測試向量 — 12 語言 CheckMacValue 實作與每個向量的詳細計算步驟
 - [guides/14-aes-encryption.md](../guides/14-aes-encryption.md) §測試向量 — AES 加密實作與 JSON key 順序 / PKCS7 padding 陷阱說明
 - [guides/14-aes-encryption.md](../guides/14-aes-encryption.md) §AES vs CMV URL Encode 對比表 — 兩個 URL encode 函式的差異與「為什麼不可混用」
-- [guides/20-http-protocol-reference.md](../guides/20-http-protocol-reference.md) §CheckMacValue 計算 — 跨語言 HTTP 協議層的計算規範
+- [guides/19-http-protocol-reference.md](../guides/19-http-protocol-reference.md) §CheckMacValue 計算 — 跨語言 HTTP 協議層的計算規範

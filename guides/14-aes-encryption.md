@@ -401,7 +401,7 @@ export { aesEncrypt, aesDecrypt };
 >
 > AES 加密結果取決於 JSON 字串的精確位元內容。不同的 key 順序、空格、HTML 轉義都會產生不同的密文。
 > 必須確保：(1) compact 格式（無多餘空格），(2) key 順序與 PHP `json_encode` 一致，(3) 不轉義 HTML 字元。
-> 各語言的具體注意事項標註於對應區段。完整對照表見 [guides/24-multi-language-integration.md](./24-multi-language-integration.md)。
+> 各語言的具體注意事項標註於對應區段。完整對照表見 [guides/23-multi-language-integration.md](./23-multi-language-integration.md)。
 
 ### Java
 

@@ -397,7 +397,7 @@ public class EcpayCheckMacValue {
 ### C#
 
 > ⚠️ **C# 特有陷阱**
-> - 必須使用 `System.Net.WebUtility.UrlEncode()`（大寫 hex，跨平台）；`HttpUtility.UrlEncode`（小寫 hex）已由 guides/14 及 guides/24 明確禁止
+> - 必須使用 `System.Net.WebUtility.UrlEncode()`（大寫 hex，跨平台）；`HttpUtility.UrlEncode`（小寫 hex）已由 guides/14 及 guides/23 明確禁止
 > - `WebUtility.UrlEncode` 空格編碼為 `+`（與 PHP urlencode 相同），程式碼中的 `.Replace("%20", "+")` 為保險措施
 > - `WebUtility.UrlEncode` 不編碼 `~`，需手動補 `.Replace("~", "%7e")`
 > - `WebUtility.UrlEncode` 在所有 .NET 版本均會將 `'` 編碼為 `%27`（無需額外處理）

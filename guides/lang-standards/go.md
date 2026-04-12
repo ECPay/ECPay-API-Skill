@@ -2,7 +2,7 @@
 
 > 本檔為 AI 生成 ECPay 整合程式碼時的 Go 專屬規範。
 > 加密函式：[guides/13 §Go](../13-checkmacvalue.md) + [guides/14 §Go](../14-aes-encryption.md)
-> E2E 範例：[guides/24 §Go（完整 Web Server）](../24-multi-language-integration.md)
+> E2E 範例：[guides/23 §Go（完整 Web Server）](../23-multi-language-integration.md)
 
 ## 版本與環境
 
@@ -71,7 +71,7 @@ type AESRequest struct {
 }
 
 // RqHeader AES-JSON 請求表頭
-// Revision 依服務不同填入對應值（詳見 guides/14 §使用場景 / guides/20 §2.1 AES-JSON）：
+// Revision 依服務不同填入對應值（詳見 guides/14 §使用場景 / guides/19 §2.1 AES-JSON）：
 //   發票 B2C: "3.0.0" | 發票 B2B: "1.0.0"（且必填 RqID UUID v4）
 //   全方位物流 / 跨境物流: "1.0.0"
 //   站內付 2.0 / 幕後授權 / 幕後取號 / 電子票證 / 直播收款: 不使用（留空，json:"-" 或省略）

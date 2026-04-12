@@ -34,7 +34,7 @@ The critical pattern: **guides/ tells you HOW to integrate; references/ gives yo
 ## Validation Commands
 
 ```bash
-# Validate AI Section Index line numbers in guides/13, 14, 24
+# Validate AI Section Index line numbers in guides/13, 14, 23
 bash scripts/validate-ai-index.sh
 
 # Validate version sync across all 9 platform entry files
@@ -97,7 +97,7 @@ When updating a guide's parameter content, update its SNAPSHOT date. Guides also
 
 ### AI Section Index
 
-`guides/13`, `guides/14`, and `guides/24` contain HTML comment indexes with line number ranges for each language section (e.g., `Python: line 103-157`). After editing these files, **always run `bash scripts/validate-ai-index.sh`** to confirm line numbers still point to correct headings.
+`guides/13`, `guides/14`, and `guides/23` contain HTML comment indexes with line number ranges for each language section (e.g., `Python: line 103-157`). After editing these files, **always run `bash scripts/validate-ai-index.sh`** to confirm line numbers still point to correct headings.
 
 ### Security-Critical: Timing-Safe Comparison
 
@@ -143,10 +143,10 @@ Guides use `{NN}-{slug}.md` (zero-padded two-digit index, kebab-case slug). Curr
 
 ## Modification Checklist
 
-- [ ] Editing `guides/13`, `14`, or `24`? → Run `bash scripts/validate-ai-index.sh`
+- [ ] Editing `guides/13`, `14`, or `23`? → Run `bash scripts/validate-ai-index.sh`
 - [ ] Changing parameter tables in guides? → Update SNAPSHOT date
 - [ ] Bumping version? → Sync across SKILL.md, SKILL_OPENAI.md, README.md, SETUP.md, AGENTS.md, GEMINI.md, copilot-instructions.md, CLAUDE.md (root), CONTRIBUTING.md (English summary)
-- [ ] Adding a new language? → Create `guides/lang-standards/{language}.md` + add crypto impl to guides/13+14 + E2E to guides/24 + update AI Section Index in all three + run `bash scripts/validate-ai-index.sh` + update language count in SKILL.md
+- [ ] Adding a new language? → Create `guides/lang-standards/{language}.md` + add crypto impl to guides/13+14 + E2E to guides/23 + update AI Section Index in all three + run `bash scripts/validate-ai-index.sh` + update language count in SKILL.md
 - [ ] Adding a new API? → Add guide + reference file + update SKILL.md decision tree
 - [ ] Modifying critical rules in AGENTS.md/GEMINI.md? → Run `bash scripts/validate-agents-parity.sh`
 - [ ] Modifying `commands/`? → Keep ≤20 lines, navigation focus only

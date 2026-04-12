@@ -5,7 +5,7 @@
 > **何時讀本文件**：當你需要了解各服務 callback 的回應格式、重試機制、冪等性處理時。
 > - 排查 callback 收不到 → [guides/15](./15-troubleshooting.md) §2
 > - 跨服務 callback 時序 → [guides/11](./11-cross-service-scenarios.md) §Callback 時序
-> - 各服務的端點 URL → [guides/20](./20-http-protocol-reference.md)
+> - 各服務的端點 URL → [guides/19](./19-http-protocol-reference.md)
 
 本文件彙整所有 ECPay 服務的 Callback（Webhook）機制，提供統一的欄位定義和安全處理指引。
 
@@ -83,7 +83,7 @@
 > |------|------|
 > | 日交易量 < 1,000 筆，業務邏輯簡單（< 1 秒） | **不需要**：直接在 Callback handler 中同步處理即可 |
 > | 日交易量 > 1,000 筆，或業務邏輯耗時（開發票、發 Email）| **建議**：Callback 只做驗簽 + 冪等落庫，用佇列（MQ/Redis/DB task）非同步處理後續 |
-> | 高並發（短時間大量交易）或有外部 API 呼叫（速率限制） | **必須**：避免 Callback handler 被外部瓶頸阻塞導致超時重送，見 [guides/23 §佇列與高並發](./23-performance-scaling.md) |
+> | 高並發（短時間大量交易）或有外部 API 呼叫（速率限制） | **必須**：避免 Callback handler 被外部瓶頸阻塞導致超時重送，見 [guides/22 §佇列與高並發](./22-performance-scaling.md) |
 >
 > **核心原則**：Callback handler 的職責只有「驗簽 + 落庫 + 回應 `1|OK`」，業務邏輯必須在回應後才處理。
 
@@ -235,7 +235,7 @@ return '1|OK'  # 必須回應
 | **B2C 發票（線上折讓）** | 未公開 | 未公開 | 未公開 | — |
 | **OrderResultURL**（所有服務） | — | **不重試** | 前端跳轉，一次性，不重試 | — |
 
-> **重試停止後應對策略**：AIO 金流重試上限到達後，ECPay 不再主動通知，應設定每日排程呼叫 `QueryTradeInfo` 比對對帳檔，補查遺漏訂單。其他服務重試上限未公開，建議每日對帳（見 [guides/23 §對帳最佳實踐](./23-performance-scaling.md)）。
+> **重試停止後應對策略**：AIO 金流重試上限到達後，ECPay 不再主動通知，應設定每日排程呼叫 `QueryTradeInfo` 比對對帳檔，補查遺漏訂單。其他服務重試上限未公開，建議每日對帳（見 [guides/22 §對帳最佳實踐](./22-performance-scaling.md)）。
 
 ## Callback 認證方式速查
 
@@ -1348,4 +1348,4 @@ CREATE TABLE transaction_evidence (
 - [guides/07-logistics-allinone.md](./07-logistics-allinone.md) — 全方位物流指南
 - [guides/13-checkmacvalue.md](./13-checkmacvalue.md) — CheckMacValue 驗證
 - [guides/14-aes-encryption.md](./14-aes-encryption.md) — AES 加解密
-- [guides/21-error-codes-reference.md](./21-error-codes-reference.md) — 錯誤碼參考
+- [guides/20-error-codes-reference.md](./20-error-codes-reference.md) — 錯誤碼參考

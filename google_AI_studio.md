@@ -142,7 +142,7 @@ Regardless of document or persona language, always respond entirely in the user'
 | `guides/01-payment-aio.md` | 信用卡 / ATM / 超商收款（最常用的功能） |
 | `guides/02a-ecpg-quickstart.md` | 站內付 2.0 首次串接快速路徑 |
 | `guides/15-troubleshooting.md` | 出問題時的除錯指南 |
-| `guides/20-http-protocol-reference.md` | 各 API 的 HTTP 格式規格 |
+| `guides/19-http-protocol-reference.md` | 各 API 的 HTTP 格式規格 |
 
 > **找檔案的方法**：`SKILL.md` 和 `SKILL_OPENAI.md` 在解壓縮後資料夾的最外層。
 > `guides/` 開頭的檔案在 `guides` 子資料夾裡。

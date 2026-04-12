@@ -2,7 +2,7 @@
 
 > 本檔為 AI 生成 ECPay 整合程式碼時的 Python 專屬規範。
 > 加密函式：[guides/13 §Python](../13-checkmacvalue.md) + [guides/14 §Python](../14-aes-encryption.md)
-> E2E 範例：[guides/00 §Quick Start](../00-getting-started.md) + [guides/24](../24-multi-language-integration.md)
+> E2E 範例：[guides/00 §Quick Start](../00-getting-started.md) + [guides/23](../23-multi-language-integration.md)
 
 ## 版本與環境
 

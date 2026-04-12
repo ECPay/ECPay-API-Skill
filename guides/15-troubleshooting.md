@@ -20,7 +20,7 @@ HTTP / 網路層除錯 / 日誌: line 738-822
 
 > 若需確認最新 API 錯誤碼定義或參數規格，可從 `references/` 對應檔案 web_fetch 取得最新官方文件。
 
-> 💡 **知道錯誤碼數字？** 直接前往 [guides/21 — 全服務錯誤碼集中參考](./21-error-codes-reference.md) 查找。本頁以**症狀**為導向排除問題。
+> 💡 **知道錯誤碼數字？** 直接前往 [guides/20 — 全服務錯誤碼集中參考](./20-error-codes-reference.md) 查找。本頁以**症狀**為導向排除問題。
 
 ## 症狀速查表
 
@@ -58,8 +58,8 @@ HTTP / 網路層除錯 / 日誌: line 738-822
 
 ## 快速排查決策樹
 
-> **錯誤碼查找**：如果你知道具體的 RtnCode 或 TransCode 數字，直接查 [guides/21-error-codes-reference.md](./21-error-codes-reference.md)。
-> 本指南聚焦於**排查流程**（不知道問題在哪時怎麼找），guides/21 聚焦於**錯誤碼對照**（知道錯誤碼要查含義）。
+> **錯誤碼查找**：如果你知道具體的 RtnCode 或 TransCode 數字，直接查 [guides/20-error-codes-reference.md](./20-error-codes-reference.md)。
+> 本指南聚焦於**排查流程**（不知道問題在哪時怎麼找），guides/20 聚焦於**錯誤碼對照**（知道錯誤碼要查含義）。
 
 ```
 API 回傳錯誤？
@@ -68,9 +68,9 @@ API 回傳錯誤？
 ├── RtnCode 不是 1
 │   ├── ATM: RtnCode=2 是正常的（取號成功）
 │   ├── CVS/BARCODE: RtnCode=10100073 是正常的
-│   ├── 金額相關: 10200050/10200105 → 查 [guides/21](./21-error-codes-reference.md)
+│   ├── 金額相關: 10200050/10200105 → 查 [guides/20](./20-error-codes-reference.md)
 │   ├── 訂單重複: 10200047 → 見第 12 節
-│   └── 其他: 查 guides/21-error-codes-reference.md
+│   └── 其他: 查 guides/20-error-codes-reference.md
 ├── AES 解密失敗 → 見第 13 節
 ├── 收不到通知 → 見第 2 節
 ├── 站內付2.0 TransCode ≠ 1 → 見第 15 節
@@ -167,7 +167,7 @@ AES-JSON 服務回傳：
 **高優先度（最常見失敗原因）：**
 1. **回應格式**：必須回應純字串 `1|OK`（不可有 HTML 標籤、BOM、換行、HTTP header 之外的內容）
 2. **URL 格式**：必須是完整的 `https://` URL（不可是 http://，不可是 localhost）
-3. **超時**：ReturnURL 必須在 **10 秒內**回應 `1|OK`；耗時邏輯需放入非同步佇列（見 [guides/23](./23-performance-scaling.md)）
+3. **超時**：ReturnURL 必須在 **10 秒內**回應 `1|OK`；耗時邏輯需放入非同步佇列（見 [guides/22](./22-performance-scaling.md)）
 
 **中優先度：**
 4. **埠號**：僅支援 80/443（不可用 8080、3000 等非標準埠）
@@ -182,7 +182,7 @@ AES-JSON 服務回傳：
 > **回應超時值**：綠界等待 ReturnURL 回應約 **10 秒**。超時會被視為失敗並觸發重送。
 > **最佳實踐**：ReturnURL 只做狀態更新（驗證 + upsert + 回應 `1|OK`），
 > 耗時操作（開發票、建物流單、發通知信）放入非同步佇列。
-> 詳見 [guides/23-performance-scaling.md](./23-performance-scaling.md) §Webhook 佇列架構。
+> 詳見 [guides/22-performance-scaling.md](./22-performance-scaling.md) §Webhook 佇列架構。
 
 ### 根因快速確認流程（5 分鐘診斷）
 
@@ -211,7 +211,7 @@ AES-JSON 服務回傳：
   └─ 若格式正確但仍持續重試 → 確認處理時間 < 10 秒（耗時操作應異步化）
 ```
 
-**重送機制（AIO 金流）**：如果沒收到 `1|OK`，綠界會每 5-15 分鐘重送，每日最多 4 次（持續天數有上限，重試停止後需手動補查）。其他服務的重試頻率不同（站內付 2.0 約每 2 小時），完整對照見 [guides/22 §重試機制說明](./22-webhook-events-reference.md#重試機制說明)。
+**重送機制（AIO 金流）**：如果沒收到 `1|OK`，綠界會每 5-15 分鐘重送，每日最多 4 次（持續天數有上限，重試停止後需手動補查）。其他服務的重試頻率不同（站內付 2.0 約每 2 小時），完整對照見 [guides/21 §重試機制說明](./21-webhook-events-reference.md#重試機制說明)。
 
 ## 3. HTTP 403 Forbidden
 
@@ -226,7 +226,7 @@ AES-JSON 服務回傳：
 > - 觸發條件：短時間大量 API 呼叫（基於 IP + MerchantID）
 > - 恢復時間：約 30 分鐘
 > - 建議間隔：至少 200ms（每秒最多 5 次呼叫）
-> - 批次操作：使用佇列機制，見 [guides/23](./23-performance-scaling.md) §排隊機制
+> - 批次操作：使用佇列機制，見 [guides/22](./22-performance-scaling.md) §排隊機制
 
 ## 4. iOS LINE/Facebook 無法交易
 
@@ -657,7 +657,7 @@ ECPay 所有服務僅支援 **新台幣 (TWD)**，不支援多幣別。
 | MerchantID 是否在外層 JSON 和 Data 兩層都填 | **兩層都必須填寫**，缺少任何一層**都會**導致驗證失敗 |
 | AES 加密方式是否 AES-128-CBC（不是 AES-256） | 見 [guides/14-aes-encryption.md](./14-aes-encryption.md) |
 
-> 若 TransCode=1 但 RtnCode ≠ 1，是業務參數錯誤（如 Items 金額加總不等於 SalesAmount），查 [guides/21](./21-error-codes-reference.md)。
+> 若 TransCode=1 但 RtnCode ≠ 1，是業務參數錯誤（如 Items 金額加總不等於 SalesAmount），查 [guides/20](./20-error-codes-reference.md)。
 
 ---
 
@@ -840,7 +840,7 @@ def mask_sensitive_data(data: dict) -> dict:
 
 ## 跨服務 Top 5 錯誤碼速查
 
-> 以下為各服務最常見的錯誤情境。完整錯誤碼清單見 [guides/21-error-codes-reference.md](./21-error-codes-reference.md)。
+> 以下為各服務最常見的錯誤情境。完整錯誤碼清單見 [guides/20-error-codes-reference.md](./20-error-codes-reference.md)。
 
 ### 站內付 2.0（AES-JSON）
 
@@ -1175,7 +1175,7 @@ print(base64.b64encode(c.encrypt(pad(plain.encode(), 16))).decode())
 
 **症狀**：同一筆訂單觸發兩次出貨或兩次發點數。
 
-**原因**：站內付 2.0 的 ReturnURL 在未收到 `1|OK` 確認前約每 2 小時重試（次數未公開）。若你的 ReturnURL handler 未做冪等性保護，高峰期或伺服器短暫逾時時會被多次執行業務邏輯。完整重試頻率對照見 [guides/22 §重試機制說明](./22-webhook-events-reference.md#重試機制說明)。
+**原因**：站內付 2.0 的 ReturnURL 在未收到 `1|OK` 確認前約每 2 小時重試（次數未公開）。若你的 ReturnURL handler 未做冪等性保護，高峰期或伺服器短暫逾時時會被多次執行業務邏輯。完整重試頻率對照見 [guides/21 §重試機制說明](./21-webhook-events-reference.md#重試機制說明)。
 
 **解法**：在資料庫層用 `MerchantTradeNo` 的唯一約束做原子操作，詳細實作見 [guides/02c §正式環境實作注意事項](./02c-ecpg-app-production.md#正式環境實作注意事項)。
 
@@ -1256,7 +1256,7 @@ print(base64.b64encode(c.encrypt(pad(plain.encode(), 16))).decode())
 - 上線檢查：[guides/16-go-live-checklist.md](./16-go-live-checklist.md)
 - POS 刷卡機：[guides/17-hardware-services.md §POS 刷卡機串接指引](./17-hardware-services.md#pos-刷卡機串接指引)
 - 直播收款：[guides/17-hardware-services.md §直播收款指引](./17-hardware-services.md#直播收款指引)
-- 離線發票：[guides/19-invoice-offline.md](./19-invoice-offline.md)
-- 錯誤碼集中參考：見 [guides/21-error-codes-reference.md](./21-error-codes-reference.md)
-- Callback 處理：見 [guides/22-webhook-events-reference.md](./22-webhook-events-reference.md)
-- 效能與擴展：見 [guides/23-performance-scaling.md](./23-performance-scaling.md)
+- 離線發票：[guides/18-invoice-offline.md](./18-invoice-offline.md)
+- 錯誤碼集中參考：見 [guides/20-error-codes-reference.md](./20-error-codes-reference.md)
+- Callback 處理：見 [guides/21-webhook-events-reference.md](./21-webhook-events-reference.md)
+- 效能與擴展：見 [guides/22-performance-scaling.md](./22-performance-scaling.md)

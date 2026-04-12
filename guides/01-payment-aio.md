@@ -4,9 +4,9 @@
 
 > **非 PHP 開發者？** 建議閱讀順序：
 > 1. [guides/13](./13-checkmacvalue.md) — 實作你的語言的 CheckMacValue，並通過測試向量驗證
-> 2. [guides/20](./20-http-protocol-reference.md) — 確認 AIO 的 HTTP 請求格式（Content-Type、回應格式）
+> 2. [guides/19](./19-http-protocol-reference.md) — 確認 AIO 的 HTTP 請求格式（Content-Type、回應格式）
 > 3. 回到本文 — 理解 AIO 整合流程和參數，將 PHP 範例翻譯為你的語言
-> 4. [guides/24](./24-multi-language-integration.md) — 完整多語言 E2E 範例和 Checklist
+> 4. [guides/23](./23-multi-language-integration.md) — 完整多語言 E2E 範例和 Checklist
 
 ## 概述
 
@@ -115,7 +115,7 @@ echo $autoSubmitFormService->generate($input, 'https://payment-stage.ecpay.com.t
 
 > ⚠️ 必須回應 **`1|OK`**，否則綠界會每 5-15 分鐘重試，最多每日 4 次。
 >
-> 💡 **同時整合多服務？** 不同 ECPay 服務的 Callback 格式各異（JSON vs Form POST、AES 加密 vs 純字串）。完整對照見 [guides/22 Callback 格式速查表](./22-webhook-events-reference.md)。
+> 💡 **同時整合多服務？** 不同 ECPay 服務的 Callback 格式各異（JSON vs Form POST、AES 加密 vs 純字串）。完整對照見 [guides/21 Callback 格式速查表](./21-webhook-events-reference.md)。
 
 ```php
 // ReturnURL 處理（scripts/SDK_PHP/example/Payment/Aio/GetCheckoutResponse.php）
@@ -232,7 +232,7 @@ app.post('/ecpay/notify', (req, res) => {
 > | ReturnURL 完全沒有被呼叫 | ReturnURL 不可公開訪問（localhost 無效） |
 > | CheckMacValue 驗證失敗 | URL encode 順序問題，見 [guides/13 §URL encode](./13-checkmacvalue.md) |
 > | 同一筆收到多次通知 | 沒有回應 `1|OK`，綠界觸發重試 |
-> | RtnCode ≠ 1 | 查 [guides/21 §AIO 錯誤碼](./21-error-codes-reference.md) |
+> | RtnCode ≠ 1 | 查 [guides/20 §AIO 錯誤碼](./20-error-codes-reference.md) |
 
 > ✅ **步驟 3 成功標誌**
 >
@@ -280,7 +280,7 @@ $result = $postService->post([
 
 | 項目 | 規格 |
 |------|------|
-| 協議模式 | CMV-SHA256 — 詳見 [guides/20-http-protocol-reference.md](./20-http-protocol-reference.md) |
+| 協議模式 | CMV-SHA256 — 詳見 [guides/19-http-protocol-reference.md](./19-http-protocol-reference.md) |
 | HTTP 方法 | POST |
 | Content-Type | `application/x-www-form-urlencoded` |
 | 認證 | CheckMacValue（SHA256） — 詳見 [guides/13-checkmacvalue.md](./13-checkmacvalue.md) |
@@ -654,7 +654,7 @@ echo '1|OK';  // 必須回應
 - TLS 1.2 必須
 - 不可含特殊字元（分號、管道、反引號）
 - 重送機制：每 5-15 分鐘重送，每天最多 4 次
-- **10 秒超時**：耗時操作（開發票、建物流單、發通知信）需放入非同步佇列，見 [guides/23](./23-performance-scaling.md) §Webhook 佇列架構
+- **10 秒超時**：耗時操作（開發票、建物流單、發通知信）需放入非同步佇列，見 [guides/22](./22-performance-scaling.md) §Webhook 佇列架構
 
 #### ReturnURL Handler 效能核查清單
 
@@ -666,7 +666,7 @@ echo '1|OK';  // 必須回應
 - [ ] 耗時操作（發信、開發票）放入非同步佇列，非同步處理
 - [ ] 先回應 `1|OK`，再執行後續業務邏輯
 
-詳細效能設計見 [guides/23 §效能調校](./23-performance-scaling.md)。
+詳細效能設計見 [guides/22 §效能調校](./22-performance-scaling.md)。
 
 > 🔍 **ReturnURL 整體失敗？** ①確認 URL 公開可訪問（非 localhost）；② CheckMacValue 驗證失敗→見 [guides/13](./13-checkmacvalue.md)；③多次收到相同通知→確認已回應 `1|OK`；④完全沒收到→查 [guides/15 §AIO ReturnURL 沒收到](./15-troubleshooting.md)。
 
@@ -1372,7 +1372,7 @@ AIO 表單是 POST 到 ECPay，不需要在 ECPay 端做 CSRF 保護。但你自
 | 10200043 | 3D 驗證失敗 | 請消費者重試 |
 | 10200105 | BNPL 金額未達最低 | TotalAmount 需 >= 3000 |
 
-> 完整錯誤碼清單見 [guides/21-error-codes-reference.md](./21-error-codes-reference.md)
+> 完整錯誤碼清單見 [guides/20-error-codes-reference.md](./20-error-codes-reference.md)
 
 ## 相關文件
 

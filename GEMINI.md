@@ -66,7 +66,7 @@
 - 跨境物流 → guides/08（AES-JSON）
 
 ### 電子發票
-- B2C → guides/04 | B2B → guides/05 | 離線 POS → guides/19
+- B2C → guides/04 | B2B → guides/05 | 離線 POS → guides/18
 
 ### 電子票證
 - guides/09（AES-JSON + CMV，CMV 公式與 AIO 不同）
@@ -80,16 +80,16 @@
 - CheckMacValue 失敗 → guides/13 + guides/15
 - AES 解密錯誤 → guides/14
 - 站內付 GetToken RtnCode ≠ 1（無明確錯誤訊息）→ ConsumerInfo 物件缺失或 Email/Phone 未填（guides/02 §ConsumerInfo）
-- 錯誤碼 → guides/21
-- Callback 未收到 / 重試機制 → guides/22
-- 日交易 >1,000 筆 / 高併發 / Rate Limiting → guides/23
+- 錯誤碼 → guides/20
+- Callback 未收到 / 重試機制 → guides/21
+- 日交易 >1,000 筆 / 高併發 / Rate Limiting → guides/22
 
 ### 上線
 - 準備上線 / Go-Live Checklist → guides/16
 
 ### 技術參考
-- HTTP 協定細節 → guides/20
-- 多語言整合範例 → guides/24
+- HTTP 協定細節 → guides/19
+- 多語言整合範例 → guides/23
 
 ## 關鍵規則（必須遵守）
 

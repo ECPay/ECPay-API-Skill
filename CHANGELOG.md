@@ -6,6 +6,10 @@
 
 ## [Unreleased]
 
+### 改善
+
+- **guides 重新編號：消除 18 號跳號**：原 18-livestream-payment（V1.0 存在）在 V2.5 時併入 `guides/17-hardware-services.md`，但刪除後遺留 17→19 跳號。本次將 guides/19-25 整體前移一號（19→18, 20→19, 21→20, 22→21, 23→22, 24→23, 25→24），同步更新 ~290 處跨檔引用（57 個檔案），確保 guides 編號 00-24 連續。同時修正 `SKILL_OPENAI.md` 對不存在的 guides/18 的幽靈引用
+
 ### 新增
 
 - **`commands/README.md` 新增資料夾說明**:原本 `commands/` 目錄只有 6 個 `.md` 指令檔案,沒有任何說明告訴讀者「這是什麼、做什麼、給誰用」。新增完整白話 README.md 涵蓋:① 30 秒看懂(Claude Code Slash Commands 機制) ② 6 個指令與用途對照表 ③ 四種角色關注程度對照(業務/FAE/客戶工程師/維護者) ④ 常見誤解三點(不裝就不能用 Skill?/可執行程式?/只給 Claude 以外用?) ⑤ 安裝步驟(專案層級 vs 個人全域) ⑥ 指令檔結構說明(給維護者) ⑦ 新增指令的 7 步 SOP。讓非 Claude Code 使用者、FAE、業務人員都能清楚知道這個資料夾的內容與目的
@@ -21,7 +25,7 @@
 
 ### 改善
 
-- **`test-vectors/README.md` 新增「為什麼只有這幾個驗證器?」完整設計說明段落**:解答 FAE/客戶/維護者的常見疑問「guides 教 12 種語言但 test-vectors 只有 5 個驗證器為什麼?」。內容包含:① 為什麼不需要 12 個 verifier(靜態向量資料跨語言保證 + 語言家族策略取樣 + 維護成本) ② 5 個驗證器各自代表的語言家族與堵的陷阱類別對照表 ③ 仍有 gap 的語言清單(TypeScript/Rust/Swift/Ruby/Kotlin/C++/PHP)含各自風險等級與間接保證來源 ④ 三道防線(靜態向量資料、guides/lang-standards/、guides/20 HTTP 協議規範)
+- **`test-vectors/README.md` 新增「為什麼只有這幾個驗證器?」完整設計說明段落**:解答 FAE/客戶/維護者的常見疑問「guides 教 12 種語言但 test-vectors 只有 5 個驗證器為什麼?」。內容包含:① 為什麼不需要 12 個 verifier(靜態向量資料跨語言保證 + 語言家族策略取樣 + 維護成本) ② 5 個驗證器各自代表的語言家族與堵的陷阱類別對照表 ③ 仍有 gap 的語言清單(TypeScript/Rust/Swift/Ruby/Kotlin/C++/PHP)含各自風險等級與間接保證來源 ④ 三道防線(靜態向量資料、guides/lang-standards/、guides/19 HTTP 協議規範)
 
 ### 移除
 
@@ -90,18 +94,18 @@
 ### 修正
 
 - **guides/lang-standards/{go,cpp,typescript}.md RqHeader.Revision 註解重寫**:原誤將「發票 B2C/B2B」合併為 `3.0.0`、站內付 2.0 誤寫為 `1.0.0`。正確為 B2C=`3.0.0`、B2B=`1.0.0`(+RqID);站內付 2.0/幕後授權/幕後取號/電子票證/直播收款**不使用** Revision
-- **guides/14 §使用場景 電子票證 Revision**:由 `1.0.0` 改為**不使用**,與 guides/09:220 及 guides/20:138「ECTicket RqHeader 僅需 Timestamp」統一
-- **guides/20:137 全方位物流 Revision**:補全為 `Timestamp + Revision: "1.0.0"`,並合併跨境物流同列
+- **guides/14 §使用場景 電子票證 Revision**:由 `1.0.0` 改為**不使用**,與 guides/09:220 及 guides/19:138「ECTicket RqHeader 僅需 Timestamp」統一
+- **guides/19:137 全方位物流 Revision**:補全為 `Timestamp + Revision: "1.0.0"`,並合併跨境物流同列
 - **guides/05 B2B 發票 ItemTax vs ItemTaxType 警告強化**:新增三層警告框、功能對照表補充稅額欄位橫列、Issue.php:31 SDK 已知 bug 獨立標註
 - **guides/04 新增 InvoiceNo vs InvoiceNumber 跨 B2C/B2B 欄位名差異警告**
-- **guides/04 & guides/19 SalesAmount 描述補充 `vat='0'/'1'` 依賴邏輯**:B2C/離線發票 SalesAmount、ItemPrice、ItemAmount 的含稅/未稅性隨 vat 參數變化
+- **guides/04 & guides/18 SalesAmount 描述補充 `vat='0'/'1'` 依賴邏輯**:B2C/離線發票 SalesAmount、ItemPrice、ItemAmount 的含稅/未稅性隨 vat 參數變化
 - **guides/17 POS 刷卡機 SHA-1 聲稱與直播收款 CMV 公式**:改為「廠商規格為準,實作前必須 web_fetch references 驗證」,避免誤導
-- **guides/20:787 & guides/22:42, 202 直播收款 Callback 回應格式措辭統一**:三處措辭改為一致表述
+- **guides/19:787 & guides/21:42, 202 直播收款 Callback 回應格式措辭統一**:三處措辭改為一致表述
 - **guides/04 & guides/05 ZeroTaxRateReason 移除「115 年 1 月 1 日生效」時效語氣**:該日期已過,改為強制要求
 - **guides/06:62 國內物流 MerchantTradeDate 日期格式**:補充 PHP `date('Y/m/d H:i:s')` 不補前導零陷阱
 - **guides/07 全方位物流 HTTP 協議速查**:新增 Timestamp 驗證期限(**5 分鐘**,與跨境物流/ECPG 10 分鐘差異)
-- **guides/20 協議總覽表**:新增「AIO 對帳檔下載 vendor.ecpay.com.tw」專用域名列
-- **guides/19 離線發票測試帳號 `3085340` 獨立警示**:列出不可用的其他帳號 2000132/3002607
+- **guides/19 協議總覽表**:新增「AIO 對帳檔下載 vendor.ecpay.com.tw」專用域名列
+- **guides/18 離線發票測試帳號 `3085340` 獨立警示**:列出不可用的其他帳號 2000132/3002607
 - **guides/09 純發行模式端點表前置差異提示**:`/api/Ticket/` vs 價金保管 `/api/issuance/` 路徑區別
 - **guides/10 購物車 WooCommerce/Magento/Shopify 說明補充**:WooCommerce 錯誤配置症狀;Magento 版本建議 2.4.5;Shopify 補充 web_fetch 提示;Composer 套件名來源加上 Packagist
 - **guides/17 直播收款 HTTP 速查 AES 模式標註**:補標「AES-128-CBC Block Mode + PKCS7 padding」、Key/IV 來源
@@ -118,14 +122,14 @@
 
 ### 新增
 
-- **guides/25 本地開發隧道指南**：全新 219 行指南，涵蓋 ngrok（安裝 + 隧道 + 限制）、Cloudflare Tunnel（固定 URL、免費）、localtunnel（零安裝）、RequestBin（僅供檢閱）、Callback 確認步驟與 3 條 FAQ（URL 過期、驗證、Docker）
+- **guides/24 本地開發隧道指南**：全新 219 行指南，涵蓋 ngrok（安裝 + 隧道 + 限制）、Cloudflare Tunnel（固定 URL、免費）、localtunnel（零安裝）、RequestBin（僅供檢閱）、Callback 確認步驟與 3 條 FAQ（URL 過期、驗證、Docker）
 - **guides/09 IssueType 對應必填欄位速查表**：新增 `§ IssueType 對應必填欄位速查` 4 行對照表（IssueType 1–4），一眼看清各票種的 TicketInfo 必填欄位組合
 - **guides/16 整合驗收清單**：上線前端到端驗收的 5 個子清單（AIO、ECPG、發票、物流、通用），20 條驗收標準，補齊原缺少的成功定義
-- **guides/22 Callback 冪等性實作範例**：新增 PHP+MySQL（ON DUPLICATE KEY UPDATE）、Node.js+PostgreSQL（ON CONFLICT DO UPDATE + 已付款狀態守衛）、Python+SQLAlchemy（pg_insert on_conflict_do_update）三份可直接使用的實作片段
+- **guides/21 Callback 冪等性實作範例**：新增 PHP+MySQL（ON DUPLICATE KEY UPDATE）、Node.js+PostgreSQL（ON CONFLICT DO UPDATE + 已付款狀態守衛）、Python+SQLAlchemy（pg_insert on_conflict_do_update）三份可直接使用的實作片段
 - **guides/lang-standards/swift.md 完整補充**：新增 `aesUrlEncode` CharacterSet 完整實作、AES-JSON 三層結構型別定義（EcpayAesResponse / EcpayInnerResponse / GetTokenResponse structs）、Vapor Callback Handler（JSON POST + 整數 RtnCode）
 - **guides/lang-standards/rust.md 完整補充**：新增 `aes_url_encode`（percent_encoding crate + 自訂 AsciiSet）、Axum Callback Handler（Json extractor + tracing::error! + 整數 RtnCode）
 - **test-vectors 新增兩條測試向量**：`alphabetic-key-order-go-java`（說明 Go/Java HashMap key 排序差異）、`pkcs7-exact-block-boundary`（PKCS7 整塊邊界說明），補齊跨語言最常踩坑的驗證案例
-- **guides/24 決策導航表**：在語言快速導航前新增 `## 何時需要本指南？` 協定選擇速查表，幫助開發者依協定模式找到正確章節
+- **guides/23 決策導航表**：在語言快速導航前新增 `## 何時需要本指南？` 協定選擇速查表，幫助開發者依協定模式找到正確章節
 
 ### 修正
 
@@ -136,10 +140,10 @@
 - **guides/14 Go/Java JSON 序列化警告（High H-4）**：在 Go 與 Java 程式碼區塊前各插入顯眼 `⚠️ 序列化必查清單` 三項核查，涵蓋 struct tag / key 順序 / 整數型別等常見靜默失敗
 - **guides/15 5 分鐘根因診斷流程（Opt. O-7）**：在 §2（ReturnURL）與 §27（AIO ReturnURL）新增逐步診斷樹，含 PHP/Node.js 日誌片段與 4 條 URL 設定根因，縮短除錯時間
 - **guides/16 上線障礙後果說明（Opt. O-10）**：5 條紅燈項目各補充 `若未切換` 後果句（如：API 打到測試環境，不產生真實資金流動），強化清單的執行意義
-- **guides/24 語言快速導航行號校正（Opt. O-6）**：全部 10 個語言區段（Go/Java/C#/Kotlin/Ruby/Swift/Rust/Mobile/C/C++）的行號與 AI Section Index 完全同步（校正日期：2026-03-21）
+- **guides/23 語言快速導航行號校正（Opt. O-6）**：全部 10 個語言區段（Go/Java/C#/Kotlin/Ruby/Swift/Rust/Mobile/C/C++）的行號與 AI Section Index 完全同步（校正日期：2026-03-21）
 - **SKILL.md 新使用者引導（Opt. O-1）**：在工作流程標題下方新增 `📖 首次使用？從 guides/00 開始` 引導區塊
 - **SKILL.md Callback 格式速查表（High H-2）**：在語言陷阱速查表前新增 6 行 Callback 格式對照表（服務、URL 類型、格式、特殊欄位），補齊最常導致靜默失敗的格式差異
-- **SKILL.md 文件索引更新（Blocker B-4）**：guides/24 說明更新為 `Kotlin/Ruby/Swift/Rust 差異指南；C/C++ 最小骨架`；新增 guides/25 本地開發條目
+- **SKILL.md 文件索引更新（Blocker B-4）**：guides/23 說明更新為 `Kotlin/Ruby/Swift/Rust 差異指南；C/C++ 最小骨架`；新增 guides/24 本地開發條目
 - **guides/17 POS 與直播收款快速指引（Opt. O-13）**：新增 POS 整合 5 步驟表（CMV-SHA256 協定標注）與直播收款 5 步驟表（AES-JSON+CMV 協定，含 `1|OK` 回應格式說明）
 
 ### 工具
@@ -159,8 +163,8 @@
 ### 新增
 
 - **guides/11 場景一端到端 Mermaid 序列圖**：以 `sequenceDiagram` 呈現消費者→你的伺服器→ECPay 金流/發票/物流的完整互動時序，RtnCode 型別標注內嵌於圖中
-- **guides/22 各服務 Callback 重試規則對照表**：獨立表格列出 AIO/站內付 2.0/幕後授權/物流/電子票證/直播收款各自的重試間隔、最大次數、觸發條件與重試停止後應對策略
-- **guides/23 如何測定你的基線**：新增「基線建立步驟」4 步指引（選取穩定期→計算關鍵指標→設定警示門檻→記錄促銷期行為），補充「若無歷史資料（新服務）」的初始門檻建議
+- **guides/21 各服務 Callback 重試規則對照表**：獨立表格列出 AIO/站內付 2.0/幕後授權/物流/電子票證/直播收款各自的重試間隔、最大次數、觸發條件與重試停止後應對策略
+- **guides/22 如何測定你的基線**：新增「基線建立步驟」4 步指引（選取穩定期→計算關鍵指標→設定警示門檻→記錄促銷期行為），補充「若無歷史資料（新服務）」的初始門檻建議
 - **guides/08 AES-JSON 雙層錯誤檢查區塊**：跨境物流原缺少此必讀警告，補入完整 `⚠️ AES-JSON 開發者必讀：雙層錯誤檢查` 區塊（含 RtnCode **整數**型別標注）
 - **guides/00 lang-standards/ 快速索引**：新增 12 種語言的直連連結表（nodejs/python/typescript/go/java/csharp/kotlin/ruby/swift/rust/c/cpp），說明每份檔案涵蓋的內容
 - **guides/02a-c 延伸閱讀導航**：三個 ECPG 子指南各自新增「延伸閱讀」底部導航表，清楚標示本文位置並連結所有兄弟指南
@@ -172,7 +176,7 @@
 - **guides/00 新手最常踩的坑補入第 6 坑（ECPG 雙 Domain 混用）**：症狀為查詢/退款呼叫回 404，解法明確區分 `ecpg(-stage)` 與 `ecpayment(-stage)` 的用途
 - **README.md 測試帳號表補入 HashKey / HashIV**：原表僅列 MerchantID，補齊 HashKey、HashIV、協定欄位，並加入金流/物流/發票不可混用警告
 - **guides/04/07/08/09 RtnCode 整數型別標注**：AES-JSON 雙層檢查說明中，`RtnCode === 1` 補充 `（**整數** 1，非字串 '1'）`，消除型別混淆靜默失敗
-- **guides/20 §2.4 頂部 URLEncode 差異提示**：在 AES-JSON+CMV 小節最上方加入顯眼 ⚠️ 告示，提醒電子票證 URLEncode 與 AIO `ecpayUrlEncode` 不同
+- **guides/19 §2.4 頂部 URLEncode 差異提示**：在 AES-JSON+CMV 小節最上方加入顯眼 ⚠️ 告示，提醒電子票證 URLEncode 與 AIO `ecpayUrlEncode` 不同
 
 ### 工具
 
@@ -188,14 +192,14 @@
 
 ### 新增
 
-- **guides/24 C/C++ AES-JSON B2C 發票開立最小骨架**：新增 C + libcurl + cJSON 的 AES-JSON 最小 POST 骨架（B2C 發票開立），涵蓋 6 步驟（組裝內層 JSON → AES 加密 → 組裝外層 JSON → libcurl POST → 雙層錯誤檢查 → AES 解密回應），補齊 C/C++ 為唯一缺 AES-JSON 範例的語言；更新語言導航表標記 `✅ minimal`，更新 AI Section Index 行號
+- **guides/23 C/C++ AES-JSON B2C 發票開立最小骨架**：新增 C + libcurl + cJSON 的 AES-JSON 最小 POST 骨架（B2C 發票開立），涵蓋 6 步驟（組裝內層 JSON → AES 加密 → 組裝外層 JSON → libcurl POST → 雙層錯誤檢查 → AES 解密回應），補齊 C/C++ 為唯一缺 AES-JSON 範例的語言；更新語言導航表標記 `✅ minimal`，更新 AI Section Index 行號
 
 ### 修正（企業級多維審查）
 
-- **guides/13 電子票證 CMV 公式措辭統一**：將 `strtoupper(SHA256(toLowerCase(urlencode(...))))` 改為 `strtoupper(SHA256(URLEncode(...)))` 並明確說明 `URLEncode = urlencode() 後接 strtolower()，不做 .NET 字元替換`，與 guides/20 line 324 完全一致；修正原描述「`toLowerCase` 僅作用於 URL 編碼的輸入字串」的錯誤（實際作用於 urlencode 輸出結果）
+- **guides/13 電子票證 CMV 公式措辭統一**：將 `strtoupper(SHA256(toLowerCase(urlencode(...))))` 改為 `strtoupper(SHA256(URLEncode(...)))` 並明確說明 `URLEncode = urlencode() 後接 strtolower()，不做 .NET 字元替換`，與 guides/19 line 324 完全一致；修正原描述「`toLowerCase` 僅作用於 URL 編碼的輸入字串」的錯誤（實際作用於 urlencode 輸出結果）
 - **guides/14 AES URL Encode `%7E` 說明補充**：對照表「`~` 處理」欄位補充「AES URL Encode 不做 strtolower，故 hex 保持大寫 `%7E`（所有語言實作均統一如此）」，消除文件與程式碼之間的潛在歧義
 - **guides/05 B2B RqID UUID v4 格式規範**：RqID 補充 UUID v4 格式詳細說明（`xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx`、含連字符）及 Python/Node.js/Java/C#/Go 各語言產生方式
-- **guides/22 Callback 安全處理清單強化**：補充「何時需要佇列」決策矩陣（日交易 < 1,000 不需要 / > 1,000 建議 / 高並發必須），並重構清單為六步驟（驗簽→型別→業務狀態→冪等→立即回應→非同步後處理）
+- **guides/21 Callback 安全處理清單強化**：補充「何時需要佇列」決策矩陣（日交易 < 1,000 不需要 / > 1,000 建議 / 高並發必須），並重構清單為六步驟（驗簽→型別→業務狀態→冪等→立即回應→非同步後處理）
 
 ### 文件
 
@@ -248,26 +252,26 @@
 - **SKILL.md 語言陷阱速查表**：11 種語言的最常見 Bug + 解決方案 + 對應 guide 位置
 - **SKILL.md URL Encode 對照表**：`ecpayUrlEncode` vs `aesUrlEncode` 差異與混用後果
 - **SKILL.md 快查表新增 guides/12**：PHP 開發者 SDK 參考連結
-- **guides/22 RtnCode 型別警告**：Callback 參考頂部新增 CMV（字串）vs AES-JSON（整數）對照表
+- **guides/21 RtnCode 型別警告**：Callback 參考頂部新增 CMV（字串）vs AES-JSON（整數）對照表
 - **guides/15 帳號混用檢查（Step 0）**：CheckMacValue 排查流程最頂端加入帳號混用驗證
 - **guides/02 新手提示**：Domain 警告後新增 guides/02a 快速路徑導引
 - **AGENTS.md / GEMINI.md 同步註記**：標明核心內容同步自 SKILL.md
 - **guides/02 CreatePayment 回應型別定義**：新增 TypeScript interface 作為跨語言巢狀結構參考
 - **guides/00 Tier 0 體驗改善**：按鈕前新增錯誤預期警告，降低新手負面第一印象
-- **guides/20 直播收款端點修正**：「見官方文件」→「後台操作，無 API」（正確反映後台功能無 API 端點）
+- **guides/19 直播收款端點修正**：「見官方文件」→「後台操作，無 API」（正確反映後台功能無 API 端點）
 
 ### 修正（企業級審查）
 
-- **guides/24 Go `aesURLEncode` 補全**：補齊 `!'()*` 5 個字元替換，與 PHP `urlencode` 行為一致
+- **guides/23 Go `aesURLEncode` 補全**：補齊 `!'()*` 5 個字元替換，與 PHP `urlencode` 行為一致
 - **guides/14 Java/Kotlin `aesUrlEncode` 補 `!`**：`URLEncoder.encode` 不編碼 `!`，補 `.replace("!", "%21")`
-- **guides/13 ECTicket CMV 公式修正**：補齊 `strtoupper()` 外層，統一與 guides/09、guides/20 的公式描述
+- **guides/13 ECTicket CMV 公式修正**：補齊 `strtoupper()` 外層，統一與 guides/09、guides/19 的公式描述
 - **guides/13 C 語言 Windows 相容**：新增 `_stricmp` 條件編譯，支援 MSVC 環境
-- **guides/04 交叉引用修正**：guides/19 連結檔名 `19-offline-pos-invoice.md` → `19-invoice-offline.md`
+- **guides/04 交叉引用修正**：guides/18 連結檔名 `19-offline-pos-invoice.md` → `18-invoice-offline.md`
 - **SKILL.md 語言陷阱表擴充**：Java/C#/Go/Kotlin 補充 AES URL encode 陷阱（原僅列 CMV 陷阱）
 - **SKILL_OPENAI.md 必上傳數量修正**：12 → 14 個，與 SETUP.md 一致（含 SKILL_OPENAI.md 自身和 guides/02a）
 - **SKILL_OPENAI.md 規則合併**：Rule 23 和 28 重疊內容合併為單一 Callback 冪等性規則（28 條 → 27 條）
 - **validate-version-sync.sh 擴充**：新增 copilot-instructions.md 和 CONTRIBUTING.md 英文摘要的檢查
-- **CLAUDE.md guides/24 行數修正**：~992 → ~1310（反映 V1.1 新增 Java/C# E2E 後的實際行數）
+- **CLAUDE.md guides/23 行數修正**：~992 → ~1310（反映 V1.1 新增 Java/C# E2E 後的實際行數）
 
 ### 移除
 
@@ -290,8 +294,8 @@
 
 ### 新增
 
-- **Java 完整 E2E**：CMV-SHA256 AIO 信用卡付款 Web Server（JDK 11+，零外部依賴）— guides/24
-- **C# 完整 E2E**：CMV-SHA256 AIO 信用卡付款 ASP.NET Core Minimal API（.NET 6+）— guides/24
+- **Java 完整 E2E**：CMV-SHA256 AIO 信用卡付款 Web Server（JDK 11+，零外部依賴）— guides/23
+- **C# 完整 E2E**：CMV-SHA256 AIO 信用卡付款 ASP.NET Core Minimal API（.NET 6+）— guides/23
 - Java/C# 從差異指南升級為「E2E + AES 差異指南」
 
 ### 變更
@@ -311,7 +315,7 @@
 - 初始版本發布
 - 25 份整合指南（guides/00–24），涵蓋金流、物流、電子發票、電子票證、直播收款、離線 POS
 - 19 份即時 API 規格 URL 索引 + 1 份索引說明（references/），共 431 個官方文件 URL
-- 12 種程式語言的加密實作（guides/13、14）與 E2E 範例（guides/24）
+- 12 種程式語言的加密實作（guides/13、14）與 E2E 範例（guides/23）
 - 18 個加密測試向量（test-vectors/），含 CheckMacValue SHA256/MD5、AES-128-CBC、URL 編碼
 - 多平台入口：SKILL.md（Claude/Copilot/Cursor）、SKILL_OPENAI.md（ChatGPT GPTs）、AGENTS.md（Codex CLI）、GEMINI.md（Gemini CLI）
 - 6 個 Claude Code 快速指令（commands/）

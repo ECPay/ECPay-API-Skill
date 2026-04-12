@@ -69,7 +69,7 @@ If the request is ambiguous (e.g., "串接信用卡付款" without specifying fr
 - UnionPay → 站內付 2.0 (`ChoosePaymentList="6"`, guides/02) or AIO (`ChoosePayment=Credit`, `UnionPay=1`, guides/01)
 - BNPL (Buy Now Pay Later) → AIO (`ChoosePayment=BNPL`, minimum 3,000 TWD) (guides/01)
 - Bind card for quick pay → 站內付 2.0 Bind Card (guides/02 §綁卡付款流程)
-- Mobile App (iOS/Android) → 站內付 2.0 (guides/02 + guides/24 Mobile App section)
+- Mobile App (iOS/Android) → 站內付 2.0 (guides/02 + guides/23 Mobile App section)
 - Physical POS / Live streaming → guides/17-hardware-services.md | Shopify → guides/10
 - Order query / reconciliation → guides/01 §QueryTradeInfo (AIO) / guides/02 §查詢 (站內付 2.0) / guides/03 §查詢訂單 (backend auth reconciliation)
 - Switching from staging to production → guides/02 §正式環境切換清單
@@ -82,14 +82,14 @@ If the request is ambiguous (e.g., "串接信用卡付款" without specifying fr
 - Query logistics status → Domestic: guides/06 §QueryLogisticsTradeInfo / All-in-One: guides/07 §QueryLogisticsTradeInfo / Cross-border: guides/08 §查詢
 
 ## E-Invoice
-- B2C → guides/04 | B2B → guides/05 | Offline POS → guides/19
+- B2C → guides/04 | B2B → guides/05 | Offline POS → guides/18
 
 ## Debugging
 - CheckMacValue failure → guides/13 + guides/15
 - AES decryption error → guides/14
-- Error codes → guides/21
-- Callback not received → guides/22
-- High volume / rate limiting / HTTP 403 → guides/23
+- Error codes → guides/20
+- Callback not received → guides/21
+- High volume / rate limiting / HTTP 403 → guides/22
 
 ## E-Ticket
 - guides/09 (AES-JSON + CMV). E-ticket requires CheckMacValue (SHA256) on top of AES — formula differs from AIO. Test accounts in guides/09 §Test Accounts.
@@ -103,8 +103,8 @@ If the request is ambiguous (e.g., "串接信用卡付款" without specifying fr
 - Deployment / Go-Live Checklist → guides/16
 
 ## Reference
-- HTTP protocol details (endpoints, auth, response formats) → guides/20
-- Multi-language integration (non-PHP) → guides/24
+- HTTP protocol details (endpoints, auth, response formats) → guides/19
+- Multi-language integration (non-PHP) → guides/23
 - SDK structure and PHP examples → guides/12
 
 ## Refund / Void
@@ -192,14 +192,14 @@ All staging (`*-stage.ecpay.com.tw`) and production domain mappings are in SKILL
 
 Search the uploaded Knowledge Files first. Do not assume every repository guide is available in this GPT.
 
-In the recommended OpenAI setup, the uploaded files are: `SKILL.md`, guides `00`, `01`, `02`, `02a`, `03`, `04`, `05`, `06`, `07`, `09`, `11`, `12`, `13`, `14`, `15`, `16`, `20`, `21`, `22`, and `24`. (Sub-guides `02b` and `02c` are optional — upload only if your users integrate ATM/CVS or App payment specifically.)
+In the recommended OpenAI setup, the uploaded files are: `SKILL.md`, guides `00`, `01`, `02`, `02a`, `03`, `04`, `05`, `06`, `07`, `09`, `11`, `12`, `13`, `14`, `15`, `16`, `19`, `20`, `21`, and `23`. (Sub-guides `02b` and `02c` are optional — upload only if your users integrate ATM/CVS or App payment specifically.)
 
 **Priority guidance** (OpenAI has a 20-file upload limit):
-- **Must upload (14 files)**: `SKILL_OPENAI.md`, `SKILL.md`, guides `01`, `02`, `02a`, `03`, `04`, `13`, `14`, `15`, `20`, `21`, `22`, `24` — these cover core payment, encryption, debugging and multi-language.
+- **Must upload (14 files)**: `SKILL_OPENAI.md`, `SKILL.md`, guides `01`, `02`, `02a`, `03`, `04`, `13`, `14`, `15`, `19`, `20`, `21`, `23` — these cover core payment, encryption, debugging and multi-language.
 - **Recommended upload (8 files)**: guides `00`, `05`, `06`, `07`, `09`, `11`, `12`, `16` — these cover logistics, invoices, e-tickets, and go-live checklist.
 - If you hit the 20-file limit, you can omit some recommended files; use Web Search on `developers.ecpay.com.tw` to cover the gaps.
 
-Some topics may not be uploaded (20-file limit). If missing, use Web Search on `developers.ecpay.com.tw`. For repo-only guides (e.g., `10`, `17`, `18`, `23`), Web Search cannot fully replace them — recommend swapping a lower-priority upload.
+Some topics may not be uploaded (20-file limit). If missing, use Web Search on `developers.ecpay.com.tw`. For repo-only guides (e.g., `10`, `17`, `18`, `22`), Web Search cannot fully replace them — recommend swapping a lower-priority upload.
 
 # Language-Specific Traps
 
@@ -216,7 +216,7 @@ Other traps (PKCS7 padding, JSON key order, compact JSON, `'` encoding, HTML esc
 1. Code must compile/run directly — include install commands and minimum versions.
 2. **Fetch latest API spec via Web Search** at `developers.ecpay.com.tw` before generating code. Guide parameter tables are snapshots.
 3. Preserve exactly: endpoint URLs, parameter names, JSON structure, encryption logic, callback response format.
-4. Reference guides/20 for HTTP details, guides/13 or 14 for encryption.
+4. Reference guides/19 for HTTP details, guides/13 or 14 for encryption.
 5. **Unwrap PHP SDK abstractions**: Before translating, verify each `$_POST`/`$_GET`'s actual Content-Type (form-urlencoded vs JSON), SDK methods' underlying HTTP behavior, return value types (string vs object), and implicit behaviors (3D Secure redirect, auto-decryption). These are hidden by PHP SDK and absent from API docs.
 6. **Load language coding standards**: When generating non-PHP code, load `guides/lang-standards/{language}.md` first — it specifies naming conventions, type definitions, error handling, HTTP client config, callback handler template, and timing-safe comparison for that language. If the lang-standards file is not in your uploaded Knowledge Files, use Web Search to find idiomatic conventions for the target language, and always apply timing-safe comparison (see rule 18 in Safety Rules).
 

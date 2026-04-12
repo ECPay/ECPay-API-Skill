@@ -179,7 +179,7 @@ AI 生成代碼常見錯誤: line 1305-1328
 
 | 項目 | 規格 |
 |------|------|
-| 協議模式 | AES-JSON — 詳見 [guides/20-http-protocol-reference.md](./20-http-protocol-reference.md) |
+| 協議模式 | AES-JSON — 詳見 [guides/19-http-protocol-reference.md](./19-http-protocol-reference.md) |
 | HTTP 方法 | POST |
 | Content-Type | `application/json` |
 | 認證 | AES-128-CBC 加密 Data 欄位 — 詳見 [guides/14-aes-encryption.md](./14-aes-encryption.md) |
@@ -188,7 +188,7 @@ AI 生成代碼常見錯誤: line 1305-1328
 | 回應結構 | 三層 JSON（TransCode → 解密 Data → RtnCode） |
 | Callback 回應 | `1\|OK`（官方規格 9058.md） |
 
-> **注意**：站內付2.0 使用**兩個不同 domain** — Token 相關（GetTokenbyTrade/GetTokenbyUser/CreatePayment）走 `ecpg`，查詢/請退款走 `ecpayment`。詳見 [guides/20 站內付2.0 端點表](./20-http-protocol-reference.md)。
+> **注意**：站內付2.0 使用**兩個不同 domain** — Token 相關（GetTokenbyTrade/GetTokenbyUser/CreatePayment）走 `ecpg`，查詢/請退款走 `ecpayment`。詳見 [guides/19 站內付2.0 端點表](./19-http-protocol-reference.md)。
 
 > ⚠️ **SNAPSHOT 2026-03** | 來源：`references/Payment/站內付2.0API技術文件Web.md` 及 `references/Payment/站內付2.0API技術文件App.md`
 > 以下端點及參數僅供整合流程理解，不可直接作為程式碼生成依據。**生成程式碼前必須 web_fetch 來源文件取得最新規格。**
@@ -1324,7 +1324,7 @@ Content-Security-Policy: script-src 'self' https://ecpg-stage.ecpay.com.tw https
 | 14 | 用 `if (errMsg)` 檢查 SDK callback 錯誤 | 必須用 **`if (errMsg != null)`**（官方 SDK 寫法）。`errMsg` 空字串是 falsy 但不代表無錯誤，此時 `paymentInfo` 可能為 null | `null.PayToken` 拋例外；或 null 被送到後端 |
 | 15 | 對 PayToken 做正規表達式格式驗證（如 `/^[a-f0-9]+$/`、限制長度 ≤ 200） | PayToken 是 SDK 內部產生的值，**格式未定義**（可能含 `.`、`-`、`:`、`%` 等字元，或為 JWT 格式，長度可能超過 200）。僅需確認 `typeof === 'string' && length > 0` | 合法 PayToken 被後端攔截，付款失敗 |
 
-> 完整錯誤碼含義見 [guides/15-troubleshooting.md](./15-troubleshooting.md) 和 [guides/21-error-codes-reference.md](./21-error-codes-reference.md)
+> 完整錯誤碼含義見 [guides/15-troubleshooting.md](./15-troubleshooting.md) 和 [guides/20-error-codes-reference.md](./20-error-codes-reference.md)
 
 ## 完整範例檔案對照
 

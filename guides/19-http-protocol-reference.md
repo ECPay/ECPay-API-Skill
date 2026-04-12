@@ -23,7 +23,7 @@ ECPay 服務使用 **4 個 HTTP 協議模式**（CMV-SHA256 / AES-JSON / AES-JSO
 | 非信用卡幕後取號 | AES-JSON | application/json | AES Data | AES-128-CBC | ecpayment.ecpay.com.tw | [03](./03-payment-backend.md) |
 | B2C 電子發票 | AES-JSON | application/json | AES Data | AES-128-CBC | einvoice.ecpay.com.tw | [04](./04-invoice-b2c.md) |
 | B2B 電子發票 | AES-JSON* | application/json | AES Data | AES-128-CBC | einvoice.ecpay.com.tw | [05](./05-invoice-b2b.md) |
-| 離線電子發票 | AES-JSON | application/json | AES Data | AES-128-CBC | einvoice.ecpay.com.tw | [19](./19-invoice-offline.md) |
+| 離線電子發票 | AES-JSON | application/json | AES Data | AES-128-CBC | einvoice.ecpay.com.tw | [18](./18-invoice-offline.md) |
 | 全方位物流 v2 | AES-JSON | application/json | AES Data | AES-128-CBC | logistics.ecpay.com.tw | [07](./07-logistics-allinone.md) |
 | 跨境物流 | AES-JSON | application/json | AES Data | AES-128-CBC | logistics.ecpay.com.tw | [08](./08-logistics-crossborder.md) |
 | 電子票證（3 種模式） | AES-JSON + CMV | application/json | AES Data + CheckMacValue | AES-128-CBC + SHA256 | ecticket.ecpay.com.tw | [09](./09-ecticket.md) |
@@ -436,7 +436,7 @@ MerchantID=2000132&MerchantTradeDate=2026%2f03%2f05+12%3a00%3a00&LogisticsType=C
 | Callback Handler 處理 | 10 秒內回應 | ECPay 期望快速回應，超時會視為失敗並重試 |
 | AIO 查詢 Timestamp | 3 分鐘有效 | AIO `QueryTradeInfo` 的 `TimeStamp` 有效期僅 **3 分鐘**（非 10 分鐘），逾時需重新產生 |
 
-> 各語言 HTTP Client 的 Timeout 設定方式見 [guides/24 §HTTP Client 推薦表](./24-multi-language-integration.md)。
+> 各語言 HTTP Client 的 Timeout 設定方式見 [guides/23 §HTTP Client 推薦表](./23-multi-language-integration.md)。
 
 ---
 
@@ -459,7 +459,7 @@ MerchantID=2000132&MerchantTradeDate=2026%2f03%2f05+12%3a00%3a00&LogisticsType=C
 | **B2C 電子發票** | AES-JSON | `einvoice-stage.ecpay.com.tw` | `einvoice.ecpay.com.tw` | 26 | [guides/04](./04-invoice-b2c.md) |
 | **B2B 發票（交換）** | AES-JSON* | `einvoice-stage.ecpay.com.tw` | `einvoice.ecpay.com.tw` | 30 | [guides/05](./05-invoice-b2b.md) |
 | **B2B 發票（存證）** | AES-JSON* | `einvoice-stage.ecpay.com.tw` | `einvoice.ecpay.com.tw` | 17 | [guides/05](./05-invoice-b2b.md) |
-| **離線電子發票** | AES-JSON | `einvoice-stage.ecpay.com.tw` | `einvoice.ecpay.com.tw` | 12 | [guides/19](./19-invoice-offline.md) |
+| **離線電子發票** | AES-JSON | `einvoice-stage.ecpay.com.tw` | `einvoice.ecpay.com.tw` | 12 | [guides/18](./18-invoice-offline.md) |
 | **國內物流** | CMV-MD5 | `logistics-stage.ecpay.com.tw` | `logistics.ecpay.com.tw` | 18 | [guides/06](./06-logistics-domestic.md) |
 | **全方位物流 v2** | AES-JSON | `logistics-stage.ecpay.com.tw` | `logistics.ecpay.com.tw` | 14 | [guides/07](./07-logistics-allinone.md) |
 | **跨境物流** | AES-JSON | `logistics-stage.ecpay.com.tw` | `logistics.ecpay.com.tw` | 5 | [guides/08](./08-logistics-crossborder.md) |
@@ -775,7 +775,7 @@ MerchantID=2000132&MerchantTradeDate=2026%2f03%2f05+12%3a00%3a00&LogisticsType=C
 
 ### 4.2 回應格式彙總
 
-> 完整 Callback 總覽表（含所有服務、URL 欄位名、觸發時機、重試機制）見 [guides/22-webhook-events-reference.md](./22-webhook-events-reference.md) §Callback 總覽表。
+> 完整 Callback 總覽表（含所有服務、URL 欄位名、觸發時機、重試機制）見 [guides/21-webhook-events-reference.md](./21-webhook-events-reference.md) §Callback 總覽表。
 > 以下為按協議模式分類的快速對照：
 
 | 協議模式 | Callback 發送格式 | 商家回應格式 |
@@ -969,7 +969,7 @@ curl -sI https://ecticket-stage.ecpay.com.tw | head -1
 - [guides/02-payment-ecpg.md](./02-payment-ecpg.md) — 站內付 2.0 指南
 - [guides/13-checkmacvalue.md](./13-checkmacvalue.md) — CheckMacValue 12 語言實作
 - [guides/14-aes-encryption.md](./14-aes-encryption.md) — AES 加解密 12 語言實作
-- [guides/22-webhook-events-reference.md](./22-webhook-events-reference.md) — Callback 統一參考
+- [guides/21-webhook-events-reference.md](./21-webhook-events-reference.md) — Callback 統一參考
 
 ### 官方 API 文件索引
 

@@ -31,8 +31,8 @@
 |------|------|---------|---------|
 | B2C 電子發票 | `Invoice/B2C電子發票介接技術文件.md` | 36 | [guides/04](../guides/04-invoice-b2c.md) |
 | B2B 發票（交換模式） | `Invoice/B2B電子發票API技術文件_交換模式.md` | 36 | [guides/05](../guides/05-invoice-b2b.md) |
-| B2B 發票（存證模式） | `Invoice/B2B電子發票API技術文件_存證模式.md` | 25 | [guides/05](../guides/05-invoice-b2b.md) |
-| 離線電子發票 | `Invoice/離線電子發票API技術文件.md` | 22 | [guides/19](../guides/19-invoice-offline.md) |
+| B2B 發票（存證模式） | `Invoice/B2B電子發票API技術文件_存證模式.md` | 24 | [guides/05](../guides/05-invoice-b2b.md) |
+| 離線電子發票 | `Invoice/離線電子發票API技術文件.md` | 21 | [guides/18](../guides/18-invoice-offline.md) |
 
 ### Logistics 物流
 
@@ -46,9 +46,9 @@
 
 | 服務 | 檔案 | URL 數量 | 對應指南 |
 |------|------|---------|---------|
-| 價金保管（使用後核銷） | `Ecticket/價金保管-使用後核銷API技術文件.md` | 21 | [guides/09](../guides/09-ecticket.md) |
+| 價金保管（使用後核銷） | `Ecticket/價金保管-使用後核銷API技術文件.md` | 20 | [guides/09](../guides/09-ecticket.md) |
 | 價金保管（分期核銷） | `Ecticket/價金保管-分期核銷API技術文件.md` | 12 | [guides/09](../guides/09-ecticket.md) |
-| 純發行（使用後核銷） | `Ecticket/純發行-使用後核銷API技術文件.md` | 24 | [guides/09](../guides/09-ecticket.md) |
+| 純發行（使用後核銷） | `Ecticket/純發行-使用後核銷API技術文件.md` | 23 | [guides/09](../guides/09-ecticket.md) |
 
 ### Cart 購物車
 

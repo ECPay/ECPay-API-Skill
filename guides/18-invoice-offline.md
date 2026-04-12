@@ -15,7 +15,7 @@
 1. 檢查外層 `TransCode === 1`（整數；否則加密格式有誤，無需解密 Data）
 2. 解密 `Data` 後，檢查內層 `RtnCode === 1`（**整數**，非字串 `"1"`）
 
-> ⚠️ `RtnCode` 在所有 AES-JSON 服務（含離線發票）解密後為**整數 `1`**，不同於 AIO 金流 Callback 的字串 `"1"`。只檢查其中一層會導致錯誤漏檢。完整錯誤碼見 [guides/21](./21-error-codes-reference.md)。
+> ⚠️ `RtnCode` 在所有 AES-JSON 服務（含離線發票）解密後為**整數 `1`**，不同於 AIO 金流 Callback 的字串 `"1"`。只檢查其中一層會導致錯誤漏檢。完整錯誤碼見 [guides/20](./20-error-codes-reference.md)。
 
 ### 首次串接注意事項
 
@@ -59,7 +59,7 @@
 
 | 項目 | 規格 |
 |------|------|
-| 協議模式 | AES-JSON — 詳見 [guides/20-http-protocol-reference.md](./20-http-protocol-reference.md) |
+| 協議模式 | AES-JSON — 詳見 [guides/19-http-protocol-reference.md](./19-http-protocol-reference.md) |
 | HTTP 方法 | POST |
 | Content-Type | `application/json` |
 | 認證 | AES-128-CBC 加密 Data 欄位 — 詳見 [guides/14-aes-encryption.md](./14-aes-encryption.md) |

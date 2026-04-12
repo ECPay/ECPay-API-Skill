@@ -47,7 +47,7 @@ check_line() {
 
 echo "Validating AI Section Index..."
 
-for file in guides/13-checkmacvalue.md guides/14-aes-encryption.md guides/24-multi-language-integration.md; do
+for file in guides/13-checkmacvalue.md guides/14-aes-encryption.md guides/23-multi-language-integration.md; do
   if [ ! -f "$file" ]; then
     echo "SKIP: $file not found"
     continue
@@ -73,20 +73,20 @@ for file in guides/13-checkmacvalue.md guides/14-aes-encryption.md guides/24-mul
     done
 done
 
-# Phase 2: 交叉驗證 guides/24 導航表格與 AI Section Index 的起始行號一致
+# Phase 2: 交叉驗證 guides/23 導航表格與 AI Section Index 的起始行號一致
 echo ""
-echo "Cross-checking guides/24 navigation table against AI Section Index..."
+echo "Cross-checking guides/23 navigation table against AI Section Index..."
 
-guide24="guides/24-multi-language-integration.md"
-if [ -f "$guide24" ]; then
+guide23="guides/23-multi-language-integration.md"
+if [ -f "$guide23" ]; then
   # 從 AI Section Index HTML 註解中提取所有起始行號（格式: "Label: line NNN-MMM"）
   # 這些行號已由 Phase 1 驗證為指向正確的 heading
-  ai_starts=$(sed -n '/<!-- AI Section Index/,/-->/p' "$guide24" | \
+  ai_starts=$(sed -n '/<!-- AI Section Index/,/-->/p' "$guide23" | \
     "$GREP" -oP '(?<=: line )[0-9]+' | sort -n | uniq)
 
   # 從導航表格中提取語言列的起始行號
   # 匹配格式: "| **語言** | ... | line NNN-MMM |"
-  nav_starts=$("$GREP" -P '^\| \*\*' "$guide24" | \
+  nav_starts=$("$GREP" -P '^\| \*\*' "$guide23" | \
     "$GREP" -oP '\| line \K[0-9]+(?=-[0-9]+\s*\|)' || true)
 
   if [ -z "$nav_starts" ]; then
@@ -97,7 +97,7 @@ if [ -f "$guide24" ]; then
     while IFS= read -r nav_start; do
       [ -z "$nav_start" ] && continue
       if ! echo "$ai_starts" | grep -qxF "$nav_start"; then
-        echo "FAIL: guides/24 navigation table start line $nav_start not found in AI Section Index"
+        echo "FAIL: guides/23 navigation table start line $nav_start not found in AI Section Index"
         echo "  Valid AI Section Index start lines: $(echo "$ai_starts" | tr '\n' ' ')"
         echo "1" >> "$TMPFILE"
         phase2_errors=$((phase2_errors + 1))

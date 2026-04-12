@@ -311,7 +311,7 @@ git checkout v2.8   # 升級至新版本（以實際發布 tag 為準）
 |------|------|---------|
 | **金流** | AIO 全方位金流（All-In-One）、ECPG 線上金流（站內付 2.0、綁定信用卡代扣、幕後授權、幕後取號） | guides/01-03 |
 | **物流** | 國內物流（超商取貨 + 宅配）、全方位物流、跨境物流 | guides/06-08 |
-| **電子發票** | B2C（企業對消費者）、B2B（企業對企業，交換 + 存證模式）、離線 | guides/04-05, 19 |
+| **電子發票** | B2C（企業對消費者）、B2B（企業對企業，交換 + 存證模式）、離線 | guides/04-05, 18 |
 | **電子票證** | 價金保管（使用後核銷 / 分期核銷）、純發行 | guides/09 |
 | **購物車** | WooCommerce、OpenCart、Magento、Shopify | guides/10 |
 | **POS 刷卡機 + 直播收款** | 實體門市刷卡機串接 / 直播電商收款網址 | guides/17 |
@@ -335,7 +335,7 @@ git checkout v2.8   # 升級至新版本（以實際發布 tag 為準）
 
 ### 維護工具
 
-- **`scripts/validate-ai-index.sh`**：驗證 guides/13、14、24 中的 AI Section Index 行號是否準確（確認行號指向的行為 `#` 開頭的標題）。維護者更新這些 guide 的章節結構後建議執行此指令碼確認行號索引無誤。
+- **`scripts/validate-ai-index.sh`**：驗證 guides/13、14、23 中的 AI Section Index 行號是否準確（確認行號指向的行為 `#` 開頭的標題）。維護者更新這些 guide 的章節結構後建議執行此指令碼確認行號索引無誤。
 - **`scripts/validate-version-sync.sh`**：驗證 9 個平台入口文件（SKILL.md 為版本來源，另外 8 個被驗證）的版本號是否一致。版本號異動後執行：
   ```bash
   bash scripts/validate-version-sync.sh
@@ -363,7 +363,7 @@ git checkout v2.8   # 升級至新版本（以實際發布 tag 為準）
 
 | 步驟 | 指令碼 | 檢查內容 |
 |------|--------|---------|
-| 1 | `validate-ai-index.sh` | `guides/13`、`14`、`24` 的 AI Section Index 行號是否仍指向正確的 `#` 標題行（行號錯誤會讓 AI 查到錯誤章節） |
+| 1 | `validate-ai-index.sh` | `guides/13`、`14`、`23` 的 AI Section Index 行號是否仍指向正確的 `#` 標題行（行號錯誤會讓 AI 查到錯誤章節） |
 | 2 | `validate-version-sync.sh` | 9 個平台入口文件（SKILL.md、AGENTS.md、GEMINI.md 等）版本號是否完全一致 |
 | 3 | `validate-agents-parity.sh` | AGENTS.md（Codex CLI）↔ GEMINI.md（Gemini CLI）的決策樹、關鍵規則、測試帳號三大區段是否相同 |
 | 4 | `test-vectors/verify.py` | 21 個加密測試向量（CheckMacValue / AES / URL Encode）的計算結果是否與預期完全吻合 |
@@ -417,7 +417,6 @@ ECPay API 使用不同的認證和請求格式，本 Skill 完整涵蓋：
 | 02c | guides/02c-ecpg-app-production.md | App 整合 + Apple Pay + 正式環境 |
 | 03 | guides/03-payment-backend.md | 幕後授權 + 幕後取號——ECPG 服務之一 |
 | 17 | guides/17-hardware-services.md | 硬體與專用服務指引（POS 刷卡機 + 直播收款） |
-| 18 | — | （預留，供未來服務擴充使用） |
 
 ### 電子發票
 
@@ -425,7 +424,7 @@ ECPay API 使用不同的認證和請求格式，本 Skill 完整涵蓋：
 |---|------|------|
 | 04 | guides/04-invoice-b2c.md | B2C 電子發票（19 個 PHP 範例） |
 | 05 | guides/05-invoice-b2b.md | B2B 電子發票（23 個 PHP 範例） |
-| 19 | guides/19-invoice-offline.md | 離線電子發票指引 |
+| 18 | guides/18-invoice-offline.md | 離線電子發票指引 |
 
 ### 物流
 
@@ -449,9 +448,9 @@ ECPay API 使用不同的認證和請求格式，本 Skill 完整涵蓋：
 | 12 | guides/12-sdk-reference.md | PHP SDK 完整參考 |
 | 13 | guides/13-checkmacvalue.md | CheckMacValue 解說 + 12 語言實作 |
 | 14 | guides/14-aes-encryption.md | AES 加解密解說 + 12 語言實作 |
-| 20 | guides/20-http-protocol-reference.md | HTTP 協議參考（跨語言必讀） |
-| 21 | guides/21-error-codes-reference.md | 全服務錯誤碼集中參考 |
-| 22 | guides/22-webhook-events-reference.md | 統一 Callback/Webhook 參考 |
+| 19 | guides/19-http-protocol-reference.md | HTTP 協議參考（跨語言必讀） |
+| 20 | guides/20-error-codes-reference.md | 全服務錯誤碼集中參考 |
+| 21 | guides/21-webhook-events-reference.md | 統一 Callback/Webhook 參考 |
 
 ### 程式語言規範（guides/lang-standards/）
 
@@ -478,8 +477,8 @@ ECPay API 使用不同的認證和請求格式，本 Skill 完整涵蓋：
 |---|------|------|
 | 15 | guides/15-troubleshooting.md | 除錯指南 + 錯誤碼 + 常見陷阱 |
 | 16 | guides/16-go-live-checklist.md | 上線檢查清單 |
-| 23 | guides/23-performance-scaling.md | 效能與擴展性指引 |
-| 24 | guides/24-multi-language-integration.md | 多語言整合（Go/Java/C#/TS/Kotlin/Ruby E2E + Mobile App） |
+| 22 | guides/22-performance-scaling.md | 效能與擴展性指引 |
+| 23 | guides/23-multi-language-integration.md | 多語言整合（Go/Java/C#/TS/Kotlin/Ruby E2E + Mobile App） |
 
 ## 目錄結構
 
@@ -617,13 +616,13 @@ references/*/  →  取得「最新規格」
 ## 常見問題
 
 **Q：不用 PHP 可以嗎？**
-A：可以。本 Skill 支援 12 種語言的加密函式實作，並提供 HTTP 協議參考（guides/20）讓其他語言也能從零實作。PHP 範例作為翻譯基底，AI 會自動轉換為你的目標語言。
+A：可以。本 Skill 支援 12 種語言的加密函式實作，並提供 HTTP 協議參考（guides/19）讓其他語言也能從零實作。PHP 範例作為翻譯基底，AI 會自動轉換為你的目標語言。
 
 **Q：AIO 和站內付 2.0 怎麼選？**
 A：AIO 會跳轉到綠界付款頁，整合最簡單；站內付 2.0 讓消費者在你的網站內完成付款，適合前後端分離架構（React/Vue/Angular）。詳見 guides/01 和 guides/02。
 
 **Q：Callback（付款通知）收不到怎麼辦？**
-A：參考 guides/15 §2 排查流程 + guides/22 各服務 Callback 格式彙總。常見原因：URL 不可達、未回應 `1|OK`、防火牆擋 ECPay IP。
+A：參考 guides/15 §2 排查流程 + guides/21 各服務 Callback 格式彙總。常見原因：URL 不可達、未回應 `1|OK`、防火牆擋 ECPay IP。
 
 **Q：怎麼從測試環境切換到正式環境？**
 A：參考 guides/16 上線檢查清單，逐項替換 MerchantID、HashKey/HashIV、API domain。

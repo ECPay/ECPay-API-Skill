@@ -65,11 +65,11 @@ SELECT status FROM orders WHERE merchant_trade_no = $1;
 
 ### ReturnURL Callback 的冪等處理
 
-冪等性 SQL 實作（含金流和物流 callback 的 upsert 範例）見 [guides/22 §冪等性實作建議](./22-webhook-events-reference.md#冪等性實作建議)。
+冪等性 SQL 實作（含金流和物流 callback 的 upsert 範例）見 [guides/21 §冪等性實作建議](./21-webhook-events-reference.md#冪等性實作建議)。
 
 ### 冪等 Webhook 設計最佳實踐
 
-完整冪等 Webhook 設計模式（含 Node.js / Python 範例、設計原則）見 [guides/22 §冪等性實作建議](./22-webhook-events-reference.md#冪等性實作建議)。
+完整冪等 Webhook 設計模式（含 Node.js / Python 範例、設計原則）見 [guides/21 §冪等性實作建議](./21-webhook-events-reference.md#冪等性實作建議)。
 
 ## Webhook 佇列架構
 
@@ -129,7 +129,7 @@ def query_trade_with_retry(merchant_trade_no, max_retries=5):
 - 重試頻率依服務不同：
   - **AIO 金流 / 非信用卡幕後取號 / 電子票證**：每 **5-15 分鐘**重送，每日最多 **4 次**（持續數天後停止）
   - **站內付 2.0 / 幕後授權 / 物流**：約每 **2 小時**重試（次數未公開，持續數天後停止）
-- 詳見 [guides/22](./22-webhook-events-reference.md) §Callback 總覽表
+- 詳見 [guides/21](./21-webhook-events-reference.md) §Callback 總覽表
 
 ### 兩者搭配的最佳實踐
 
@@ -157,7 +157,7 @@ COMMIT;
 
 | 監控項 | 正常範圍 | 警示條件 | 處理方式 |
 |--------|---------|---------|---------|
-| Callback 接收率 | 建立訂單數 ≈ 回呼數 | 差異 > 10% 超過 1 小時 | 啟動主動查詢恢復（見 [guides/22](./22-webhook-events-reference.md)） |
+| Callback 接收率 | 建立訂單數 ≈ 回呼數 | 差異 > 10% 超過 1 小時 | 啟動主動查詢恢復（見 [guides/21](./21-webhook-events-reference.md)） |
 | CMV/AES 驗證失敗率 | < 1% | > 5% | 檢查 HashKey/HashIV 是否更換或洩漏 |
 | 回呼處理時間 P95 | < 3 秒 | > 8 秒 | 移至 Queue 非同步處理（見上方佇列架構） |
 | 交易成功率 | > 95% | < 90% 持續 30 分鐘 | 暫停新訂單建立、檢查帳號/參數設定 |
@@ -230,5 +230,5 @@ COMMIT;
 
 - [guides/16-go-live-checklist.md](./16-go-live-checklist.md) — 上線檢查清單
 - [guides/15-troubleshooting.md](./15-troubleshooting.md) — 除錯指南
-- [guides/22-webhook-events-reference.md](./22-webhook-events-reference.md) — Callback 欄位定義
-- [guides/21-error-codes-reference.md](./21-error-codes-reference.md) — 錯誤碼參考
+- [guides/21-webhook-events-reference.md](./21-webhook-events-reference.md) — Callback 欄位定義
+- [guides/20-error-codes-reference.md](./20-error-codes-reference.md) — 錯誤碼參考

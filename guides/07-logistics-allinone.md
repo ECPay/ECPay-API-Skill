@@ -29,7 +29,7 @@
 
 > 全方位物流 v2 的 **callback 回應**也需要 AES 加密 JSON（三層結構），不同於國內物流的 `1|OK`。
 
-完整錯誤碼參考見 [guides/21](./21-error-codes-reference.md)。TransCode ≠ 1 排查見 [guides/15](./15-troubleshooting.md)。
+完整錯誤碼參考見 [guides/20](./20-error-codes-reference.md)。TransCode ≠ 1 排查見 [guides/15](./15-troubleshooting.md)。
 
 > ⚠️ **RqHeader 跨服務差異**：全方位物流的 RqHeader 需 `Timestamp` + `Revision: "1.0.0"`。其他 AES-JSON 服務不同：站內付 2.0 **不需要 Revision**、B2C 發票需 `Revision: "3.0.0"`。混用 RqHeader 格式會導致 TransCode ≠ 1。
 
@@ -380,7 +380,7 @@ app.post('/ecpay/logistics-notify', (req, res) => {
 
 | 項目 | 規格 |
 |------|------|
-| 協議模式 | AES-JSON — 詳見 [guides/20-http-protocol-reference.md](./20-http-protocol-reference.md) |
+| 協議模式 | AES-JSON — 詳見 [guides/19-http-protocol-reference.md](./19-http-protocol-reference.md) |
 | HTTP 方法 | POST |
 | Content-Type | `application/json` |
 | 認證 | AES-128-CBC 加密 Data 欄位 — 詳見 [guides/14-aes-encryption.md](./14-aes-encryption.md) |
@@ -390,7 +390,7 @@ app.post('/ecpay/logistics-notify', (req, res) => {
 | Revision | `1.0.0` |
 | Timestamp 驗證 | **5 分鐘**內有效(⚠️ 與跨境物流/ECPG 的 10 分鐘**不同**;每次送出前必須**即時呼叫 `time()`**,不可預先計算或快取,否則長時間調試或延遲重送會觸發 TransCode ≠ 1) |
 | 回應結構 | 三層 JSON(TransCode → 解密 Data → RtnCode) |
-| Callback 回應 | AES 加密 JSON(見 [guides/22](./22-webhook-events-reference.md)) |
+| Callback 回應 | AES 加密 JSON(見 [guides/21](./21-webhook-events-reference.md)) |
 
 > **注意**：全方位物流 v2 使用 **AES JSON**（AES-JSON），與國內物流的 **Form + CheckMacValue MD5**（CMV-MD5）完全不同。切勿混淆兩者的認證和請求格式。
 

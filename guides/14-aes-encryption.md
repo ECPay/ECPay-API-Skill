@@ -142,7 +142,7 @@ AES-JSON 服務的回應需依序做兩層錯誤檢查：
 | 使用場景 | AES 加密前（AES-JSON 服務） | CheckMacValue 計算（CMV-SHA256/CMV-MD5） |
 
 **PHP SDK 原始碼對照**:
-- AES:`AesService.php:96`(encrypt 時)與 `AesService.php:55`(decrypt 時)→ 直接呼叫 PHP 內建 `urlencode()` / `urldecode()`,無 lowercase、無 .NET 替換
+- AES:`AesService.php:96`(encrypt 時)與 `AesService.php:56`(decrypt 時)→ 直接呼叫 PHP 內建 `urlencode()` / `urldecode()`,無 lowercase、無 .NET 替換
 - CMV:`UrlService.php:13-48` → `urlencode()` + `strtolower()` + 7 字元 .NET 替換(`%2d`→`-`、`%5f`→`_`、`%2e`→`.`、`%21`→`!`、`%2a`→`*`、`%28`→`(`、`%29`→`)`)
 
 **各語言正確的 AES URL Encode**：

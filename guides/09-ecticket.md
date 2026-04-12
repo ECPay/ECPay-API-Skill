@@ -1,4 +1,4 @@
-> 對應 ECPay API 版本 | 基於 PHP SDK ecpay/sdk | 最後更新：2026-04
+> 對應 ECPay API 版本 | 基於 PHP SDK ecpay/sdk | 最後更新：2026-03
 
 # 電子票證整合指南
 

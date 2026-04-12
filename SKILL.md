@@ -282,6 +282,7 @@ HTTP 協議細節（端點/認證/回應格式）？→ 讀 guides/19-http-proto
 ├── 站內付 GetToken RtnCode ≠ 1（無明確錯誤訊息）→ **ConsumerInfo 物件缺失或 Email/Phone 未填**（讀 guides/02 ⓪ ConsumerInfo 規則）
 ├── 收到錯誤碼 → 讀 guides/20 錯誤碼反向索引
 ├── Callback/Webhook 收不到 → 讀 guides/21 失敗恢復策略
+├── 本機開發無法接收 Callback（localhost / 非標準 port）→ 讀 guides/24 tunneling 工具設定
 ├── 上線後交易異常 → 讀 guides/16 上線後觀察清單
 ├── 測試串接 → guides/00 Quick Start + 上方測試帳號，上線前逐項讀 guides/16 checklist
 └── 不確定該讀哪份文件 → 讀 guides/00 總覽

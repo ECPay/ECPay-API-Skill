@@ -38,7 +38,7 @@ CheckMacValue 是 ECPay 用於驗證請求/回應完整性的檢查碼。用於 
 
 ```
 1. filter()                    — 移除參數中既有的 CheckMacValue (CheckMacValueService.php:79)
-2. sort()                      — Key 不區分大小寫字典序排序 (strcasecmp,呼叫 ArrayService::sort)
+2. sort()                      — Key 不區分大小寫字典序排序 (strcasecmp,呼叫 ArrayService::naturalSort)
 3. toEncodeSourceString()      — "HashKey={key}&{k1=v1&k2=v2&...}&HashIV={iv}" (line 149-154)
 4. UrlService::ecpayUrlEncode()— urlencode → 轉小寫 → .NET 特殊字元替換 (UrlService.php:13-48,見下方 §ECPay 專用 URL Encode)
 5. generateHash()              — SHA256 或 MD5 (CheckMacValueService.php:98)

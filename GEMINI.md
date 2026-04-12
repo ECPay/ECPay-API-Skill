@@ -82,6 +82,7 @@
 - 站內付 GetToken RtnCode ≠ 1（無明確錯誤訊息）→ ConsumerInfo 物件缺失或 Email/Phone 未填（guides/02 §ConsumerInfo）
 - 錯誤碼 → guides/20
 - Callback 未收到 / 重試機制 → guides/21
+- 本機開發無法接收 Callback（localhost / 非標準 port）→ guides/24
 - 日交易 >1,000 筆 / 高併發 / Rate Limiting → guides/22
 
 ### 上線

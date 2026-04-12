@@ -89,6 +89,7 @@ If the request is ambiguous (e.g., "串接信用卡付款" without specifying fr
 - AES decryption error → guides/14
 - Error codes → guides/20
 - Callback not received → guides/21
+- Local development cannot receive Callback (localhost / non-standard port) → guides/24
 - High volume / rate limiting / HTTP 403 → guides/22
 
 ## E-Ticket

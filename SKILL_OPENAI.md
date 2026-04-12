@@ -104,6 +104,7 @@ If the request is ambiguous (e.g., "串接信用卡付款" without specifying fr
 - Deployment / Go-Live Checklist → guides/16
 
 ## Reference
+- Getting started with ECPay → guides/00 (overview, account setup, architecture)
 - HTTP protocol details (endpoints, auth, response formats) → guides/19
 - Multi-language integration (non-PHP) → guides/23
 - SDK structure and PHP examples → guides/12

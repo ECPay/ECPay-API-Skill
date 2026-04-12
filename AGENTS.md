@@ -56,14 +56,19 @@
 - 實體門市 POS → guides/17-hardware-services.md §POS 刷卡機串接指引
 - 直播收款 → guides/17-hardware-services.md §直播收款指引
 - Shopify → guides/10
-- 查詢訂單狀態 → guides/01 QueryTradeInfo 或 guides/02 查詢區段
+- 查詢訂單狀態 → AIO: guides/01 QueryTradeInfo / 站內付: guides/02 查詢區段 / 幕後授權: guides/03 查詢區段
 - 平台商多商戶（PlatformID）→ 需另簽平台商合約；PlatformID 參數已含於 guides/01, 02
-- 退款 → 信用卡當天：`Action=N`（取消授權）/ 隔日後：`Action=R`（退款）（guides/01 §信用卡請退款、guides/02 §DoAction）；非信用卡（ATM/CVS/條碼）無 API 退款，需透過綠界後台
+- 退款/作廢/取消 → 見下方「退款/作廢/取消」區段
+- 下載對帳檔 → guides/01 對帳區段（domain: vendor.ecpay.com.tw）
+- Mobile App（iOS/Android）→ 站內付 2.0（guides/02 + guides/23 Mobile App 區段）
+- 正式環境切換（站內付 2.0）→ guides/02 §正式環境切換清單 + guides/16
+- 代收付 vs 新型閘道模式 → SKILL.md §代收付 vs 新型閘道
 
 ### 物流
 - 國內超商取貨/宅配 → guides/06（CMV-MD5）
 - 全方位物流（新版）→ guides/07（AES-JSON）
 - 跨境物流 → guides/08（AES-JSON）
+- 查詢物流狀態 → 國內: guides/06 §查詢物流訂單 / 全方位: guides/07 §查詢物流訂單 / 跨境: guides/08 §查詢
 
 ### 電子發票
 - B2C → guides/04 | B2B → guides/05 | 離線 POS → guides/18
@@ -75,6 +80,16 @@
 
 ### 跨服務
 - 金流 + 發票 + 出貨 → guides/11
+
+### 退款/作廢/取消
+- 信用卡退款（AIO）→ guides/01 DoAction（當天 Action=N 取消授權 / 隔日後 Action=R 退款）
+- 信用卡退款（站內付）→ guides/02 §DoAction
+- 非信用卡（ATM/超商代碼/條碼）→ ⚠️ 無 API 退款，需透過綠界商家後台或聯繫客服
+- 訂閱（定期定額）取消/暫停 → guides/01 §定期定額 CreditCardPeriodAction
+- 發票作廢 → guides/04 §Invalid（B2C）/ guides/05 §Invalid（B2B）
+- 發票折讓 → guides/04 §Allowance（B2C）/ guides/05 §Allowance（B2B）
+- 物流退貨 → guides/06 逆物流區段
+- 跨服務退款（付款+發票+物流）→ guides/11 補償動作對照表
 
 ### 除錯
 - CheckMacValue 失敗 → guides/13 + guides/15
@@ -89,8 +104,10 @@
 - 準備上線 / Go-Live Checklist → guides/16
 
 ### 技術參考
+- 首次接觸 ECPay → guides/00（入門指南、帳號申請、架構概覽）
 - HTTP 協定細節 → guides/19
 - 多語言整合範例 → guides/23
+- PHP SDK 用法 → guides/12
 
 ## 關鍵規則（必須遵守）
 

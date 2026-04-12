@@ -219,7 +219,7 @@ ECPay 金流有兩種合約模式，**API 技術規格相同**，差異在於商
 │   ├── 站內付 2.0 → ChoosePaymentList="6"，UnionPayInfo（讀 guides/02）[預計 1h]
 │   └── AIO 信用卡頁面 → ChoosePayment=Credit，UnionPay=1（讀 guides/01 §信用卡一次付清參數）[預計 30m]
 ├── 非 PHP 語言完整範例 → 讀 guides/23-multi-language-integration.md（Go/Java/C#/TS/Kotlin/Ruby E2E + Mobile App）
-├── 查詢訂單狀態 → AIO: guides/01 QueryTradeInfo 區段 / 站內付: guides/02 查詢區段
+├── 查詢訂單狀態 → AIO: guides/01 QueryTradeInfo 區段 / 站內付: guides/02 查詢區段 / 幕後授權: guides/03 查詢區段
 ├── 下載對帳檔 → guides/01 對帳區段（注意 domain 為 vendor.ecpay.com.tw）
 ├── 平台商多商戶（PlatformID）→ 特約合作模式，需另簽平台商合約。參數已含在 guides/01、guides/02 參數表中，搜尋 PlatformID
 └── 其他 → 先讀 guides/00-getting-started.md 瞭解全貌
@@ -327,7 +327,7 @@ Callback/Webhook 接收架構？→ 讀 guides/21-webhook-events-reference.md（
 | AES 解密結果亂碼 | guides/14 §常見錯誤 |
 | Callback 收不到 | guides/15 §2 + guides/21 §Callback 回應格式速查 |
 | 如何退款 | guides/01 §信用卡請款 / 退款 / 取消 / guides/02 §請款 / 退款 |
-| 如何查訂單 | guides/01 §查詢訂單 / guides/02 §查詢 |
+| 如何查訂單 | guides/01 §查詢訂單 / guides/02 §查詢 / guides/03 §查詢 |
 | 如何對帳 | guides/01 §對帳（domain: vendor.ecpay.com.tw）|
 | 如何開發票 | guides/04 (B2C) / guides/05 (B2B) |
 | 處理 Callback / Webhook | guides/21（各服務 callback 回應格式彙總）|
@@ -450,7 +450,7 @@ Callback/Webhook 接收架構？→ 讀 guides/21-webhook-events-reference.md（
 1. 讀取 `guides/` 中對應指南，取得整合流程和架構邏輯
 2. 讀取 `scripts/SDK_PHP/example/` 中對應的 PHP 範例
 3. **從 references/ 即時讀取對應 API 的最新規格**：讀取 reference 檔案 → 找到對應章節 URL → web_fetch 取得最新參數表，以確保端點路徑、參數名稱、必填規則、回應格式為最新
-4. **摘取 API 頁面中的所有 ⚠ 注意事項**：web_fetch 取得的頁面通常包含注意事項段落，必須在回覆或程式碼註解中主動告知開發者
+4. **摘取 API 頁面中的所有 ⚠ 注意事項**：web_fetch 取得的頁面包含注意事項段落（若存在），必須在回覆或程式碼註解中主動告知開發者
 5. **注意不同付款方式/服務之間的語意差異**：相同參數名在不同服務中可能有不同單位（如 `StoreExpireDate` 在超商代碼=分鐘、條碼=天）、不同最低金額（BNPL ≥ 3000）、不同回傳值（`PaymentType` 回傳 `Credit_CreditCard` ≠ 送出的 `Credit`）、不同 Content-Type（金流=form-urlencoded、發票=json）。讀取 API 頁面時必須注意這些隱含差異
 6. **Timestamp 一律使用 Unix 秒數**（非毫秒）：JavaScript `Date.now()` 回傳毫秒，必須除以 1000 並取整
 7. **首次串接某服務時**（本次對話中第一次涉及該服務），同時 web_fetch 該服務的「介接注意事項」頁面（見下方 [§介接注意事項 URL 速查表](#介接注意事項-url-速查表)），摘取所有關鍵限制告知開發者

@@ -268,7 +268,7 @@ B2B 的 RqHeader 與 B2C 不同，多了 `RqID`，且 Revision 為 `1.0.0`：
 
 | 項目 | 規格 |
 |------|------|
-| 協議模式 | AES-JSON*（RqHeader 含 RqID，Revision 為 `1.0.0`） — 詳見 [guides/19-http-protocol-reference.md](./19-http-protocol-reference.md) |
+| 協議模式 | AES-JSON（與 B2C 發票相同協議，但 RqHeader 多一個 `RqID` 欄位且 Revision 為 `1.0.0`） — 詳見 [guides/19-http-protocol-reference.md](./19-http-protocol-reference.md) |
 | HTTP 方法 | POST |
 | Content-Type | `application/json` |
 | 認證 | AES-128-CBC 加密 Data 欄位 — 詳見 [guides/14-aes-encryption.md](./14-aes-encryption.md) |

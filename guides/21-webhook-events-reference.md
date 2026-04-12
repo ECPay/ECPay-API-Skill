@@ -245,7 +245,8 @@ return '1|OK'  # 必須回應
 |-------------|-----------|------------|------|
 | Form POST (URL-encoded) | 含 `CheckMacValue` | SHA256（金流）或 MD5（物流） | [guides/13](./13-checkmacvalue.md) |
 | JSON POST | 含 `Data`（Base64 字串），**無** `CheckMacValue` | AES 解密 | [guides/14](./14-aes-encryption.md) |
-| JSON POST | 含 `Data`（Base64 字串）**且**含 `CheckMacValue` | 先驗 ECTicket 式 CMV（見 [guides/09](./09-ecticket.md) §CheckMacValue 計算），再 AES 解密 | **電子票證**（回應 AES 加密 JSON + CMV）/ **直播收款**（回應純文字 `1\|OK`）⚠️ 兩者格式相同但回應不同，請依服務判斷 |
+| JSON POST | 含 `Data`（Base64 字串）**且**含 `CheckMacValue` | 先驗 ECTicket 式 CMV（見 [guides/09](./09-ecticket.md) §CheckMacValue 計算），再 AES 解密 | **電子票證**：回應 **AES 加密 JSON + CMV**（Data 內 `{"RtnCode": 1, "RtnMsg": "成功"}`） |
+| JSON POST | 含 `Data`（Base64 字串）**且**含 `CheckMacValue` | 同上（ECTicket 式 CMV + AES 解密） | **直播收款**：驗證方式同電子票證，但回應為**純文字 `1\|OK`**（非 AES 加密 JSON） |
 
 > **最常見錯誤**：國內物流的 CheckMacValue 使用 **MD5**（不是 SHA256）。用錯雜湊演算法會導致驗證永遠失敗。
 > - 金流 AIO → SHA256

@@ -242,8 +242,14 @@ ECPay 金流有兩種合約模式，**API 技術規格相同**，差異在於商
 ```
 需要開發票？
 ├── 賣給消費者 → B2C（讀 guides/04-invoice-b2c.md）
+│   ├── 延遲開立（先收款、滿足條件後才開） → guides/04 §DelayIssue（DelayFlag=1 手動觸發 / 2 自動排程）
+│   ├── 折讓（退部分金額） → guides/04 §Allowance（線上 AllowanceByCollegiate 帶 CheckMacValue MD5）
+│   └── 作廢（全額作廢） → guides/04 §Invalid
 ├── 賣給企業 → B2B（讀 guides/05-invoice-b2b.md）
-└── 無網路環境 → 離線發票（讀 guides/18-invoice-offline.md）
+│   ├── 交換模式（買受方確認） → guides/05 §Confirm
+│   └── 折讓 / 作廢 → guides/05 §Allowance / §Invalid
+├── 無網路環境 → 離線發票（讀 guides/18-invoice-offline.md）
+└── 發票退款操作 → 見下方「退款/作廢/取消決策樹」
 ```
 
 #### 其他決策樹
@@ -256,6 +262,10 @@ ECPay 金流有兩種合約模式，**API 技術規格相同**，差異在於商
 收款+發票+出貨？→ 讀 guides/11-cross-service-scenarios.md
 PHP SDK 範例/用法？→ 讀 guides/12-sdk-reference.md
 HTTP 協議細節（端點/認證/回應格式）？→ 讀 guides/19-http-protocol-reference.md
+Callback/Webhook 接收架構？→ 讀 guides/21-webhook-events-reference.md（格式速查 + 各服務回應規格）+ guides/22（佇列化處理）
+   ├── 何時主動查詢 vs 等 Callback？→ 信用卡即時付款：可用 QueryTradeInfo 主動查詢（guides/01 或 02），但仍須實作 Callback 作為最終確認；ATM/超商：必須等 Callback（付款非同步）
+   ├── Callback 重試機制 → 綠界最多重送 4 次，須實作冪等處理（guides/21 §失敗恢復策略）
+   └── 本機開發收不到 Callback？→ guides/24（ngrok / Cloudflare Tunnel 設定）
 ```
 
 #### 退款/作廢/取消決策樹
@@ -280,6 +290,9 @@ HTTP 協議細節（端點/認證/回應格式）？→ 讀 guides/19-http-proto
 ├── CheckMacValue 驗證失敗 → 讀 guides/13 + guides/15 排查流程
 ├── AES 解密結果亂碼/失敗 → 讀 guides/14 常見錯誤 + 測試向量
 ├── 站內付 GetToken RtnCode ≠ 1（無明確錯誤訊息）→ **ConsumerInfo 物件缺失或 Email/Phone 未填**（讀 guides/02 ⓪ ConsumerInfo 規則）
+├── 3D Secure 驗證相關
+│   ├── 站內付 ThreeDURL 處理 → guides/02 §ThreeDURL（2025/8 起幾乎必出現，未導向 3D 頁面會逾時失敗）
+│   └── AIO 3D 驗證 → 透明處理，消費者在綠界頁面完成，開發者無需額外實作
 ├── 收到錯誤碼 → 讀 guides/20 錯誤碼反向索引
 ├── Callback/Webhook 收不到 → 讀 guides/21 失敗恢復策略
 ├── 本機開發無法接收 Callback（localhost / 非標準 port）→ 讀 guides/24 tunneling 工具設定
@@ -542,14 +555,17 @@ HTTP 協議細節（端點/認證/回應格式）？→ 讀 guides/19-http-proto
 | 離線電子發票 | 3085340 | HwiqPsywG1hLQNuN | YqITWD4TyKacYXpn | AES |
 | 電子票證（特店） | 3085676 | 7b53896b742849d3 | 37a0ad3c6ffa428b | AES + CMV |
 | 電子票證（平台商） | 3085672 | b15bd8514fed472c | 9c8458263def47cd | AES + CMV |
+| 電子票證（價金保管-使用後核銷） | 3362787 | c539115ea7674f20 | 86f625e60cb1473a | AES + CMV |
+| 電子票證（價金保管-分期核銷） | 3361934 | 1069c84afab54f16 | 795c968d90c14971 | AES + CMV |
+| 國內物流（備用，非 OTP 模式） | 2000214 | 5294y06JbISpM5x9 | v77hoKGq4kWxNNIS | MD5 |
 
 > ⚠️ 電子票證的 HashKey/HashIV 與金流**不同**，請使用對應的介接資訊。
-> 電子票證價金保管模式使用不同帳號（MerchantID 3362787 / 3361934），詳見 guides/09 §測試帳號。
+> 三種電子票證模式（純發行、價金保管-使用後核銷、價金保管-分期核銷）使用不同帳號，切勿混用。分期核銷不支援平台商。詳見 guides/09 §測試帳號。
 
 > **常見錯誤：帳號混用** — 金流、物流、發票使用**不同的** MerchantID 和 HashKey/HashIV。
 > 同時串接多個服務時，請確認每個 API 呼叫使用對應服務的帳號，混用會導致 CheckMacValue 驗證失敗。
 
-> **物流備用帳號（非 OTP 模式）**：SDK 內有 MerchantID `2000214`（同一組 HashKey/HashIV），適用於特定不需 OTP 驗證的物流測試情境。一般開發以 `2000132` 為主；若 API 文件指定使用非 OTP 帳號時才切換。
+> **物流備用帳號（非 OTP 模式）**：MerchantID `2000214`（HashKey/HashIV 同 `2000132`），適用於特定不需 OTP 驗證的物流測試情境。一般開發以 `2000132` 為主；若 API 文件指定使用非 OTP 帳號時才切換。
 
 ### 3D 驗證 SMS 碼：`1234`
 

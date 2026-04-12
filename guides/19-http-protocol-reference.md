@@ -247,6 +247,105 @@ else:
         success = decrypted  # 業務資料
 ```
 
+> ⚠️ **RtnCode 型別注意**：AES-JSON 解密後的 `RtnCode` 為**整數** `1`（非字串 `"1"`）。
+> 使用字串嚴格比較（如 JavaScript `=== '1'`）會永遠不符。詳見本文件 §RtnCode / TransCode 型別映射。
+
+##### 多語言實作範例
+
+**Go**：
+```go
+type AesResponse struct {
+    TransCode int    `json:"TransCode"`
+    TransMsg  string `json:"TransMsg"`
+    Data      string `json:"Data"`
+}
+
+type BusinessData struct {
+    RtnCode int    `json:"RtnCode"`
+    RtnMsg  string `json:"RtnMsg"`
+    // ... 其他業務欄位
+}
+
+func handleAesResponse(body []byte) (*BusinessData, error) {
+    var resp AesResponse
+    if err := json.Unmarshal(body, &resp); err != nil {
+        return nil, fmt.Errorf("JSON 解析失敗: %w", err)
+    }
+    // 第一層：傳輸層
+    if resp.TransCode != 1 {
+        return nil, fmt.Errorf("傳輸層錯誤: %s", resp.TransMsg)
+    }
+    // 第二層：解密 → 業務層
+    decrypted, err := aesDecrypt(resp.Data, hashKey, hashIV)
+    if err != nil {
+        return nil, fmt.Errorf("AES 解密失敗: %w", err)
+    }
+    var biz BusinessData
+    if err := json.Unmarshal([]byte(decrypted), &biz); err != nil {
+        return nil, fmt.Errorf("業務資料 JSON 解析失敗: %w", err)
+    }
+    if biz.RtnCode != 1 { // 整數比較
+        return nil, fmt.Errorf("業務層錯誤: %s", biz.RtnMsg)
+    }
+    return &biz, nil
+}
+```
+
+**Java**：
+```java
+JsonObject resp = JsonParser.parseString(responseBody).getAsJsonObject();
+// 第一層：傳輸層
+int transCode = resp.get("TransCode").getAsInt();
+if (transCode != 1) {
+    throw new EcpayException("傳輸層錯誤: " + resp.get("TransMsg").getAsString());
+}
+// 第二層：解密 → 業務層
+String decryptedJson = aesDecrypt(resp.get("Data").getAsString(), hashKey, hashIV);
+JsonObject biz = JsonParser.parseString(decryptedJson).getAsJsonObject();
+int rtnCode = biz.get("RtnCode").getAsInt(); // 整數比較
+if (rtnCode != 1) {
+    throw new EcpayException("業務層錯誤: " + biz.get("RtnMsg").getAsString());
+}
+```
+
+**C#**：
+```csharp
+var resp = JsonSerializer.Deserialize<AesResponse>(responseBody);
+// 第一層：傳輸層
+if (resp.TransCode != 1)
+    throw new EcpayException($"傳輸層錯誤: {resp.TransMsg}");
+// 第二層：解密 → 業務層
+var decryptedJson = AesDecrypt(resp.Data, hashKey, hashIV);
+var biz = JsonSerializer.Deserialize<BusinessData>(decryptedJson);
+if (biz.RtnCode != 1) // 整數比較
+    throw new EcpayException($"業務層錯誤: {biz.RtnMsg}");
+```
+
+**TypeScript**：
+```typescript
+interface AesResponse {
+  TransCode: number;
+  TransMsg: string;
+  Data: string;
+}
+
+function handleAesResponse(body: string): Record<string, unknown> {
+  const resp: AesResponse = JSON.parse(body);
+  // 第一層：傳輸層
+  if (resp.TransCode !== 1) {
+    throw new Error(`傳輸層錯誤: ${resp.TransMsg}`);
+  }
+  // 第二層：解密 → 業務層
+  const decrypted = aesDecrypt(resp.Data, hashKey, hashIV);
+  const biz = JSON.parse(decrypted);
+  // ⚠️ JSON.parse 後 RtnCode 為 number，用 !== 1（非 !== '1'）
+  if (biz.RtnCode !== 1) {
+    throw new Error(`業務層錯誤: ${biz.RtnMsg}`);
+  }
+  return biz;
+}
+```
+
 #### Callback 處理
 
 AES-JSON 的 Callback 處理因服務而異：

@@ -520,14 +520,14 @@ try {
 <!-- 3. ECPay 站內付 JS SDK -->
 <!-- ⚠️ JS SDK 一律從正式 domain 載入（測試/正式都用同一個 URL）
      環境切換透過 ECPay.initialize('Stage'|'Prod', ...) 控制
-     stage domain 的 SDK 檔案與正式版不同（大小不同、行為可能異常），不可使用 -->
+     stage domain 的 SDK 檔案與正式版不同（大小不同、行為異常），不可使用 -->
 <script src="https://ecpg.ecpay.com.tw/Scripts/sdk-1.0.0.js"></script>
 ```
 
 > **⚠️ JS SDK domain 重要**：JS SDK **一律從正式 domain `ecpg.ecpay.com.tw` 載入**（與官方 WebJS.html 一致），
 > 測試/正式環境切換透過 `ECPay.initialize('Stage'|'Prod', ...)` 控制。
-> **不要使用 `ecpg-stage.ecpay.com.tw/Scripts/sdk-1.0.0.js`**——stage 版 SDK 是不同檔案（14.7KB vs 正式版 12.7KB），可能不完整或行為異常。
-> 路徑為 `/Scripts/sdk-1.0.0.js`（大寫 `S`）。ECPay 可能更新 SDK 版本或路徑，
+> **不要使用 `ecpg-stage.ecpay.com.tw/Scripts/sdk-1.0.0.js`**——stage 版 SDK 是不同檔案（14.7KB vs 正式版 12.7KB），功能不完整且行為異常。
+> 路徑為 `/Scripts/sdk-1.0.0.js`（大寫 `S`）。ECPay 更新 SDK 版本或路徑時，
 > 請以[綠界站內付官方文件](https://developers.ecpay.com.tw/)及[官方 GitHub 範例](https://github.com/ECPay/ECPayPaymentGatewayKit_Web)中的最新版本為準。
 
 > **CSP（Content Security Policy）設定**：若你的網站啟用了 CSP header，需允許 ECPay domain：
@@ -585,7 +585,7 @@ ECPay.getPayToken(function(paymentInfo, errMsg) {
 > 確認送往後端的值為 `typeof paymentInfo.PayToken === 'string'`。
 >
 > ⚠️ **PayToken 格式未定義，不可自行假設**
-> ECPay 官方文件**未規範** PayToken 的字元集、編碼格式或長度上限。實際值可能包含英數字以外的字元（如 `.`、`-`、`_`、`:`、`%` 等）或為 JWT 格式（`xxx.yyy.zzz`），長度可能超過 200 字元。
+> ECPay 官方文件**未規範** PayToken 的字元集、編碼格式或長度上限。實際值包含英數字以外的字元（如 `.`、`-`、`_`、`:`、`%` 等），格式為 JWT（`xxx.yyy.zzz`），長度超過 200 字元。
 > **後端不應對 PayToken 做格式驗證（如正規表達式）**，僅需確認為非空字串即可。PayToken 是 SDK 內部產生的值，不是使用者輸入。
 >
 > ⚠️ **errMsg 邊界行為**

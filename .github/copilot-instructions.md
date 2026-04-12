@@ -56,7 +56,7 @@ pip install pycryptodome && python test-vectors/verify.py
 # Go to Actions tab → "Validate Reference URLs" → Run workflow
 ```
 
-> **macOS note**: `validate-ai-index.sh` and URL-check scripts use `grep -P` (Perl regex), which is not supported by macOS BSD grep. Install GNU grep first: `brew install grep` and ensure `ggrep` is on your PATH, or run via CI (ubuntu-latest).
+> **Platform note**: `validate-ai-index.sh` and URL-check scripts use `grep -P` (Perl regex), not available in macOS BSD grep or Windows Git Bash. Install GNU grep on macOS (`brew install grep`, ensure `ggrep` is on PATH), or run via CI (ubuntu-latest).
 
 CI runs automatically:
 - **`validate.yml`**: On PRs and main-branch pushes that modify any guide or script file, `test-vectors/`, or platform entry files (SKILL.md, AGENTS.md, etc.); runs all four validation scripts + `python test-vectors/verify.py`
@@ -66,7 +66,8 @@ CI runs automatically:
 
 ### Version Sync (mandatory)
 
-When changing the version number, update ALL of these:
+When changing the version number, update these files. **CI-validated** (script fails if missing):
+
 - `SKILL.md` front-matter `version` field (line 3)
 - `SKILL_OPENAI.md` version reference (line 3)
 - `README.md` version string (line 5)
@@ -74,8 +75,12 @@ When changing the version number, update ALL of these:
 - `AGENTS.md` version reference (line 3)
 - `GEMINI.md` version reference (line 3)
 - `.github/copilot-instructions.md` version reference (line 75)
-- `../CLAUDE.md` version and guide count (root repo instructions)
 - `CONTRIBUTING.md` version reference (English summary section)
+
+**Manual-update** (not checked by script, but should stay in sync):
+
+- `google_AI_studio.md` · `vscode_copilot.md` · `visual_studio_2026.md` · `業務說明.md`
+- `../CLAUDE.md` version and guide count (root repo instructions)
 
 `validate-version-sync.sh` checks the canonical version pattern from SKILL.md front-matter (e.g. `V2.7`). `CHANGELOG.md` uses three-segment semver (`1.0.0`) per Keep a Changelog convention — the entry-point files and CHANGELOG may use the same or different number of segments; both must be updated when releasing.
 
@@ -93,7 +98,7 @@ Parameter tables in `guides/` are marked with SNAPSHOT blockquotes in this exact
 > ⚠️ **SNAPSHOT 2026-XX** | 來源：`references/Path/檔案名.md`
 ```
 
-When updating a guide's parameter content, update its SNAPSHOT date. Guides also have a line-1 header with `最後更新：2026-XX` — update both when modifying parameter content. AI is instructed to use guides/ for initial development and verify against live specs via `references/` before production deployment.
+When updating a guide's parameter content, update its SNAPSHOT date. Guides also have a line-1 header with `最後更新：2026-XX` — **both dates must match**. Update both when modifying parameter content. Do NOT bump the header date for structural-only changes (renumbering, link fixes, formatting) that don't touch parameter content. AI is instructed to use guides/ for initial development and verify against live specs via `references/` before production deployment.
 
 ### AI Section Index
 

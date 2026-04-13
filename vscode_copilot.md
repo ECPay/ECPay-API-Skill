@@ -234,14 +234,6 @@ API 技術問題請洽：sysanalydep.sa@ecpay.com.tw
 
 你開啟的是綠界的公開技術文件（已公開在 GitHub 上），不含任何機密資訊。在對話中不要輸入真實的正式環境 HashKey / HashIV 或客戶個資即可。
 
-### Q：Google AI Studio 和 VS Code Copilot Chat 哪個好？
-
-| | VS Code Copilot Chat | Google AI Studio |
-|---|---|---|
-| 優點 | 可直接編輯程式碼、三種模式（Ask/Edit/Agent） | 免安裝、純瀏覽器操作 |
-| 設定 | 開啟資料夾即自動載入 | 每次新對話需載入範本 |
-| 建議 | 日常開發、需要編輯程式碼 | 快速諮詢、無需安裝軟體 |
-
 ---
 
 ## 需要更多幫助？

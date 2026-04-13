@@ -28,7 +28,7 @@ This is a **Markdown-only AI knowledge base** (no build system, no package manag
 
 ## 回報問題
 
-- 在 Issues 中描述問題，附上：使用的 AI 平台（Claude Code / VS Code Copilot Chat / Copilot CLI / Cursor / Windsurf / ChatGPT GPTs / Google AI Studio）、重現步驟、預期行為
+- 在 Issues 中描述問題，附上：使用的 AI 平台（Claude Code / VS Code Copilot Chat / Copilot CLI / Cursor / ChatGPT GPTs）、重現步驟、預期行為
 - API 規格錯誤請附上 `developers.ecpay.com.tw` 對應頁面截圖或連結
 
 ## 安全漏洞通報

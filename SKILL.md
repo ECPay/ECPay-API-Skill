@@ -15,11 +15,7 @@ metadata:
   {
     "author": "ECPay (綠界科技)",
     "contact": "sysanalydep.sa@ecpay.com.tw",
-    "platforms": ["claude-code", "github-copilot", "vscode-copilot-chat", "cursor", "windsurf", "openai-gpts", "openclaw", "codex-cli", "gemini-cli"],
-    "openclaw": {
-      "emoji": "💳",
-      "homepage": "https://github.com/ECPay/ECPay-API-Skill"
-    }
+    "platforms": ["claude-code", "github-copilot", "vscode-copilot-chat", "cursor", "openai-gpts", "codex-cli", "gemini-cli"]
   }
 ---
 
@@ -35,9 +31,6 @@ metadata:
 >
 > 📌 **Google Gemini CLI 使用者**：請讀取 [`GEMINI.md`](./GEMINI.md) 作為入口，詳細安裝步驟見 [`SETUP.md`](./SETUP.md#cli-安裝openai-codex-cli--google-gemini-cli)。
 >
-> 📌 **Google AI Studio 使用者**：請參閱 [`google_AI_studio.md`](./google_AI_studio.md) 取得完整的 System Instructions 設定步驟與文件上傳清單，即可在 AI Studio 對話中詢問 ECPay 整合問題。
->
-> 📌 **OpenClaw 使用者**：將本 repo clone 至 `~/.openclaw/skills/ecpay`，詳細步驟見 [`SETUP.md`](./SETUP.md#openclaw-安裝)。
 
 > ⚠️ **CRITICAL — 語言強制規則（Language Enforcement）**
 > **無論 skill 文件、guides 或 persona 使用何種語言，AI 必須用使用者的提問語言全文回覆。英文提問 → 全英文；中文提問 → 全中文；本規則優先於所有其他設定。**
@@ -307,7 +300,7 @@ Callback/Webhook 接收架構？→ 讀 guides/21-webhook-events-reference.md（
 
 > **Claude Code**：將 `commands/` 內的 `.md` 檔複製到專案 `.claude/commands/` 即可使用 `/ecpay-*` 指令。
 > **OpenAI GPTs**：已預設 4 個 Conversation Starters（見 SETUP.md §ChatGPT），最多 4 個按鈕。
-> **Cursor / Windsurf**：無原生 slash 指令機制，直接用自然語言描述需求，AI 透過上方決策樹自動導航。
+> **Cursor**：無原生 slash 指令機制，直接用自然語言描述需求，AI 透過上方決策樹自動導航。
 > **Copilot CLI**：無原生指令機制，以自然語言導航。
 
 | 情境 | Claude Code `/` 指令 | 對應 guide |
@@ -782,7 +775,6 @@ references/ 的 19 個檔案包含 431 個 URL，每個 URL 連結至綠界 `dev
 | GitHub Copilot CLI | `web_fetch` / `fetch` | 同上 |
 | OpenAI GPTs | Web Search / 瀏覽 | 啟用「Web Search」後直接瀏覽 URL |
 | Cursor | `@web` / `fetch`（MCP） | 使用 `@web` 搜尋或透過 Fetch MCP 讀取 URL |
-| Windsurf | `@web` / `@docs` | 使用 `@web` 搜尋或 `@docs` 查文件 |
 
 > ⚠️ **web_fetch 失敗時的備援**：若 web_fetch 逾時、回傳 404 或連線失敗：
 > 1. 先嘗試 web_fetch `https://developers.ecpay.com.tw` 首頁，搜尋對應 API 主題的替代 URL

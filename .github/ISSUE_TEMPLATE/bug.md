@@ -28,9 +28,7 @@ labels: bug
 - [ ] VS Code Copilot Chat
 - [ ] GitHub Copilot CLI
 - [ ] Cursor
-- [ ] Windsurf
 - [ ] ChatGPT GPTs
-- [ ] Google AI Studio
 - [ ] Google Gemini CLI
 - [ ] OpenAI Codex CLI
 - [ ] 其他：___

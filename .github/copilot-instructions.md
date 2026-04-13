@@ -24,7 +24,7 @@ The critical pattern: **guides/ tells you HOW to integrate; references/ gives yo
 ### Supporting Files
 
 - **`SKILL_OPENAI.md`** — Condensed version of SKILL.md for ChatGPT GPTs (custom GPT). Upload to GPT Builder Knowledge. When both exist, SKILL_OPENAI.md takes precedence for GPT platforms.
-- **`SETUP.md`** — Unified installation guide for Codex CLI, Gemini CLI, OpenClaw, and ChatGPT GPTs. Contains Knowledge Files list for GPTs.
+- **`SETUP.md`** — Unified installation guide for Codex CLI, Gemini CLI, and ChatGPT GPTs. Contains Knowledge Files list for GPTs.
 - **`AGENTS.md`** — Condensed entry point for OpenAI Codex CLI. Contains role, decision tree, critical rules, and test accounts.
 - **`GEMINI.md`** — Condensed entry point for Google Gemini CLI. Mirrors AGENTS.md with Gemini-specific notes (Google Search instead of web_fetch).
 - **`commands/`** (6 files) — Claude Code slash commands. Navigation only, ≤20 lines each. Do not duplicate SKILL.md logic.
@@ -79,7 +79,7 @@ When changing the version number, update these files. **CI-validated** (script f
 
 **Manual-update** (not checked by script, but should stay in sync):
 
-- `google_AI_studio.md` · `vscode_copilot.md` · `visual_studio_2026.md` · `業務說明.md`
+- `vscode_copilot.md` · `visual_studio_2026.md` · `業務說明.md`
 - `../CLAUDE.md` version and guide count (root repo instructions)
 
 `validate-version-sync.sh` checks the canonical version pattern from SKILL.md front-matter (e.g. `V2.7`). `CHANGELOG.md` uses three-segment semver (`1.0.0`) per Keep a Changelog convention — the entry-point files and CHANGELOG may use the same or different number of segments; both must be updated when releasing.

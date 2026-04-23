@@ -1562,6 +1562,293 @@
 
 ---
 
+## 電子收據（V3.0+）
+
+> 📌 **範例編號說明**：本節 4 個範例編號 #37-40 延續既有序號（為維持既有「同範例 X」交叉引用穩定）。章節在檔案末尾，但邏輯上屬於 AES-JSON 家族，與電子發票（#16-19）為姊妹服務。
+
+### 37. 一般電子收據開立（Python）
+
+> 我要用 Python 串接 ECPay 電子收據開立——用於收取押金、定金、退款、雜支等**非發票**的商業憑證場景（V3.0+ 新服務）。
+>
+> **服務**：ECPay 電子收據 Issue API（一般收據 ReceiptType=1）
+> **功能**：產生一張綠界電子收據，寄給消費者或特店自存
+> **程式語言**：Python 3.10+
+> **加密方式**：AES-128-CBC + JSON（AES-JSON 協定，與電子發票同家族但 RqHeader 不同）
+>
+> **測試帳號**（電子收據一般/公益用，與 B2C/B2B 發票共用 HashKey/HashIV 但端點不同！）：
+> - MerchantID：2000132
+> - HashKey：ejCk326UnaZWKisg
+> - HashIV：q9jcZX8Ib9LM8wYk
+>
+> **測試環境 URL**：`https://einvoice-stage.ecpay.com.tw/Receipt/Issue`
+> （⚠️ 收據走 `/Receipt/*`，發票走 `/B2CInvoice/*` 或 `/B2BInvoice/*`，不可混用）
+>
+> **需要實作的完整流程**：
+> 1. 組合收據開立明文 JSON（Data 內容）：
+>    - MerchantID、Amount（收據金額，正整數）、Name（收據抬頭）
+>    - ReceiptType=1（1=一般/2=公益/4=政治獻金）
+>    - RetrievalMethod（1=紙本 / 2=電子寄送 / 3=自行處理）
+>    - ReceiptDate（`yyyy/MM/dd HH:mm:ss` 或 `yyyy-MM-dd HH:mm:ss`）
+>    - RelateNumber（特店自訂編號，**唯一不可重複**，勿用特殊符號，**大小寫視為相同** `abc123 = ABC123`）
+>    - Email（RetrievalMethod=2 時必填）
+>    - DeliveryAddress（RetrievalMethod=1 時必填）
+>    - Items 陣列：ItemSeq、ItemName、ItemCount、ItemPrice、ItemAmount（= ItemCount × ItemPrice）
+>    - **Amount 必須等於所有 Items[].ItemAmount 加總**（不符會觸發錯誤）
+> 2. AES 加密：明文 JSON → URL encode（AES 版：只做 urlencode，不轉小寫，不做 .NET 替換）→ AES-128-CBC(key=HashKey[:16], iv=HashIV[:16], PKCS7) → Base64
+> 3. 組合外層 JSON：`{ MerchantID: "2000132", RqHeader: { Timestamp: Unix秒 }, Data: "加密字串" }`
+>    - ⚠️ **電子收據 RqHeader 不需要 Revision**（與 B2C 發票 `"3.0.0"` / B2B 發票 `"1.0.0"` 不同，誤加不會錯但維護易混淆）
+>    - Timestamp 為 UTC+8 Unix 秒，10 分鐘內有效
+> 4. POST 到測試 URL，Content-Type: application/json
+> 5. 回應處理：檢查 TransCode===1（整數）→ 解密 Data → 檢查 RtnCode===1（**整數，非字串**）→ 取得 ReceiptNo（綠界收據編號，格式如 `Sale2026040800000448`）
+>
+> **電子收據 vs 電子發票 差異**：
+> - 法規依據：發票用財政部統一發票使用辦法；收據用商業收據 / 政治獻金法 / 公益勸募條例
+> - 租稅效力：收據**無**統一發票的中獎、進項稅抵扣功能（捐贈收據可抵稅為例外）
+> - 不需字軌配號
+> - 端點路徑：`/Receipt/*` 而非 `/B2CInvoice/*`
+> - RqHeader：收據只需 Timestamp，無 Revision
+>
+> **關鍵規則**：
+> - MerchantID `2000132` 是與 B2C/B2B 發票共用的帳號，但**端點完全不同**（`/Receipt/*`），不可混用
+> - AES URL encode 與金流 CheckMacValue URL encode 完全不同，不可混用
+> - 回應雙層檢查：TransCode===1（傳輸層）+ RtnCode===1（業務層，整數型別）
+> - RelateNumber 建議只用大寫或只用小寫、不用特殊符號，避免唯一性判斷失敗
+> - 禁止 HashKey/HashIV 出現在前端或版本控制中
+
+---
+
+### 38. 公益捐贈收據開立（TypeScript）
+
+> 我要用 TypeScript + Node.js 串接 ECPay 公益電子收據開立——用於 NGO / 社福團體接收捐款後開立收據給捐贈人。
+>
+> **服務**：ECPay 電子收據 Issue API（公益收據 ReceiptType=2）
+> **功能**：為捐贈人產生公益捐贈收據（可用於個人/公司捐款抵稅申報）
+> **程式語言**：TypeScript 5.x + Node.js 18+（built-in fetch）
+> **加密方式**：AES-128-CBC + JSON
+>
+> **測試帳號**（與一般收據共用；**需聯繫綠界業務申請開通公益收據權限**，未申請直接呼叫會失敗）：
+> - MerchantID：2000132
+> - HashKey：ejCk326UnaZWKisg
+> - HashIV：q9jcZX8Ib9LM8wYk
+>
+> **測試環境 URL**：`https://einvoice-stage.ecpay.com.tw/Receipt/Issue`
+>
+> **公益收據特殊限制（ReceiptType=2）**：
+> - **DonorType 僅可填 `1`（自然人）或 `2`（公司法人）**；**不可**填 3/4/5（違反會被拒絕）
+> - **Items 陣列僅可帶 1 項商品**（帶 2 項以上會被拒絕；若捐贈物品多樣，名稱合併為「捐贈物品一批」用單項表示）
+> - DonorType=1 時 **CellPhone** 必填；DonorType=2 時 **Phone** 必填
+> - PaymentMethod 欄位被系統忽略（皆視為匯款）
+>
+> **需要實作的完整流程**：
+> 1. 組合明文 JSON：
+>    - MerchantID、Amount、Name（捐贈人姓名或公司名）
+>    - ReceiptType=2（公益）
+>    - DonorType=1（自然人捐贈）或 2（公司法人捐贈）
+>    - Identifier：DonorType=1 時填身分證字號；DonorType=2 時填 8 碼統編
+>    - CellPhone（DonorType=1 必填）或 Phone（DonorType=2 必填）
+>    - Email（RetrievalMethod=2 時必填）
+>    - RetrievalMethod（1=紙本 / 2=電子）
+>    - ReceiptDate、RelateNumber（唯一）
+>    - Items：**僅 1 項**，例如 `[{ ItemSeq: 1, ItemName: "愛心捐款", ItemCount: 1, ItemPrice: Amount, ItemAmount: Amount }]`
+> 2. AES 加密、POST、雙層錯誤檢查（同一般收據流程）
+> 3. 取得 ReceiptNo 後，可存入後端記錄供捐贈人年度報稅調閱
+>
+> **TypeScript 型別定義建議**：
+> ```typescript
+> interface CharityReceiptData {
+>   MerchantID: string;
+>   Amount: number;
+>   Name: string;
+>   ReceiptType: 2;                   // 公益固定 2
+>   DonorType: 1 | 2;                 // ⚠️ 不可為 3/4/5
+>   Identifier: string;
+>   RetrievalMethod: 1 | 2 | 3;
+>   ReceiptDate: string;
+>   RelateNumber: string;
+>   Email?: string;
+>   CellPhone?: string;               // DonorType=1 時必填
+>   Phone?: string;                   // DonorType=2 時必填
+>   Items: [CharityItem];             // tuple 強制僅 1 項
+> }
+> ```
+>
+> **關鍵規則**：
+> - 公益收據開通需**聯繫綠界業務**，程式碼寫好前先確認後台權限
+> - `ReceiptType=2` + `DonorType=3/4/5` 是合法語法但業務邏輯拒絕，程式送出前務必 validate
+> - `Items.length === 1` 是**硬限制**，不是建議
+> - Email / CellPhone / Phone 的必填對應 DonorType 不同，避免送出才發現
+> - 使用 `Number(rtnCode) === 1` 防禦性比對（AES-JSON 回應 RtnCode 是整數）
+> - 禁止 HashKey/HashIV 出現在前端或版本控制中
+
+---
+
+### 39. 政治獻金收據 + AES-GCM 加密模式（Go）
+
+> 我要用 Go 串接 ECPay 政治獻金電子收據開立，**並且後台設定使用 AES-GCM 加密模式**——用於政黨 / 政治團體 / 擬參選人接收政治獻金後依《政治獻金法》開立收據（V3.0+ 新加密機制）。
+>
+> **服務**：ECPay 電子收據 Issue API（政治獻金 ReceiptType=4）+ **AES-128-GCM 加密模式**
+> **功能**：產生符合政治獻金法規範的收據；採用更安全的 AEAD 加密（Tag 驗證 + 隨機 IV）
+> **程式語言**：Go 1.22+
+> **加密方式**：**AES-128-GCM**（V3.0 新增，電子收據首個支援 GCM 的服務；預設仍為 CBC，需後台切換）
+>
+> **測試帳號**（政治獻金專用，與金流 AIO 共用 HashKey/HashIV 但端點完全不同！**需聯繫綠界業務申請開通政治獻金權限**）：
+> - MerchantID：3002607
+> - HashKey：pwFHCqoQZGmho4w6
+> - HashIV：EkRm7iFT261dpevs（⚠️ GCM 模式不使用 HashIV，IV 由程式每次隨機產生 12 byte）
+>
+> **測試環境 URL**：`https://einvoice-stage.ecpay.com.tw/Receipt/Issue`
+>
+> **政治獻金收據特殊限制（ReceiptType=4）**：
+> - **DonorType 必填**（1=自然人 / 2=公司法人 / 3=人民團體 / 4=政黨 / 5=匿名）
+> - **金額上限**：
+>   - DonorType=5（匿名捐贈）：Amount 不可 > **10,000** 元
+>   - PaymentMethod=3（現金）：Amount 不可 > **100,000** 元
+> - **PaymentMethod 必填**（1=匯款 / 2=票據 / 3=現金）
+> - **DonationInfo 物件必填**（DonationDate 必填；DepositDate / DepositTradeNo / RemittingBank 選填）
+> - Identifier 依 DonorType 填：1=身分證、2=統編、3=人民團體登記字號、4=政黨登記字號
+>
+> **AES-GCM 加密規格（V3.0+ 新機制）**：
+> - 演算法：AES-128-GCM（**不是 AES-256**，Key 仍 16 byte）
+> - Key：HashKey 前 16 byte（與 CBC 共用）
+> - **IV / Nonce：自行產生 12 byte 每次隨機**（不使用 HashIV；同 Key + 同 IV 會洩露明文）
+> - Tag：16 byte GCM 認證標籤（解密失敗代表資料被竄改或 Key 錯誤）
+> - **輸出格式：`Base64( IV(12B) || Ciphertext || Tag(16B) )`**
+> - Padding：**無**（GCM 不需要，與 CBC 的 PKCS7 不同）
+>
+> **需要實作的完整流程**：
+> 1. 組合政治獻金收據明文 JSON：
+>    - MerchantID、Amount（注意上限）、Name（捐贈人/機構名）
+>    - ReceiptType=4、DonorType（1~5）、Identifier（依 DonorType）
+>    - PaymentMethod（1/2/3），若=2 必填 CheckInfo（票據資料）
+>    - DonationInfo: { DonationDate, DepositDate?, DepositTradeNo?, RemittingBank? }
+>    - RetrievalMethod、ReceiptDate、RelateNumber（唯一）
+> 2. **AES-GCM 加密**（Go 原生 `crypto/cipher`）：
+>    ```go
+>    // 自產隨機 12B IV
+>    iv := make([]byte, 12)
+>    rand.Read(iv)
+>    // aesUrlEncode（空格→+ 由 url.QueryEscape 處理，再手動補 ~!*'()）
+>    urlEncoded := aesReplacer.Replace(url.QueryEscape(plaintextJSON))
+>    // AES-128-GCM
+>    block, _ := aes.NewCipher([]byte(hashKey)[:16])
+>    gcm, _ := cipher.NewGCMWithNonceSize(block, 12)
+>    // Seal(dst=iv, nonce=iv, pt, aad=nil) → iv || ciphertext || tag
+>    sealed := gcm.Seal(iv, iv, []byte(urlEncoded), nil)
+>    encrypted := base64.StdEncoding.EncodeToString(sealed)
+>    ```
+>    其中 `aesReplacer` 為 `strings.NewReplacer("~", "%7E", "!", "%21", "*", "%2A", "'", "%27", "(", "%28", ")", "%29")`（補齊 Go url.QueryEscape 不編碼的字元）
+> 3. 組合外層 JSON：`{ MerchantID, RqHeader: { Timestamp }, Data: encrypted }`（⚠️ RqHeader 不需 Revision）
+> 4. POST → 解密回應時切片 `raw[:12]` 為 IV，`raw[len-16:]` 為 Tag，中間為 Ciphertext
+>    - `gcm.Open(nil, iv, ctTag, nil)` 失敗回傳 error → 代表 Tag 驗證失敗（資料竄改或 Key 錯）
+>
+> **AES-GCM 常見陷阱**：
+> - IV 長度是 **12 byte（不是 16！）**—CBC 用 16，GCM 用 12，誤用會解密失敗
+> - **生產環境絕對不可用固定 IV**（會洩露明文）；測試向量用固定 IV 僅為跨語言決定性驗證
+> - Tag 驗證失敗時 `gcm.Open()` 回傳 error 而非 nil 明文，**不要誤判為解密成功**
+> - Base64 必須用**標準字母表**（`+/=`），不可 URL-safe（`-_`）
+> - AAD 必須為 `nil`（傳非 nil 會 Tag 驗證失敗；ECPay 規格不使用 AAD）
+>
+> **關鍵規則**：
+> - 政治獻金收據開通需**聯繫綠界業務**，違反《政治獻金法》金額上限會被後台拒絕
+> - GCM 模式啟用需**後台設定**（預設仍為 CBC），程式碼與後台必須一致
+> - DonorType=5（匿名）或 PaymentMethod=3（現金）需程式端驗證金額上限，避免送出才被拒
+> - DonationInfo.DepositDate 或 DepositTradeNo 至少擇一填寫，否則**可能無法上傳監察院申報**
+> - 回應 RtnCode 是整數型別，用 `int(rtnCode) == 1` 比對
+> - 禁止 HashKey/HashIV 出現在前端或版本控制中
+
+---
+
+### 40. 收據查詢 + 修改 + 作廢 + 通知（C#）
+
+> 我要用 C# 串接 ECPay 電子收據的**維運 API**：查詢已開立收據、修改抬頭或金額、作廢錯誤收據、主動寄送通知郵件給消費者。
+>
+> **服務**：ECPay 電子收據 GetReceipt / UpdateIssue / Invalid / Notification API
+> **功能**：開立後的收據生命週期管理（查詢狀態 → 修改 → 作廢 → 通知）
+> **程式語言**：C# .NET 8
+> **加密方式**：AES-128-CBC + JSON
+>
+> **測試帳號**（一般/公益收據用）：
+> - MerchantID：2000132
+> - HashKey：ejCk326UnaZWKisg
+> - HashIV：q9jcZX8Ib9LM8wYk
+>
+> **測試環境 URL**：
+> - 查詢單筆：`https://einvoice-stage.ecpay.com.tw/Receipt/GetReceipt`
+> - 修改：`https://einvoice-stage.ecpay.com.tw/Receipt/UpdateIssue`
+> - 作廢：`https://einvoice-stage.ecpay.com.tw/Receipt/Invalid`
+> - 通知：`https://einvoice-stage.ecpay.com.tw/Receipt/Notification`
+>
+> **四個維運作業**：
+>
+> #### ① GetReceipt（查詢單筆收據）
+> Data 物件：
+> - MerchantID
+> - **ReceiptNo 或 RelateNumber 擇一必填**（綠界編號 or 特店自訂編號）
+>
+> 回應 Data 包含：RtnCode / RtnMsg / Amount / Name / ReceiptType / ReceiptNo / RelateNumber / ReceiptDate / **InvalidStatus（0=正常 / 1=已作廢）**/ InvalidDate / Identifier / Email / Phone / CellPhone / Items
+>
+> #### ② UpdateIssue（修改收據）
+> Data 物件：
+> - MerchantID、ReceiptNo（綠界收據編號）、Reason（異動原因，最長 200 字）
+> - **IssueModel**（物件）：修改後的完整收據資料（結構同 Issue 的 Data 內層，幾乎所有欄位都可更新：金額、抬頭、身分、商品明細、開立日期等）
+>
+> 官方未明列「不可修改欄位」，若回傳 RtnCode ≠ 1，視 RtnMsg 判斷（常見：收據已作廢不可修改、金額違反類型上限）
+>
+> #### ③ Invalid（作廢收據）
+> Data 物件（最簡單）：
+> - MerchantID、ReceiptNo、Reason（作廢原因，最長 200 字）
+>
+> 回應：RtnCode + RtnMsg
+>
+> #### ④ Notification（寄送通知郵件，client → server）
+> ⚠️ **方向注意**：此 API 是**特店主動呼叫綠界**，請綠界寄郵件給消費者，**不是** 綠界 Callback 到特店。
+>
+> Data 物件：
+> - MerchantID、ReceiptNo
+> - Notified（`C`=通知消費者 / `M`=通知特店 / `A`=兩者）
+> - NotifyTag（`1`=開立成功通知 / `2`=作廢成功通知）
+> - NotifyMail（收件人 email，多筆用分號 `;` 分隔；Notified=C 或 A 時必填）
+>
+> **C# 共用程式結構建議**：
+> ```csharp
+> public static class EcpayReceiptAdmin {
+>     private const string MERCHANT_ID = "2000132";
+>     private const string HASH_KEY = "ejCk326UnaZWKisg";
+>     private const string HASH_IV = "q9jcZX8Ib9LM8wYk";
+>     private const string BASE_URL = "https://einvoice-stage.ecpay.com.tw/Receipt";
+>
+>     // 共用的 AES-CBC 加解密 + POST + 雙層錯誤檢查
+>     private static async Task<JsonElement> CallAsync(string endpoint, object data) { /* ... */ }
+>
+>     public static Task<JsonElement> GetReceiptAsync(string receiptNo)
+>         => CallAsync($"{BASE_URL}/GetReceipt", new { MerchantID = MERCHANT_ID, ReceiptNo = receiptNo });
+>
+>     public static Task<JsonElement> UpdateIssueAsync(string receiptNo, string reason, object issueModel)
+>         => CallAsync($"{BASE_URL}/UpdateIssue", new { MerchantID = MERCHANT_ID, ReceiptNo = receiptNo, Reason = reason, IssueModel = issueModel });
+>
+>     public static Task<JsonElement> InvalidAsync(string receiptNo, string reason)
+>         => CallAsync($"{BASE_URL}/Invalid", new { MerchantID = MERCHANT_ID, ReceiptNo = receiptNo, Reason = reason });
+>
+>     public static Task<JsonElement> NotificationAsync(string receiptNo, string notified, int notifyTag, string notifyMail)
+>         => CallAsync($"{BASE_URL}/Notification", new { MerchantID = MERCHANT_ID, ReceiptNo = receiptNo, Notified = notified, NotifyTag = notifyTag, NotifyMail = notifyMail });
+> }
+> ```
+>
+> **使用場景範例**：
+> 1. 消費者來電反映收據抬頭錯誤 → 先 `GetReceiptAsync` 確認收據仍有效（InvalidStatus=0） → `UpdateIssueAsync` 修改 → `NotificationAsync` 通知消費者新版已寄出
+> 2. 發現收據開立錯對象 → `InvalidAsync` 作廢 → 重新 `Issue` 一張正確的
+> 3. 消費者未收到 email → `NotificationAsync` 重送
+>
+> **關鍵規則**：
+> - `WebUtility.UrlEncode` 不編碼 `~!*'()`，需手動補 `.Replace("~", "%7E").Replace("!", "%21").Replace("*", "%2A").Replace("'", "%27").Replace("(", "%28").Replace(")", "%29")`
+> - `JsonSerializer` 預設轉義 `<>&+'`，需用 `JavaScriptEncoder.UnsafeRelaxedJsonEscaping`
+> - 所有作業 RqHeader **僅需 Timestamp**，不需 Revision
+> - 回應 RtnCode 為整數，用 `rtnCode.GetInt32() == 1` 或 `int.Parse(rtnCode) == 1`
+> - Notification 的 NotifyTag 是**特店告訴綠界要發送的事件類型**，不是綠界回報給特店
+> - 禁止 HashKey/HashIV 出現在前端或版本控制中
+
+---
+
 ## 附錄
 
 ### 各服務帳號速查表
@@ -1572,9 +1859,13 @@
 | 站內付 2.0 | 3002607 | pwFHCqoQZGmho4w6 | EkRm7iFT261dpevs | AES |
 | 國內物流 | 2000132 | 5294y06JbISpM5x9 | v77hoKGq4kWxNNIS | MD5 |
 | 電子發票 | 2000132 | ejCk326UnaZWKisg | q9jcZX8Ib9LM8wYk | AES |
+| **電子收據（一般/公益）**（V3.0+）| **2000132** | **ejCk326UnaZWKisg** | **q9jcZX8Ib9LM8wYk** | **AES-CBC 或 AES-GCM** |
+| **電子收據（政治獻金）**（V3.0+）| **3002607** | **pwFHCqoQZGmho4w6** | **EkRm7iFT261dpevs** | **AES-CBC 或 AES-GCM** |
 | 電子票證（特店） | 3085676 | 7b53896b742849d3 | 37a0ad3c6ffa428b | AES+CMV |
 
-> **嚴禁帳號混用！** 金流、物流、發票使用不同的 MerchantID 和 HashKey/HashIV。
+> **嚴禁帳號混用！** 金流、物流、發票、收據使用不同的 MerchantID 和 HashKey/HashIV。
+>
+> **注意**：電子收據（一般/公益）與電子發票 B2C/B2B 共用同一組帳號，但**端點完全不同**：收據走 `/Receipt/*`，發票走 `/B2CInvoice/*` 或 `/B2BInvoice/*`。**電子收據（政治獻金）**與 AIO 金流共用帳號 3002607，但端點仍為 `/Receipt/Issue` 等。
 
 ### 兩種 URL Encode 差異
 
@@ -1583,7 +1874,7 @@
 | 步驟 1 | percent-encode | percent-encode |
 | 步驟 2 | 全轉小寫 | **（無）** |
 | 步驟 3 | .NET 字元替換（%2d→- 等） | **（無）** |
-| 使用場景 | AIO 金流、國內物流 | 站內付 2.0、發票、全方位物流、跨境物流、電子票證 |
+| 使用場景 | AIO 金流、國內物流 | 站內付 2.0、發票、全方位物流、跨境物流、電子票證、**電子收據**（V3.0+） |
 
 ### 測試信用卡號
 

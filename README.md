@@ -237,7 +237,7 @@ git checkout v3.0   # 升級至新版本（以實際發布 tag 為準）
 
 > 💡 以下範例可**直接複製貼上**給任何 AI 助手使用（含免費模型）。每個 Prompt 已包含完整的測試帳號、環境網址、加密規則與注意事項，無需額外補充即可產出可用程式碼。
 
-**完整 Prompt 範例集（36 個詳盡範例）** → [`docs/prompt-examples.md`](docs/prompt-examples.md)
+**完整 Prompt 範例集（40 個詳盡範例）** → [`docs/prompt-examples.md`](docs/prompt-examples.md)
 
 | 分類 | 範例數 | 涵蓋語言 | 連結 |
 |------|--------|---------|------|
@@ -245,12 +245,13 @@ git checkout v3.0   # 升級至新版本（以實際發布 tag 為準）
 | [金流 — 站內付 2.0](docs/prompt-examples.md#金流--站內付-20) | 4 | Node.js+React, Vue+Express, Swift, Kotlin | 前後端分離、綁卡快速付、iOS/Android App |
 | [金流 — 幕後授權 / 查詢 / 退款](docs/prompt-examples.md#金流--幕後授權--查詢--退款) | 4 | Python, Node.js, Go | 幕後取號、訂單查詢、退款、定期定額管理 |
 | [電子發票](docs/prompt-examples.md#電子發票) | 4 | Python, Java, C#, Rust | B2C 開立、B2B 開立、折讓、作廢+查詢 |
+| [**電子收據**（V3.0+）](docs/prompt-examples.md#電子收據v30) | **4** | **Python, TypeScript, Go, C#** | **一般收據、公益捐贈、政治獻金（AES-GCM）、查詢+修改+作廢+通知** |
 | [物流](docs/prompt-examples.md#物流) | 4 | C#, Go, TypeScript, PHP | 超商取貨付款、宅配+列印、跨境物流、狀態查詢 |
 | [電子票證](docs/prompt-examples.md#電子票證) | 2 | Rust, C++ | 票券發行、核銷+退票 |
 | [跨服務整合](docs/prompt-examples.md#跨服務整合) | 2 | Python Django, Node.js | 收款+發票+出貨、訂閱制+自動開發票 |
 | [除錯與排查](docs/prompt-examples.md#除錯與排查) | 5 | 通用 | CheckMacValue 失敗、AES 解密亂碼、404 錯誤、Callback 收不到、驗證重試 |
 | [上線與環境切換](docs/prompt-examples.md#上線與環境切換) | 1 | 通用 | 測試→正式完整檢查清單 |
-| [特殊場景](docs/prompt-examples.md#特殊場景) | 3 | Node.js, Ruby, Swift | POS 刷卡��、直播收款、Apple Pay |
+| [特殊場景](docs/prompt-examples.md#特殊場景) | 3 | Node.js, Ruby, Swift | POS 刷卡機、直播收款、Apple Pay |
 
 ## 涵蓋服務
 

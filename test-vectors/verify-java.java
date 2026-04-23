@@ -15,6 +15,7 @@
 //   - PKCS7 padding: if len % 16 == 0, padLen = 16 (add a full extra block)
 
 import javax.crypto.Cipher;
+import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
@@ -236,6 +237,89 @@ public class VerifyJava {
         // This matches the Python reference: aes_decrypt() returns the URL-encoded string;
         // the test runner then calls urllib.parse.unquote_plus() separately to get JSON.
         return new String(unpadded, StandardCharsets.UTF_8);
+    }
+
+    // ──────────────────────────────────────────────
+    // aesGcmEncrypt — ECPay AES-128-GCM encryption (electronic receipt V3.0+)
+    //
+    // Flow:
+    //   1. aesUrlEncode(plaintextJson)
+    //   2. AES-128-GCM with key[:16] and 12-byte IV (no padding)
+    //   3. Output: IV (12B) || Ciphertext || Tag (16B), then Base64
+    //
+    // Returns {base64, tagHex, urlEncoded} as a String[3].
+    // ──────────────────────────────────────────────
+    static String[] aesGcmEncrypt(String plaintextJson, String hashKey, String ivHex) throws Exception {
+        String urlEncoded = aesUrlEncode(plaintextJson);
+        byte[] keyBytes = hashKey.getBytes(StandardCharsets.UTF_8);
+        SecretKeySpec keySpec = new SecretKeySpec(Arrays.copyOf(keyBytes, 16), "AES");
+        byte[] iv = hexToBytes(ivHex);
+        GCMParameterSpec gcmSpec = new GCMParameterSpec(128, iv); // 128-bit tag
+
+        Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+        cipher.init(Cipher.ENCRYPT_MODE, keySpec, gcmSpec);
+        byte[] out = cipher.doFinal(urlEncoded.getBytes(StandardCharsets.UTF_8));
+        // Java doFinal(GCM) returns ciphertext||tag (tag is last 16 bytes)
+        byte[] tag = Arrays.copyOfRange(out, out.length - 16, out.length);
+
+        // Concat IV || ciphertext+tag
+        byte[] combined = new byte[iv.length + out.length];
+        System.arraycopy(iv, 0, combined, 0, iv.length);
+        System.arraycopy(out, 0, combined, iv.length, out.length);
+
+        return new String[]{
+            Base64.getEncoder().encodeToString(combined),
+            bytesToHexLower(tag),
+            urlEncoded
+        };
+    }
+
+    // ──────────────────────────────────────────────
+    // aesGcmDecrypt — ECPay AES-128-GCM decryption
+    //
+    // Input: Base64(IV 12B || Ciphertext || Tag 16B)
+    // Throws AEADBadTagException on tag mismatch (data tampered or wrong key).
+    // ──────────────────────────────────────────────
+    static String aesGcmDecrypt(String encryptedB64, String hashKey) throws Exception {
+        byte[] raw = Base64.getDecoder().decode(encryptedB64);
+        if (raw.length < 12 + 16) {
+            throw new IllegalArgumentException("ciphertext too short: " + raw.length);
+        }
+        byte[] iv = Arrays.copyOfRange(raw, 0, 12);
+        byte[] ctTag = Arrays.copyOfRange(raw, 12, raw.length);
+
+        byte[] keyBytes = hashKey.getBytes(StandardCharsets.UTF_8);
+        SecretKeySpec keySpec = new SecretKeySpec(Arrays.copyOf(keyBytes, 16), "AES");
+        GCMParameterSpec gcmSpec = new GCMParameterSpec(128, iv);
+
+        Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+        cipher.init(Cipher.DECRYPT_MODE, keySpec, gcmSpec);
+        byte[] plaintext = cipher.doFinal(ctTag);
+        return new String(plaintext, StandardCharsets.UTF_8);
+    }
+
+    // ──────────────────────────────────────────────
+    // Utility: hex string → byte array (for GCM IV)
+    // ──────────────────────────────────────────────
+    static byte[] hexToBytes(String hex) {
+        int len = hex.length();
+        byte[] bytes = new byte[len / 2];
+        for (int i = 0; i < len; i += 2) {
+            bytes[i / 2] = (byte) ((Character.digit(hex.charAt(i), 16) << 4)
+                                 + Character.digit(hex.charAt(i + 1), 16));
+        }
+        return bytes;
+    }
+
+    // ──────────────────────────────────────────────
+    // Utility: byte array → lowercase hex string (for GCM tag display)
+    // ──────────────────────────────────────────────
+    static String bytesToHexLower(byte[] bytes) {
+        StringBuilder sb = new StringBuilder(bytes.length * 2);
+        for (byte b : bytes) {
+            sb.append(String.format("%02x", b & 0xFF));
+        }
+        return sb.toString();
     }
 
     // ──────────────────────────────────────────────
@@ -515,18 +599,60 @@ public class VerifyJava {
         for (int i = 0; i < aesVectors.size(); i++) {
             String v = aesVectors.get(i);
             String name             = jsonString(v, "name");
+            String mode             = jsonString(v, "mode"); // null for CBC (default)
             String hashKey          = jsonString(v, "hashKey");
             String hashIV           = jsonString(v, "hashIV");
+            String ivHex            = jsonString(v, "iv_hex"); // GCM only
             String direction        = jsonString(v, "direction");
             String plaintextJson    = jsonString(v, "plaintext_json");
             String encryptedB64     = jsonString(v, "encrypted_base64");
             String expectedUrlEnc   = jsonString(v, "expected_url_encoded");
             int    expectedUrlLen   = jsonInt(v, "expected_url_encoded_length");
             String expectedBase64   = jsonString(v, "expected_base64");
+            String expectedTagHex   = jsonString(v, "expected_tag_hex"); // GCM only
             String expectedDecrypted = jsonString(v, "expected_decrypted");
             String expectedJsonStr  = jsonString(v, "expected_json");
 
-            if ("decrypt".equals(direction)) {
+            if ("gcm".equals(mode)) {
+                // ── AES-GCM branch (electronic receipt V3.0+) ──
+                try {
+                    if ("decrypt".equals(direction)) {
+                        String result = aesGcmDecrypt(encryptedB64, hashKey);
+                        String status = result.equals(expectedDecrypted) ? "PASS" : "FAIL";
+                        if (!result.equals(expectedDecrypted)) failures++;
+                        System.out.printf("  Vector %d: %s | %s%n", i + 1, status, name);
+                        if (!result.equals(expectedDecrypted)) {
+                            System.out.println("    Expected: " + expectedDecrypted);
+                            System.out.println("    Got:      " + result);
+                        }
+                        String urlDecoded = URLDecoder.decode(result, StandardCharsets.UTF_8.name());
+                        check("GCM URL decode -> JSON", expectedJsonStr, urlDecoded);
+                    } else {
+                        String[] encResult = aesGcmEncrypt(plaintextJson, hashKey, ivHex);
+                        String b64 = encResult[0], tagHex = encResult[1], urlEncoded = encResult[2];
+                        String status = b64.equals(expectedBase64) ? "PASS" : "FAIL";
+                        if (!b64.equals(expectedBase64)) failures++;
+                        System.out.printf("  Vector %d: %s | %s%n", i + 1, status, name);
+                        if (!b64.equals(expectedBase64)) {
+                            System.out.println("    Expected: " + expectedBase64);
+                            System.out.println("    Got:      " + b64);
+                        }
+                        if (expectedTagHex != null) {
+                            check("GCM tag", expectedTagHex, tagHex);
+                        }
+                        if (expectedUrlEnc != null) {
+                            check("GCM URL encode", expectedUrlEnc, urlEncoded);
+                        }
+                        if (expectedUrlLen > 0) {
+                            int actualLen = urlEncoded.getBytes(StandardCharsets.UTF_8).length;
+                            checkInt("GCM URL encode length (" + actualLen + " bytes)", expectedUrlLen, actualLen);
+                        }
+                    }
+                } catch (Exception ex) {
+                    failures++;
+                    System.out.printf("  Vector %d: FAIL | %s (error: %s)%n", i + 1, name, ex.getMessage());
+                }
+            } else if ("decrypt".equals(direction)) {
                 String result = aesDecrypt(encryptedB64, hashKey, hashIV);
                 String status = result.equals(expectedDecrypted) ? "PASS" : "FAIL";
                 if (!result.equals(expectedDecrypted)) failures++;

@@ -244,6 +244,18 @@ logger.error("ECPay API 錯誤: TransCode=%d, RtnCode=%s", trans_code, rtn_code)
 
 > **日誌安全規則**：HashKey、HashIV、CheckMacValue 為機敏資料，嚴禁出現在任何日誌、錯誤回報或前端回應中。
 
+## AES-GCM API 參考（電子收據 V3.0+ 選用）
+
+> **僅電子收據支援**：其他 AES-JSON 服務仍用 CBC。GCM 預設關閉，特店後台切換後才使用。完整實作見 [guides/14 §AES-GCM 模式](../14-aes-encryption.md#aes-gcm-模式電子收據選用)。
+
+- **原生 API**：`from Crypto.Cipher import AES` → `AES.new(key, AES.MODE_GCM, nonce=iv)` → `.encrypt_and_digest(pt)` / `.decrypt_and_verify(ct, tag)`
+- **依賴**：`pycryptodome`（與 CBC 共用，無新依賴）
+- **Key**：`HashKey` 前 16 byte（與 CBC 共用）
+- **IV / Nonce**：**12 byte 隨機**（`os.urandom(12)`），不使用 HashIV
+- **Tag**：16 byte，由 `encrypt_and_digest()` 回傳第二個值
+- **輸出格式**：`Base64( IV(12B) || Ciphertext || Tag(16B) )`
+- **失敗處理**：Tag 驗證失敗時 `decrypt_and_verify()` raise `ValueError`，用 try/except 捕捉
+
 ## URL Encode 注意
 
 ```python

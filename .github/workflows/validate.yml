@@ -86,3 +86,22 @@ jobs:
         run: python test-vectors/verify.py
       - name: Verify test vectors (Node.js - cross-language check for JS trap family)
         run: node test-vectors/verify-node.js
+
+      # V3.0+: Syntax/compile check for Go/Java verifiers (cross-language guard).
+      # Full execution is skipped to avoid toolchain complexity; compile success catches
+      # refactor breakage (e.g. stale function signatures after cipher API changes).
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+          cache: false
+      - name: Build-compile Go verifier (syntax + type check)
+        run: go build -o /tmp/verify-go-bin ./test-vectors/verify-go.go
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      - name: Build-compile Java verifier (syntax + type check)
+        run: javac -d /tmp test-vectors/verify-java.java

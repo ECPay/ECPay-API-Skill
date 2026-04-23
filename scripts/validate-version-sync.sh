@@ -49,10 +49,10 @@ for f in "${FILES[@]}"; do
 done
 
 # Check CONTRIBUTING.md English summary separately (uses different format)
-if grep -q "28 integration guides" "$ROOT/CONTRIBUTING.md"; then
+if grep -q "29 integration guides" "$ROOT/CONTRIBUTING.md"; then
   echo "  OK  CONTRIBUTING.md (guide count)"
 else
-  echo "  FAIL CONTRIBUTING.md  (expected '28 integration guides' in English summary)"
+  echo "  FAIL CONTRIBUTING.md  (expected '29 integration guides' in English summary)"
   ERRORS=$((ERRORS + 1))
 fi
 

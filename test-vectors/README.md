@@ -1,6 +1,6 @@
 # 測試向量（Test Vectors）
 
-> **所有人一分鐘看懂**：這是一組「加密考題 + 標準答案」，用來確保 ECPay API Skill 教客戶寫的加密程式碼，在 12 種程式語言上都能算出正確的結果。每次 Skill 更新後自動跑一次，21 組全部通過才能發布。
+> **所有人一分鐘看懂**：這是一組「加密考題 + 標準答案」，用來確保 ECPay API Skill 教客戶寫的加密程式碼，在 12 種程式語言上都能算出正確的結果。每次 Skill 更新後自動跑一次，25 組全部通過才能發布。
 
 ---
 
@@ -10,12 +10,12 @@
 
 但問題是：**每個國家的麵粉規格、烤箱刻度、甚至砂糖顆粒大小都不同**——如果某本食譜寫錯一個細節，那個國家的學員做出來的蛋糕就會失敗。
 
-所以你額外準備了 **21 個「標準蛋糕範本」**（= 21 個測試向量）：每個範本都明確寫著「用這些材料、照這個步驟，成品應該長這樣」。每次你更新食譜之後，就照 12 本食譜各做一份，跟 21 個標準範本比對：
+所以你額外準備了 **25 個「標準蛋糕範本」**（= 25 個測試向量）：每個範本都明確寫著「用這些材料、照這個步驟，成品應該長這樣」。每次你更新食譜之後，就照 12 本食譜各做一份，跟 25 個標準範本比對：
 
 - ✅ 全部對得上 → 12 本食譜都正確，可以發布
 - ❌ 有一個對不上 → 某本食譜有 bug，不能發布
 
-ECPay API Skill 的 `test-vectors/` 資料夾就是那 21 個標準範本。`verify.py` 就是那個「照食譜做一份再比對」的動作。
+ECPay API Skill 的 `test-vectors/` 資料夾就是那 25 個標準範本。`verify.py` 就是那個「照食譜做一份再比對」的動作。
 
 ---
 
@@ -41,9 +41,9 @@ ECPay API Skill 的 `test-vectors/` 資料夾就是那 21 個標準範本。`ver
 
 Skill 在 `guides/13-checkmacvalue.md` 和 `guides/14-aes-encryption.md` 教了 **12 種語言**各自的「正確寫法」。只要其中**一種語言漏了一個字元處理**，使用那種語言的客戶就會卡住。
 
-## 🎯 21 組測試向量就是用來抓這種 bug 的
+## 🎯 25 組測試向量就是用來抓這種 bug 的
 
-我們從 ECPay 官方 SDK 抽出 21 組真實資料，每組都有：
+我們從 ECPay 官方 SDK 抽出 25 組真實資料（含 V3.0 新增 4 組 AES-GCM 向量），每組都有：
 - **輸入**：某個交易參數組合
 - **標準答案**：官方認定的正確 CheckMacValue / AES 結果
 
@@ -70,12 +70,12 @@ python test-vectors/verify.py
 ### 情境 A：沒有測試向量把關
 
 1. Skill 維護者改 `guides/13-checkmacvalue.md` 的 Python 範例，不小心把 `urllib.parse.quote_plus` 打成 `urllib.parse.quote`（差一個 `_plus`）
-2. Code review 肉眼看不出這種細節差異，PR 合併，發布 V2.8
+2. Code review 肉眼看不出這種細節差異，PR 合併，發布 V3.0
 3. 客戶升級後，AI 照新版教法產生 Python 程式碼，部署到正式環境
 4. 客戶第一筆真實付款交易：綠界回應 `10200073 CheckMacValue Error`
 5. 客戶打電話給 FAE：「你們的 Skill 有 bug！交易做不出來！」
 6. FAE 花 2 小時追蹤，終於發現是 `guides/13` Python 範例漏了 `_plus`
-7. 急件修復、道歉、發 V2.8.1 Hotfix、客戶也要跟著升級
+7. 急件修復、道歉、發 V3.0.1 Hotfix、客戶也要跟著升級
 
 ### 情境 B：有測試向量 + CI 自動把關
 
@@ -95,8 +95,8 @@ python test-vectors/verify.py
 
 | 你的角色 | 你需要知道的事 |
 |---|---|
-| **業務 / PM / 主管** | ❌ 不用動手。但可以知道「我們有 21 組自動化加密測試把關，Skill 每次發布前都要全數通過才能上架」——這是內部品質保證機制，客戶或主管問起時可以自信地引用 |
-| **FAE / 客戶支援** | ❌ 不用動手。客戶問「你們的 Skill 會不會有加密 bug？」時，你可以回答：**「Skill 每次發布前會自動跑 21 組跨語言加密測試向量（CheckMacValue、AES、URL Encode 三大類），全數通過才能發布。任何加密演算法錯誤會在 CI 階段就被攔下，不會進入正式環境。」** |
+| **業務 / PM / 主管** | ❌ 不用動手。但可以知道「我們有 25 組自動化加密測試把關，Skill 每次發布前都要全數通過才能上架」——這是內部品質保證機制，客戶或主管問起時可以自信地引用 |
+| **FAE / 客戶支援** | ❌ 不用動手。客戶問「你們的 Skill 會不會有加密 bug？」時，你可以回答：**「Skill 每次發布前會自動跑 25 組跨語言加密測試向量（CheckMacValue、AES-CBC、AES-GCM、URL Encode 四大類），全數通過才能發布。任何加密演算法錯誤會在 CI 階段就被攔下，不會進入正式環境。」** |
 | **使用 Skill 串接綠界的客戶工程師** | ❌ 不用自己跑。但你**可以參考** `test-vectors/*.json`：裡面的每一組都有明確的「輸入 → 預期輸出」，複製過來就能當自家程式碼的單元測試 |
 | **Skill 維護者** | ✅ **必須跑**。修改 `guides/13`、`guides/14`、`guides/23` 或 `scripts/SDK_PHP/` 後，commit 前請先在本地執行 `python test-vectors/verify.py` 確認 21/21 通過。CI 也會在 push 後再把關一次 |
 
@@ -110,7 +110,7 @@ python test-vectors/verify.py
 
 ---
 
-## 📋 21 組向量清單
+## 📋 25 組向量清單
 
 ### 1️⃣ CheckMacValue 驗證（8 組）
 
@@ -140,6 +140,17 @@ python test-vectors/verify.py
 | 9 | **ECPG 金流帳號測試** | GetTokenbyTrade 請求格式（站內付 2.0 Token 生成） |
 
 > 📖 **什麼是「說明性向量」？**：Vector 7 和 8 不做實際的加密計算驗證，而是在 JSON 裡詳細描述一種**跨語言踩坑情境**，供 `guides/13`/`14`/`23` 交叉引用。它們是為了教學而存在的「案例說明」，不是斷言。verify.py 執行時會顯示 `SKIP (explanatory)`。
+
+### 2a️⃣ AES-GCM 加密 / 解密（4 組，V3.0+ 新增，電子收據選用模式）
+
+| # | 名稱 | 驗證重點 |
+|---|---|---|
+| 10 | **AES-GCM 基本測試（ASCII, 固定 IV）** | 電子收據開立 ReceiptNo 回傳；AES-128-GCM + 固定 12B IV 確保跨語言決定性 |
+| 11 | **AES-GCM UTF-8 中文測試（固定 IV）** | 多位元組字元經 urlencode 後 GCM 加密正確性；ensure_ascii 差異處理 |
+| 12 | **AES-GCM 長資料測試（固定 IV, >500B）** | 非 block-size 邊界；GCM 無 padding 特性（ciphertext 長度 = plaintext 長度） |
+| 13 | **AES-GCM 解密測試（反向驗證）** | Callback 解密路徑：Base64 → 切 IV/CT/Tag → decrypt_and_verify → urldecode |
+
+> 📌 **為何測試用固定 IV、生產用隨機 IV？**：GCM 規格要求每次請求產生新的隨機 12-byte IV（相同 Key + 相同 IV 加密不同內容會洩露明文）。但跨語言測試需要**決定性驗證**（每次跑出相同 expected_base64），因此向量固定 `iv_hex: "112233445566778899aabbcc"`。各語言 GCM API 都支援手動指定 IV 來比對測試向量；生產程式碼則用 `os.urandom(12)` / `crypto.randomBytes(12)` / `SecureRandom().nextBytes(new byte[12])` 等方式自產。詳見 [guides/14 §AES-GCM 模式](../guides/14-aes-encryption.md#aes-gcm-模式電子收據選用)。
 
 ### 3️⃣ URL Encode 函式比對（4 組）
 
@@ -179,7 +190,8 @@ URL Encode Comparison Vectors
   ...
 
 ============================================================
-Total: 8 CMV + 9 AES + 4 URL encode = 21 vectors
+Total: 8 CMV + 13 AES + 4 URL encode = 25 vectors
+(CBC 9 + GCM 4 = 13 AES vectors)
 ALL PASSED ✓
 ```
 
@@ -246,7 +258,7 @@ ALL PASSED ✓
 | 檔案 | 角色 | 給誰看？ |
 |---|---|---|
 | `README.md` | 本檔案 — 完整白話說明 | 所有人 |
-| `verify.py` | **CI 主驗證器** — Python 3 基準實作,跑全部 21 組向量（需 `pycryptodome`） | CI + 維護者 |
+| `verify.py` | **CI 主驗證器** — Python 3 基準實作,跑全部 25 組向量（需 `pycryptodome`；含 V3.0 新增 4 組 GCM） | CI + 維護者 |
 | `verify-node.js` | **CI 次驗證器** — Node.js cross-check,堵 JS 陷阱家族(`encodeURIComponent` 不編碼 `!'()*~` 等) | CI + 維護者 + Node.js/TypeScript 開發者 |
 | `checkmacvalue.json` | CheckMacValue 8 組測試向量的「輸入 + 預期輸出」資料 | 所有 verifier 讀取;維護者新增向量時編輯 |
 | `aes-encryption.json` | AES 加密/解密 9 組測試向量資料 | 同上 |

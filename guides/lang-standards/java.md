@@ -300,6 +300,18 @@ log.error("ECPay API 錯誤: TransCode={}, RtnCode={}", transCode, rtnCode);
 
 > 💡 SLF4J 推薦搭配 Logback 作為實作。
 
+## AES-GCM API 參考（電子收據 V3.0+ 選用）
+
+> **僅電子收據支援**：其他 AES-JSON 服務仍用 CBC。GCM 預設關閉，特店後台切換後才使用。完整實作見 [guides/14 §AES-GCM 模式](../14-aes-encryption.md#aes-gcm-模式電子收據選用)。
+
+- **原生 API**：`Cipher.getInstance("AES/GCM/NoPadding")` + `new GCMParameterSpec(128, iv)`（128 = Tag bits，非 Key bits）
+- **依賴**：內建 `javax.crypto`（JDK 8+；Android API 19+ 支援 GCM，API 26+ 建議使用）
+- **Key**：`SecretKeySpec(Arrays.copyOf(hashKey.getBytes("UTF-8"), 16), "AES")`
+- **IV / Nonce**：**12 byte 隨機**（`new SecureRandom().nextBytes(new byte[12])`），不使用 HashIV
+- **Tag**：16 byte，由 `cipher.doFinal()` 附加於 ciphertext 尾端
+- **輸出格式**：`Base64( IV(12B) || Ciphertext || Tag(16B) )`；需手動 `System.arraycopy` 拼接 IV 前綴
+- **失敗處理**：Tag 驗證失敗時 `cipher.doFinal()` throws `javax.crypto.AEADBadTagException`（Java 7+）；務必 catch 此例外
+
 ## URL Encode 注意
 
 ```java

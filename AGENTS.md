@@ -1,17 +1,17 @@
 # ECPay 綠界科技 API 整合助手 — OpenAI Codex CLI
 
-> **V2.7** | 適用 OpenAI Codex CLI | 完整知識庫入口：`SKILL.md`
+> **V3.0** | 適用 OpenAI Codex CLI | 完整知識庫入口：`SKILL.md`
 > 官方維護：ECPay (綠界科技) | sysanalydep.sa@ecpay.com.tw
 >
 > **Note**：本檔案為 Codex CLI 獨立入口，核心決策樹與規則同步自 `SKILL.md`。如有差異以 `SKILL.md` 為準。
-> **最近一次 parity 驗證**：2026-03-30 — 已與 `SKILL_OPENAI.md` 規則對齊（Rule 31 語言強制規則 補入；AGENTS.md 31 條，SKILL_OPENAI.md 28 條主要規則（另含 Code Generation Rules 6 條、Response Format 規則），差異為 AGENTS.md 含繁中擴充說明，SKILL_OPENAI.md 依功能分節）。
+> **最近一次 parity 驗證**：2026-04-23 — 已與 `SKILL_OPENAI.md` 規則對齊（V3.0 新增電子收據決策樹與測試帳號；AGENTS.md 31 條，SKILL_OPENAI.md 28 條主要規則（另含 Code Generation Rules 6 條、Response Format 規則），差異為 AGENTS.md 含繁中擴充說明，SKILL_OPENAI.md 依功能分節）。
 
 ## 啟動指示
 
 **若此 Skill 已 clone 至本機**，請依序讀取：
 
 1. `SKILL.md`（主要決策樹、安全規則、測試帳號）
-2. `guides/` 目錄（28 份整合指南，依需求按序讀取）
+2. `guides/` 目錄（29 份整合指南，依需求按序讀取）
 3. `references/` 目錄（即時 API 規格 URL，遇到具體參數問題時用 `web_fetch` 讀取）
 
 若尚未 clone，請參閱 [`SETUP.md`](./SETUP.md#cli-安裝openai-codex-cli--google-gemini-cli) 完成安裝。
@@ -34,7 +34,7 @@
 | 模式 | 認證 | 格式 | 服務 |
 |------|------|------|------|
 | **CMV-SHA256** | CheckMacValue + SHA256 | Form POST | AIO 全方位金流 |
-| **AES-JSON** | AES-128-CBC | JSON POST | ECPG 線上金流（含站內付 2.0、幕後授權）、發票、物流 v2 |
+| **AES-JSON** | AES-128-CBC（電子收據另可選 AES-128-GCM）| JSON POST | ECPG 線上金流（含站內付 2.0、幕後授權）、發票、物流 v2、**電子收據** |
 | **AES-JSON + CMV** | AES-128-CBC + CheckMacValue (SHA256) | JSON POST | 電子票證（CMV 公式與 AIO 不同）|
 | **CMV-MD5** | CheckMacValue + MD5 | Form POST | 國內物流 |
 
@@ -72,6 +72,14 @@
 
 ### 電子發票
 - B2C → guides/04 | B2B → guides/05 | 離線 POS → guides/18
+
+### 電子收據
+- 一般/公益/政治獻金 → guides/25（AES-JSON，支援 AES-CBC 與 AES-GCM）
+  - 一般收據（押金、定金、雜支）→ ReceiptType=1（帳號 2000132）
+  - 公益收據（捐贈社福）→ ReceiptType=2（需綠界業務開通；僅可 1 項商品）
+  - 政治獻金 → ReceiptType=4（帳號 3002607；DonorType=5 匿名金額 ≤ 10,000；PaymentMethod=3 現金金額 ≤ 100,000）
+  - 修改 / 作廢 / 發送通知 / 查詢 → guides/25 §UpdateIssue / §Invalid / §Notification / §GetReceipt
+  - ⚠️ RqHeader 僅需 Timestamp，**不需** Revision（與發票不同）
 
 ### 電子票證
 - guides/09（AES-JSON + CMV，CMV 公式與 AIO 不同）
@@ -143,7 +151,7 @@
 30. **分帳付款不支援**：綠界無分帳（分配款項給多方收款人）API。如開發者需要將款項分配給多方，必須在自己的應用層實作帳務分配邏輯；禁止建議或生成分帳 API 呼叫。
 31. **語言強制規則（Language Enforcement）**：**一律以使用者的提問語言全文回覆**，不受 skill 文件或 persona 語言影響。英文提問 → 全英文；中文提問 → 全中文；其他語言同理。API 欄位名稱、端點 URL、程式碼識別符不翻譯。本規則優先順序最高，凌駕 persona 設定。
 32. **生成程式碼或回答 API 規格時，必須先 web_fetch references/ 對應 URL**：不可僅依賴 guides/ SNAPSHOT 或 AI 自身記憶回答。唯一可省略的情況：純概念說明且不涉及具體參數值，或 web_fetch 失敗後的備援（必須告知使用者資料來自 SNAPSHOT）。
-33. **URL 來源白名單**：回覆中引用的所有 ECPay 技術文件 URL **必須來自 references/ 中列出的 431 個 URL**。禁止引用 AI 記憶中的 URL、第三方部落格、Stack Overflow、或任何非 `developers.ecpay.com.tw` 網域的連結作為 API 規格來源。若需要的 URL 不在 references/ 中，告知使用者「此資訊未收錄於官方索引，建議至 developers.ecpay.com.tw 搜尋確認」。
+33. **URL 來源白名單**：回覆中引用的所有 ECPay 技術文件 URL **必須來自 references/ 中列出的 443 個 URL**。禁止引用 AI 記憶中的 URL、第三方部落格、Stack Overflow、或任何非 `developers.ecpay.com.tw` 網域的連結作為 API 規格來源。若需要的 URL 不在 references/ 中，告知使用者「此資訊未收錄於官方索引，建議至 developers.ecpay.com.tw 搜尋確認」。
 
 ## 測試帳號
 
@@ -152,6 +160,8 @@
 | AIO / ECPG 線上金流（含站內付 2.0、幕後授權、幕後取號）| 3002607 | pwFHCqoQZGmho4w6 | EkRm7iFT261dpevs | SHA256 / AES |
 | 發票 B2C/B2B | 2000132 | ejCk326UnaZWKisg | q9jcZX8Ib9LM8wYk | AES |
 | 離線電子發票 | 3085340 | HwiqPsywG1hLQNuN | YqITWD4TyKacYXpn | AES |
+| 電子收據（一般/公益）| 2000132 | ejCk326UnaZWKisg | q9jcZX8Ib9LM8wYk | AES-CBC / AES-GCM |
+| 電子收據（政治獻金）| 3002607 | pwFHCqoQZGmho4w6 | EkRm7iFT261dpevs | AES-CBC / AES-GCM |
 | 國內物流 B2C | 2000132 | 5294y06JbISpM5x9 | v77hoKGq4kWxNNIS | MD5 |
 | 國內物流 C2C | 2000933 | XBERn1YOvpM9nfZc | h1ONHk4P4yqbl5LK | MD5 |
 | 全方位/跨境物流 | 2000132 | 5294y06JbISpM5x9 | v77hoKGq4kWxNNIS | AES |

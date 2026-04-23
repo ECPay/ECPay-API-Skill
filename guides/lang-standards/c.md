@@ -326,6 +326,19 @@ static enum MHD_Result handle_callback(void *cls, struct MHD_Connection *connect
 
 > ⚠️ 完整 POST body 解析請參考 libmicrohttpd 官方文件的 `MHD_PostProcessor` 範例。
 
+## AES-GCM API 參考（電子收據 V3.0+ 選用）
+
+> **僅電子收據支援**：其他 AES-JSON 服務仍用 CBC。GCM 預設關閉，特店後台切換後才使用。完整實作見 [guides/14 §AES-GCM 模式](../14-aes-encryption.md#aes-gcm-模式電子收據選用)。
+
+- **原生 API**：OpenSSL `EVP_aes_128_gcm()` + `EVP_EncryptInit_ex` / `EVP_EncryptUpdate` / `EVP_EncryptFinal_ex` / `EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_GET_TAG, 16, tag)`
+- **依賴**：OpenSSL 1.1.1+（與 CBC 共用）；Windows 需 vcpkg / MSYS2
+- **Key**：16 byte `unsigned char *`（UTF-8 HashKey 前 16）
+- **IV / Nonce**：**12 byte 隨機**（`RAND_bytes(iv, 12)`），不使用 HashIV
+- **Tag**：16 byte，用 `EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_GET_TAG, 16, tag_buf)` 取得
+- **輸出格式**：`Base64( IV(12B) || Ciphertext || Tag(16B) )`；需手動 `memcpy` 拼接
+- **失敗處理**：Tag 驗證失敗時 `EVP_DecryptFinal_ex()` 回傳 `0`（非負值），務必檢查回傳值
+- **重要**：GCM 模式必須先 `EVP_CIPHER_CTX_ctrl(EVP_CTRL_GCM_SET_IVLEN, 12)` 設定 IV 長度；預設 12 byte 但不同 OpenSSL 版本行為可能不同，顯式設定較安全
+
 ## URL Encode 注意
 
 ```c

@@ -77,6 +77,26 @@ def aes_decrypt(encrypted_b64, key, iv):
     unpadded = validate_pkcs7_padding(decrypted)
     return unpadded.decode('utf-8')
 
+# ====== AES-GCM encrypt/decrypt (electronic receipt optional mode, V3.0+) ======
+# Flow: JSON → URL encode → AES-128-GCM → concat(IV 12B, Ciphertext, Tag 16B) → Base64
+# IV: self-generated 12-byte random in production; fixed hex in test vectors for determinism
+def aes_gcm_encrypt(plaintext_json, key, iv_hex):
+    url_encoded = aes_url_encode(plaintext_json)
+    iv = bytes.fromhex(iv_hex)
+    cipher = AES.new(key.encode('utf-8')[:16], AES.MODE_GCM, nonce=iv)
+    ciphertext, tag = cipher.encrypt_and_digest(url_encoded.encode('utf-8'))
+    combined = iv + ciphertext + tag
+    return base64.b64encode(combined).decode('utf-8'), tag.hex(), url_encoded
+
+def aes_gcm_decrypt(encrypted_b64, key):
+    raw = base64.b64decode(encrypted_b64)
+    iv = raw[:12]
+    ct = raw[12:-16]
+    tag = raw[-16:]
+    cipher = AES.new(key.encode('utf-8')[:16], AES.MODE_GCM, nonce=iv)
+    plaintext = cipher.decrypt_and_verify(ct, tag)  # raises ValueError on tag mismatch
+    return plaintext.decode('utf-8')
+
 # ====== Test runner ======
 failures = 0
 
@@ -132,7 +152,35 @@ with open('test-vectors/aes-encryption.json', 'r', encoding='utf-8') as f:
 
 for i, v in enumerate(aes_data['vectors'], 1):
     direction = v.get('direction', 'encrypt')
-    if direction == 'decrypt':
+    mode = v.get('mode', 'cbc')  # default CBC for backward compat
+    if mode == 'gcm':
+        # ── AES-GCM 分支 (電子收據選用模式, V3.0+) ──
+        if direction == 'decrypt':
+            result = aes_gcm_decrypt(v['encrypted_base64'], v['hashKey'])
+            status = "PASS ✓" if result == v['expected_decrypted'] else "FAIL ✗"
+            if result != v['expected_decrypted']: failures += 1
+            print(f"  Vector {i}: {status} | {v['name']}")
+            if result != v['expected_decrypted']:
+                print(f"    Expected: {v['expected_decrypted']}")
+                print(f"    Got:      {result}")
+            url_decoded = urllib.parse.unquote_plus(result)
+            check("GCM URL decode → JSON", v['expected_json'], url_decoded)
+        else:
+            b64, tag_hex, url_enc = aes_gcm_encrypt(v['plaintext_json'], v['hashKey'], v['iv_hex'])
+            status = "PASS ✓" if b64 == v['expected_base64'] else "FAIL ✗"
+            if b64 != v['expected_base64']: failures += 1
+            print(f"  Vector {i}: {status} | {v['name']}")
+            if b64 != v['expected_base64']:
+                print(f"    Expected: {v['expected_base64']}")
+                print(f"    Got:      {b64}")
+            if 'expected_tag_hex' in v:
+                check("GCM tag", v['expected_tag_hex'], tag_hex)
+            if 'expected_url_encoded' in v:
+                check("GCM URL encode", v['expected_url_encoded'], url_enc)
+            if 'expected_url_encoded_length' in v:
+                actual_len = len(url_enc.encode('utf-8'))
+                check(f"GCM URL encode length ({actual_len} bytes)", v['expected_url_encoded_length'], actual_len)
+    elif direction == 'decrypt':
         result = aes_decrypt(v['encrypted_base64'], v['hashKey'], v['hashIV'])
         status = "PASS ✓" if result == v['expected_decrypted'] else "FAIL ✗"
         if result != v['expected_decrypted']: failures += 1

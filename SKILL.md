@@ -1,6 +1,6 @@
 ---
 name: ecpay
-version: "2.7"
+version: "3.0"
 homepage: https://github.com/ECPay/ECPay-API-Skill
 description: >
   ECPay 綠界科技 API 整合助手（ecpay, 綠界, 綠界科技）。
@@ -104,6 +104,7 @@ metadata:
 | 跨境物流 | **AES-JSON** | ★★★ | [guides/08](./guides/08-logistics-crossborder.md) |
 | 電子發票（B2C） | **AES-JSON** | ★★★ | [guides/04](./guides/04-invoice-b2c.md) |
 | 電子發票（B2B） | **AES-JSON** | ★★★ | [guides/05](./guides/05-invoice-b2b.md) |
+| 電子收據（一般/公益/政治獻金） | **AES-JSON**（支援 AES-GCM）| ★★★ | [guides/25](./guides/25-receipt.md) — **首個支援 AES-GCM 的服務，RqHeader 不需 Revision** |
 | 電子票證 | **AES-JSON + CMV** | ★★★ | [guides/09](./guides/09-ecticket.md) — **除 AES 外還需計算 CheckMacValue（SHA256），公式與 AIO 不同** |
 
 > 不確定？大多數場景用 **AIO（CMV-SHA256）** 最簡單。30 分鐘可完成基礎串接。
@@ -243,6 +244,22 @@ ECPay 金流有兩種合約模式，**API 技術規格相同**，差異在於商
 │   └── 折讓 / 作廢 → guides/05 §Allowance / §Invalid
 ├── 無網路環境 → 離線發票（讀 guides/18-invoice-offline.md）
 └── 發票退款操作 → 見下方「退款/作廢/取消決策樹」
+```
+
+#### 電子收據決策樹
+
+```
+需要開立收據（非發票）？→ 讀 guides/25-receipt.md
+├── 一般收據（押金、定金、雜支）→ ReceiptType=1（一般帳號 2000132）
+├── 公益收據（捐給社福團體）→ ReceiptType=2（需綠界業務開通；僅可 1 項商品）
+├── 政治獻金收據 → ReceiptType=4（需綠界業務開通；政治獻金帳號 3002607）
+│   ├── 匿名 DonorType=5 → 金額 ≤ 10,000
+│   └── 現金 PaymentMethod=3 → 金額 ≤ 100,000
+├── 修改收據 → guides/25 §UpdateIssue
+├── 作廢收據 → guides/25 §Invalid
+├── 主動發送通知郵件 → guides/25 §Notification（商家→綠界）
+├── 查詢單筆 → guides/25 §GetReceipt（ReceiptNo 或 RelateNumber 擇一）
+└── AES-GCM 加密（選用）→ guides/25 §AES-GCM 模式
 ```
 
 #### 其他決策樹
@@ -390,7 +407,7 @@ Callback/Webhook 接收架構？→ 讀 guides/21-webhook-events-reference.md（
 - **不可在前端或版本控制中暴露** HashKey/HashIV
 - **不可將 ATM RtnCode=2 或 CVS RtnCode=10100073 視為錯誤**（代表取號成功，消費者尚未付款）
 - **生成程式碼或回答 API 規格問題時，必須 web_fetch references/ 中的對應 URL**：不可僅依賴 guides/ SNAPSHOT 或 AI 自身記憶回答。唯一可省略 web_fetch 的情況是：(1) 純概念說明且不涉及具體參數值，或 (2) web_fetch 失敗後的備援（但必須告知使用者）
-- **URL 來源白名單（強制）**：回覆中引用的所有 ECPay 技術文件 URL **必須來自 references/ 檔案中列出的 431 個 URL**。禁止引用 AI 記憶中的 URL、第三方部落格、Stack Overflow、或任何非 `developers.ecpay.com.tw` 網域的連結作為 API 規格來源。若需要的 URL 不在 references/ 中，應告知使用者「此資訊未收錄於官方索引，建議至 developers.ecpay.com.tw 搜尋確認」
+- **URL 來源白名單（強制）**：回覆中引用的所有 ECPay 技術文件 URL **必須來自 references/ 檔案中列出的 443 個 URL**。禁止引用 AI 記憶中的 URL、第三方部落格、Stack Overflow、或任何非 `developers.ecpay.com.tw` 網域的連結作為 API 規格來源。若需要的 URL 不在 references/ 中，應告知使用者「此資訊未收錄於官方索引，建議至 developers.ecpay.com.tw 搜尋確認」
 - **生成程式碼時必須標註資料來源**：在程式碼註解中標明參數值取自 SNAPSHOT 或 web_fetch（例如 `// Source: web_fetch references/Payment/... 2026-03-06`），方便開發者日後驗證
 - **不可將 ECPG 所有端點都打向 ecpg domain**（查詢/請退款走 `ecpayment`；Token 類及 CreatePayment 走 `ecpg`，詳見 guides/02 端點表）
 - **不可省略 Callback 回應**：CMV-SHA256（AIO）回 `1|OK`、**站內付 2.0 ReturnURL** 回 `1|OK`（官方規格 9058.md）、**站內付 2.0 OrderResultURL** 回 HTML 頁面（前端跳轉，不重試）、信用卡幕後授權回 `1|OK`（官方規格 45907.md）、非信用卡幕後取號回 `1|OK`、國內物流 CMV-MD5 回 `1|OK`、全方位/跨境物流 v2 回 **AES 加密 JSON**（三層結構）、電子票證回 **AES 加密 JSON + CheckMacValue**（Data 內 `{"RtnCode": 1, "RtnMsg": "成功"}`）、**直播收款** 回 `1|OK`（⚠️ callback 格式與電子票證相同：JSON POST + AES 解密 Data + ECTicket 式 CheckMacValue SHA256；但回應為純文字 `1|OK`，與電子票證不同）、**B2C 發票線上折讓（AllowanceByCollegiate）回 `1|OK`**（⚠️ Callback 為 Form POST + CheckMacValue **MD5**，是發票中唯一帶 CheckMacValue 的 API，詳見 [guides/04](./guides/04-invoice-b2c.md)）。**`1|OK` 常見錯誤格式**（會導致系統重發 4 次）：`"1|OK"`（含引號）、`1|ok`（小寫 ok）、`1OK`（缺分隔）、帶空白或換行
@@ -546,6 +563,8 @@ Callback/Webhook 接收架構？→ 讀 guides/21-webhook-events-reference.md（
 | 全方位/跨境物流 | 2000132 | 5294y06JbISpM5x9 | v77hoKGq4kWxNNIS | AES |
 | 電子發票 | 2000132 | ejCk326UnaZWKisg | q9jcZX8Ib9LM8wYk | AES |
 | 離線電子發票 | 3085340 | HwiqPsywG1hLQNuN | YqITWD4TyKacYXpn | AES |
+| 電子收據（一般/公益）| 2000132 | ejCk326UnaZWKisg | q9jcZX8Ib9LM8wYk | AES-CBC / AES-GCM |
+| 電子收據（政治獻金）| 3002607 | pwFHCqoQZGmho4w6 | EkRm7iFT261dpevs | AES-CBC / AES-GCM |
 | 電子票證（特店） | 3085676 | 7b53896b742849d3 | 37a0ad3c6ffa428b | AES + CMV |
 | 電子票證（平台商） | 3085672 | b15bd8514fed472c | 9c8458263def47cd | AES + CMV |
 | 電子票證（價金保管-使用後核銷） | 3362787 | c539115ea7674f20 | 86f625e60cb1473a | AES + CMV |
@@ -609,6 +628,7 @@ composer require ecpay/sdk
 | B2C 電子發票 | https://developers.ecpay.com.tw/7854.md |
 | B2B 電子發票（存證模式）| https://developers.ecpay.com.tw/24176.md |
 | 離線 POS 電子發票 | https://developers.ecpay.com.tw/13768.md |
+| 電子收據 | https://developers.ecpay.com.tw/64230.md |
 | 電子票證（純發行） | https://developers.ecpay.com.tw/29916.md |
 | 電子票證（價金保管，首選） | https://developers.ecpay.com.tw/40322.md |
 | 信用卡幕後授權 | https://developers.ecpay.com.tw/45901.md |
@@ -626,7 +646,7 @@ composer require ecpay/sdk
 
 ## 文件索引
 
-> **大多數專案只需閱讀 2-3 份指南（共 30-60 分鐘）。** 共 28 份指南，使用上方決策樹找到你需要的，無需全部閱讀。
+> **大多數專案只需閱讀 2-3 份指南（共 30-60 分鐘）。** 共 29 份指南，使用上方決策樹找到你需要的，無需全部閱讀。
 > guides/13 + guides/14 各需 20-30 分鐘（非 PHP 必讀）。guides/19 + guides/20 共 20 分鐘（協議細節 + 錯誤碼）。
 
 ### 深度指南（guides/）
@@ -657,6 +677,7 @@ composer require ecpay/sdk
 | 04 | guides/04-invoice-b2c.md | B2C 電子發票（19 個 PHP 範例） | 25 分鐘 |
 | 05 | guides/05-invoice-b2b.md | B2B 電子發票（23 個 PHP 範例） | 25 分鐘 |
 | 18 | guides/18-invoice-offline.md | 離線電子發票指引 | 15 分鐘 |
+| 25 | guides/25-receipt.md | 電子收據（一般/公益/政治獻金，AES-CBC + AES-GCM） | 20 分鐘 |
 
 **物流**
 
@@ -715,15 +736,15 @@ composer require ecpay/sdk
 
 ### 官方 API 文件索引（references/）
 
-> 完整索引（19 檔案 × 431 個 URL × 對應 Guide 映射）見 [references/README.md](./references/README.md)。
+> 完整索引（20 檔案 × 443 個 URL × 對應 Guide 映射）見 [references/README.md](./references/README.md)。
 
-references/ 包含 5 大類 API 文件：Payment（8 檔, 174 URLs）、Invoice（4 檔, 119 URLs）、Logistics（3 檔, 76 URLs）、Ecticket（3 檔, 57 URLs）、Cart（1 檔, 5 URLs）。每個檔案收錄官方 API 技術文件的章節 URL 索引，搭配 web_fetch 即時讀取最新規格。
+references/ 包含 6 大類 API 文件：Payment（8 檔, 174 URLs）、Invoice（4 檔, 119 URLs）、Logistics（3 檔, 76 URLs）、Ecticket（3 檔, 57 URLs）、Receipt（1 檔, 12 URLs）、Cart（1 檔, 5 URLs）。每個檔案收錄官方 API 技術文件的章節 URL 索引，搭配 web_fetch 即時讀取最新規格。
 
 ### ⚠️ AI 必讀：API 規格即時查閱機制
 
 **references/ 是即時 API 規格入口，不是靜態文件。**
 
-references/ 的 19 個檔案包含 431 個 URL，每個 URL 連結至綠界 `developers.ecpay.com.tw` 官方最新 API 規格頁面。guides/ 提供整合知識（如何串接），references/ 提供即時規格來源（最新參數表、欄位定義）。**兩者結合才是完整的回答。**
+references/ 的 20 個檔案包含 443 個 URL，每個 URL 連結至綠界 `developers.ecpay.com.tw` 官方最新 API 規格頁面。guides/ 提供整合知識（如何串接），references/ 提供即時規格來源（最新參數表、欄位定義）。**兩者結合才是完整的回答。**
 
 #### 何時必須即時查閱 references/
 
@@ -796,4 +817,4 @@ references/ 的 19 個檔案包含 431 個 URL，每個 URL 連結至綠界 `dev
 
 ## 更新紀錄
 
-> 目前版本 V2.7
+> 目前版本 V3.0

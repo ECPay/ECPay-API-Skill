@@ -281,6 +281,19 @@ LOGGER.error("ECPay API 錯誤: TransCode=#{trans_code}, RtnCode=#{rtn_code}")
 
 > **日誌安全規則**：HashKey、HashIV、CheckMacValue 為機敏資料，嚴禁出現在任何日誌、錯誤回報或前端回應中。
 
+## AES-GCM API 參考（電子收據 V3.0+ 選用）
+
+> **僅電子收據支援**：其他 AES-JSON 服務仍用 CBC。GCM 預設關閉，特店後台切換後才使用。完整實作見 [guides/14 §AES-GCM 模式](../14-aes-encryption.md#aes-gcm-模式電子收據選用)。
+
+- **原生 API**：`OpenSSL::Cipher.new('aes-128-gcm')` → `.encrypt` → `.key = ...` → `.iv = ...` → `.auth_data = ''` → `.update()` + `.final` + `.auth_tag`
+- **依賴**：內建 `openssl`（與 CBC 共用，無新依賴）
+- **Key**：`hash_key.byteslice(0, 16)`
+- **IV / Nonce**：**12 byte 隨機**（`SecureRandom.random_bytes(12)`），不使用 HashIV
+- **Tag**：16 byte，用 `cipher.auth_tag` 取得（加密後）；解密時 `decipher.auth_tag = tag` 設定
+- **輸出格式**：`Base64.strict_encode64(iv + ciphertext + tag)`（Ruby 字串串接即 byte 層級）
+- **失敗處理**：Tag 驗證失敗時 `decipher.final` raise `OpenSSL::Cipher::CipherError`；用 begin/rescue 捕捉
+- **AAD 必設**：即使無 AAD 仍必須 `cipher.auth_data = ''`（Ruby OpenSSL 的 GCM 實作要求明確設定，否則 Tag 驗證會失敗）
+
 ## URL Encode 注意
 
 ```ruby

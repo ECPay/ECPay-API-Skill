@@ -1,6 +1,6 @@
 # 各平台安裝指南
 
-> **版本**：V2.7
+> **版本**：V3.0
 
 > 將 ECPay API Skill 安裝到 OpenAI Codex CLI、Google Gemini CLI 或 ChatGPT GPTs。
 > VS Code Copilot Chat 的安裝方式請見 [vscode_copilot.md](./vscode_copilot.md)。
@@ -46,7 +46,7 @@ git clone https://github.com/ECPay/ECPay-API-Skill.git .ecpay-skill
 ```markdown
 ## ECPay API Skill
 讀取 `.ecpay-skill/<入口文件>` 作為 ECPay 整合知識庫入口。
-完整指南位於 `.ecpay-skill/guides/`（28 份），即時 API 規格索引位於 `.ecpay-skill/references/`。
+完整指南位於 `.ecpay-skill/guides/`（29 份），即時 API 規格索引位於 `.ecpay-skill/references/`。
 ```
 
 **方案 B：全域安裝**

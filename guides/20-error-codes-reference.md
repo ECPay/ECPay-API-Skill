@@ -129,7 +129,7 @@ ECPay API 的錯誤回傳分為兩種模式：
 | TransCode | 含義 | 處理方式 |
 |-----------|------|---------|
 | 1 | API 呼叫成功 | 解密 Data 欄位，繼續檢查 RtnCode |
-| 其他 | API 層級錯誤 | 檢查 TransMsg 取得錯誤描述，通常是 AES 加密錯誤或 JSON 格式問題 |
+| 其他 | API 層級錯誤 | 檢查 TransMsg 取得錯誤描述，通常是 AES 加密錯誤或 JSON 格式問題；**電子收據 GCM 模式** 另可能因 Tag 驗證失敗或 IV 長度錯誤觸發 |
 
 ### 內層 RtnCode（Data 解密後）
 
@@ -302,13 +302,14 @@ CheckMacValue 驗證失敗？→ 完整排查流程見 [guides/13 §驗證步驟
 | 106 | CheckMacValue 驗證失敗 | 回應 CMV 與本地計算結果不符，可能遭竄改或 Key 錯誤 |
 | 107 | cURL 初始化失敗 | 系統 cURL 未安裝，或 PHP cURL 擴充未啟用 |
 | 108 | cURL 執行失敗 | 網路不通、SSL 憑證錯誤或 DNS 解析失敗 |
-| 109 | AES 解密失敗 | HashKey/HashIV 錯誤，或密文損毀（padding error）|
-| 110 | AES 加密失敗 | HashKey/HashIV 為空，或 OpenSSL 擴充未啟用 |
+| 109 | AES 解密失敗 | CBC：HashKey/HashIV 錯誤或密文損毀（PKCS7 padding error）；**GCM**（電子收據）：Tag 驗證失敗（資料被竄改或 Key 錯誤）、IV 長度錯誤（應 12 byte 非 16）、或 Base64 使用 URL-safe 字母表 |
+| 110 | AES 加密失敗 | HashKey/HashIV 為空，或 OpenSSL 擴充未啟用；**GCM**：IV 長度非 12 byte 或 Tag 大小錯誤 |
 | 111 | JSON 解密後不是合法 JSON | AES 解密成功但解密後內容非 JSON（可能 Key 錯誤）|
 
 > ⚠️ **排查提示**：
 > - 106（CMV 驗證失敗）通常代表 HashKey/HashIV 與服務不符（金流/發票/物流各有獨立帳號），或本地計算邏輯有誤，詳見 [guides/13-checkmacvalue.md](./13-checkmacvalue.md)。
 > - 109（AES 解密失敗）最常見原因是 HashKey/HashIV 截取錯誤（應取前 16 bytes），詳見 [guides/14-aes-encryption.md](./14-aes-encryption.md)。
+> - **電子收據 GCM 模式 109 特例**：GCM 的 Tag 驗證失敗會觸發解密例外（各語言 API 會 raise，非回傳 null）。若收到此錯誤，按序檢查：① IV 長度是否為 12 byte（CBC 是 16，GCM 是 12）；② HashKey 是否正確（與 CBC 共用）；③ Base64 是否使用標準字母表（`+/=`，不可 URL-safe `-_`）；④ 密文是否在傳輸過程被修改。詳見 [guides/15 §13.1 AES-GCM 解密失敗](./15-troubleshooting.md#131-aes-gcm-解密失敗電子收據-v30)。
 
 ## HTTP 層級錯誤
 

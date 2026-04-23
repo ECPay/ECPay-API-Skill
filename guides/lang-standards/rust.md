@@ -336,6 +336,21 @@ error!(trans_code = result.trans_code, rtn_code = %rtn_code, "ECPay API 錯誤")
 
 > **日誌安全規則**：HashKey、HashIV、CheckMacValue 為機敏資料，嚴禁出現在任何日誌、錯誤回報或前端回應中。
 
+## AES-GCM API 參考（電子收據 V3.0+ 選用）
+
+> **僅電子收據支援**：其他 AES-JSON 服務仍用 CBC。GCM 預設關閉，特店後台切換後才使用。完整實作見 [guides/14 §AES-GCM 模式](../14-aes-encryption.md#aes-gcm-模式電子收據選用)。
+
+- **原生 API**：`aes_gcm::Aes128Gcm` + `aead::Aead` trait — `cipher.encrypt(nonce, pt)` / `cipher.decrypt(nonce, ct)`
+- **依賴**（新增至 Cargo.toml）：
+  - `aes-gcm = "0.10"` — GCM 用獨立 crate，不同於 CBC 的 `aes` + `cbc` 組合
+  - `rand = "0.8"` — 用於產生隨機 IV
+- **Key**：`Aes128Gcm::new_from_slice(&hash_key.as_bytes()[..16])`
+- **IV / Nonce**：**12 byte 隨機**（`OsRng::fill_bytes` 或 `AES::GCM::generate_nonce`），不使用 HashIV
+- **Tag**：16 byte，由 `cipher.encrypt()` 自動附加於 ciphertext 尾端
+- **輸出格式**：`Base64( IV(12B) || Ciphertext || Tag(16B) )`；手動 `extend_from_slice` 拼接
+- **失敗處理**：Tag 驗證失敗時 `cipher.decrypt()` 回傳 `Err(aead::Error)`；用 `Result` pattern 處理
+- **crate 共存**：`aes` + `cbc`（CBC 用）與 `aes-gcm`（GCM 用）同屬 RustCrypto 生態，可共存於同一 `Cargo.toml`
+
 ## URL Encode 注意
 
 ```rust

@@ -310,6 +310,19 @@ logger.Error("ECPay API 錯誤", "transCode", result.TransCode, "rtnCode", rtnCo
 
 > **日誌安全規則**：HashKey、HashIV、CheckMacValue 為機敏資料，嚴禁出現在任何日誌、錯誤回報或前端回應中。
 
+## AES-GCM API 參考（電子收據 V3.0+ 選用）
+
+> **僅電子收據支援**：其他 AES-JSON 服務仍用 CBC。GCM 預設關閉，特店後台切換後才使用。完整實作見 [guides/14 §AES-GCM 模式](../14-aes-encryption.md#aes-gcm-模式電子收據選用)。
+
+- **原生 API**：`cipher.NewGCMWithNonceSize(block, 12)` → `.Seal(dst, nonce, plaintext, aad)` / `.Open(dst, nonce, ct, aad)`
+- **依賴**：內建 `crypto/aes` + `crypto/cipher`（與 CBC 共用，無新依賴）
+- **Key**：`[]byte(hashKey)[:16]`
+- **IV / Nonce**：**12 byte 隨機**（`crypto.rand.Read(iv)`），不使用 HashIV
+- **Tag**：16 byte，`.Seal()` 自動附加於 ciphertext 尾端
+- **輸出格式**：`Base64( IV(12B) || Ciphertext || Tag(16B) )`；技巧：`gcm.Seal(iv, iv, pt, nil)` 以 `dst=iv` 直接讓結果含 IV 前綴
+- **失敗處理**：Tag 驗證失敗時 `gcm.Open()` 回傳 `error`（非 panic），需判斷 `if err != nil`
+- **AAD**：ECPay 規格無 AAD，必須傳入 `nil`（傳非 nil 會導致 Tag 驗證失敗）
+
 ## URL Encode 注意
 
 ```go

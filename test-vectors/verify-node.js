@@ -165,6 +165,44 @@ function aesEncrypt(plaintextJson, hashKey, hashIV) {
 //   3. Remove PKCS7 padding (auto)
 //   4. Return raw UTF-8 string (still URL-encoded; caller applies phpUrldecode)
 // ──────────────────────────────────────────────
+// ──────────────────────────────────────────────
+// aesGcmEncrypt — ECPay AES-128-GCM encryption (電子收據 V3.0+)
+//
+// Flow:
+//   1. aesUrlEncode(plaintextJson)
+//   2. AES-128-GCM with key[:16] and 12-byte IV (no padding)
+//   3. Concat: IV (12B) || Ciphertext || Tag (16B)
+//   4. Standard Base64 encode
+// ──────────────────────────────────────────────
+function aesGcmEncrypt(plaintextJson, hashKey, ivHex) {
+  const urlEncoded = aesUrlEncode(plaintextJson);
+  const key = Buffer.from(hashKey, 'utf8').subarray(0, 16);
+  const iv = Buffer.from(ivHex, 'hex');
+  const cipher = crypto.createCipheriv('aes-128-gcm', key, iv);
+  const ciphertext = Buffer.concat([cipher.update(urlEncoded, 'utf8'), cipher.final()]);
+  const tag = cipher.getAuthTag();
+  const combined = Buffer.concat([iv, ciphertext, tag]);
+  return { base64: combined.toString('base64'), tagHex: tag.toString('hex'), urlEncoded };
+}
+
+// ──────────────────────────────────────────────
+// aesGcmDecrypt — ECPay AES-128-GCM decryption
+//
+// Input: Base64(IV 12B || Ciphertext || Tag 16B)
+// Throws if tag verification fails (data tampered or wrong key).
+// ──────────────────────────────────────────────
+function aesGcmDecrypt(encryptedBase64, hashKey) {
+  const raw = Buffer.from(encryptedBase64, 'base64');
+  const iv = raw.subarray(0, 12);
+  const tag = raw.subarray(raw.length - 16);
+  const ciphertext = raw.subarray(12, raw.length - 16);
+  const key = Buffer.from(hashKey, 'utf8').subarray(0, 16);
+  const decipher = crypto.createDecipheriv('aes-128-gcm', key, iv);
+  decipher.setAuthTag(tag);
+  const decrypted = Buffer.concat([decipher.update(ciphertext), decipher.final()]);
+  return decrypted.toString('utf8');
+}
+
 function aesDecrypt(encryptedBase64, hashKey, hashIV) {
   const key = Buffer.from(hashKey, 'utf8').subarray(0, 16);
   const iv = Buffer.from(hashIV, 'utf8').subarray(0, 16);
@@ -262,8 +300,51 @@ function main() {
   aesData.vectors.forEach((v, idx) => {
     const i = idx + 1;
     const direction = v.direction || 'encrypt';
+    const mode = v.mode || 'cbc';  // default CBC for backward compat
 
-    if (direction === 'decrypt') {
+    if (mode === 'gcm') {
+      // ── AES-GCM branch (electronic receipt optional mode, V3.0+) ──
+      try {
+        if (direction === 'decrypt') {
+          const result = aesGcmDecrypt(v.encrypted_base64, v.hashKey);
+          const ok = result === v.expected_decrypted;
+          if (!ok) failures++;
+          console.log(`  Vector ${i}: ${ok ? 'PASS' : 'FAIL'} | ${v.name}`);
+          if (!ok) {
+            console.log(`    Expected: ${v.expected_decrypted}`);
+            console.log(`    Got:      ${result}`);
+          }
+          const urlDecoded = phpUrldecode(result);
+          check('GCM URL decode -> JSON', v.expected_json, urlDecoded);
+        } else {
+          const { base64, tagHex, urlEncoded } = aesGcmEncrypt(v.plaintext_json, v.hashKey, v.iv_hex);
+          const ok = base64 === v.expected_base64;
+          if (!ok) failures++;
+          console.log(`  Vector ${i}: ${ok ? 'PASS' : 'FAIL'} | ${v.name}`);
+          if (!ok) {
+            console.log(`    Expected: ${v.expected_base64}`);
+            console.log(`    Got:      ${base64}`);
+          }
+          if (v.expected_tag_hex !== undefined) {
+            check('GCM tag', v.expected_tag_hex, tagHex);
+          }
+          if (v.expected_url_encoded !== undefined) {
+            check('GCM URL encode', v.expected_url_encoded, urlEncoded);
+          }
+          if (v.expected_url_encoded_length !== undefined) {
+            const actualLen = Buffer.byteLength(urlEncoded, 'utf8');
+            check(
+              `GCM URL encode length (${actualLen} bytes)`,
+              String(v.expected_url_encoded_length),
+              String(actualLen)
+            );
+          }
+        }
+      } catch (err) {
+        failures++;
+        console.log(`  Vector ${i}: FAIL | ${v.name} (error: ${err.message})`);
+      }
+    } else if (direction === 'decrypt') {
       try {
         const result = aesDecrypt(v.encrypted_base64, v.hashKey, v.hashIV);
         const ok = result === v.expected_decrypted;

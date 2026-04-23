@@ -271,8 +271,66 @@ static string AesDecrypt(string encryptedB64, string hashKey, string hashIV)
 
     byte[] unpadded = Pkcs7Unpad(plaintext);
 
+
     // Return the URL-encoded string as-is — caller applies URL decode.
     return Encoding.UTF8.GetString(unpadded);
+}
+
+// ──────────────────────────────────────────────
+// AesGcmEncrypt — ECPay AES-128-GCM encryption (electronic receipt V3.0+)
+//
+// Flow:
+//   1. AesUrlEncode(plaintextJson)
+//   2. AES-128-GCM with key[:16] and 12-byte IV (no padding)
+//   3. Output: IV (12B) || Ciphertext || Tag (16B), then Base64
+//
+// Returns (base64, tagHex, urlEncoded).
+// ──────────────────────────────────────────────
+static (string Base64, string TagHex, string UrlEncoded) AesGcmEncrypt(string plaintextJson, string hashKey, string ivHex)
+{
+    string urlEncoded = AesUrlEncode(plaintextJson);
+    byte[] keyBytes = Encoding.UTF8.GetBytes(hashKey)[..16];
+    byte[] iv = Convert.FromHexString(ivHex);
+    byte[] plaintextBytes = Encoding.UTF8.GetBytes(urlEncoded);
+    byte[] ciphertext = new byte[plaintextBytes.Length];
+    byte[] tag = new byte[16];
+
+    // .NET 8+ requires tag size via constructor; .NET 6/7 uses default (16)
+    using var aesGcm = new AesGcm(keyBytes, 16);
+    aesGcm.Encrypt(iv, plaintextBytes, ciphertext, tag);
+
+    // Concat IV || Ciphertext || Tag
+    byte[] combined = new byte[iv.Length + ciphertext.Length + tag.Length];
+    Buffer.BlockCopy(iv, 0, combined, 0, iv.Length);
+    Buffer.BlockCopy(ciphertext, 0, combined, iv.Length, ciphertext.Length);
+    Buffer.BlockCopy(tag, 0, combined, iv.Length + ciphertext.Length, tag.Length);
+
+    return (Convert.ToBase64String(combined), Convert.ToHexString(tag).ToLowerInvariant(), urlEncoded);
+}
+
+// ──────────────────────────────────────────────
+// AesGcmDecrypt — ECPay AES-128-GCM decryption
+//
+// Input: Base64(IV 12B || Ciphertext || Tag 16B)
+// Throws CryptographicException on tag mismatch (data tampered or wrong key).
+// ──────────────────────────────────────────────
+static string AesGcmDecrypt(string encryptedB64, string hashKey)
+{
+    byte[] raw = Convert.FromBase64String(encryptedB64);
+    if (raw.Length < 12 + 16)
+        throw new ArgumentException($"ciphertext too short: {raw.Length}");
+
+    byte[] iv = raw[..12];
+    byte[] tag = raw[^16..];
+    byte[] ciphertext = raw[12..^16];
+
+    byte[] keyBytes = Encoding.UTF8.GetBytes(hashKey)[..16];
+    byte[] plaintext = new byte[ciphertext.Length];
+
+    using var aesGcm = new AesGcm(keyBytes, 16);
+    aesGcm.Decrypt(iv, ciphertext, tag, plaintext); // throws on tag mismatch
+
+    return Encoding.UTF8.GetString(plaintext);
 }
 
 // ──────────────────────────────────────────────
@@ -411,11 +469,70 @@ for (int i = 0; i < aesVectors.Count; i++)
 {
     var v = aesVectors[i];
     string name    = v.GetProperty("name").GetString()!;
+    string mode    = v.TryGetProperty("mode", out var mProp) ? mProp.GetString()! : "cbc";
     string hashKey = v.GetProperty("hashKey").GetString()!;
-    string hashIV  = v.GetProperty("hashIV").GetString()!;
+    string hashIV  = v.TryGetProperty("hashIV", out var hivProp) ? hivProp.GetString()! : "";
     string direction = v.TryGetProperty("direction", out var dProp) ? dProp.GetString()! : "encrypt";
 
-    if (direction == "decrypt")
+    if (mode == "gcm")
+    {
+        // ── AES-GCM branch (electronic receipt V3.0+) ──
+        try
+        {
+            if (direction == "decrypt")
+            {
+                string encryptedB64    = v.GetProperty("encrypted_base64").GetString()!;
+                string expectedDecr    = v.GetProperty("expected_decrypted").GetString()!;
+                string expectedJsonStr = v.GetProperty("expected_json").GetString()!;
+
+                string result = AesGcmDecrypt(encryptedB64, hashKey);
+                string status = result == expectedDecr ? "PASS" : "FAIL";
+                if (result != expectedDecr) failures++;
+                Console.WriteLine($"  Vector {i + 1}: {status} | {name}");
+                if (result != expectedDecr)
+                {
+                    Console.WriteLine($"    Expected: {expectedDecr}");
+                    Console.WriteLine($"    Got:      {result}");
+                }
+                string urlDecoded = WebUtility.UrlDecode(result);
+                Check("GCM URL decode -> JSON", expectedJsonStr, urlDecoded);
+            }
+            else
+            {
+                string plaintextJson  = v.GetProperty("plaintext_json").GetString()!;
+                string expectedBase64 = v.GetProperty("expected_base64").GetString()!;
+                string ivHex          = v.GetProperty("iv_hex").GetString()!;
+                string expectedTagHex = v.TryGetProperty("expected_tag_hex", out var tagProp) ? tagProp.GetString()! : "";
+                string expectedUrlEnc = v.TryGetProperty("expected_url_encoded", out var euProp) ? euProp.GetString()! : "";
+                int expectedUrlLen    = v.TryGetProperty("expected_url_encoded_length", out var elProp) ? elProp.GetInt32() : -1;
+
+                var (b64, tagHex, urlEncoded) = AesGcmEncrypt(plaintextJson, hashKey, ivHex);
+                string status = b64 == expectedBase64 ? "PASS" : "FAIL";
+                if (b64 != expectedBase64) failures++;
+                Console.WriteLine($"  Vector {i + 1}: {status} | {name}");
+                if (b64 != expectedBase64)
+                {
+                    Console.WriteLine($"    Expected: {expectedBase64}");
+                    Console.WriteLine($"    Got:      {b64}");
+                }
+                if (!string.IsNullOrEmpty(expectedTagHex))
+                    Check("GCM tag", expectedTagHex, tagHex);
+                if (!string.IsNullOrEmpty(expectedUrlEnc))
+                    Check("GCM URL encode", expectedUrlEnc, urlEncoded);
+                if (expectedUrlLen > 0)
+                {
+                    int actualLen = Encoding.UTF8.GetByteCount(urlEncoded);
+                    CheckInt($"GCM URL encode length ({actualLen} bytes)", expectedUrlLen, actualLen);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            failures++;
+            Console.WriteLine($"  Vector {i + 1}: FAIL | {name} (error: {ex.Message})");
+        }
+    }
+    else if (direction == "decrypt")
     {
         string encryptedB64    = v.GetProperty("encrypted_base64").GetString()!;
         string expectedDecr    = v.GetProperty("expected_decrypted").GetString()!;

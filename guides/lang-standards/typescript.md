@@ -247,6 +247,19 @@ logger.error({ transCode, rtnCode }, 'ECPay API 錯誤');
 
 > **日誌安全規則**：HashKey、HashIV、CheckMacValue 為機敏資料，嚴禁出現在任何日誌、錯誤回報或前端回應中。
 
+## AES-GCM API 參考（電子收據 V3.0+ 選用）
+
+> **僅電子收據支援**：其他 AES-JSON 服務仍用 CBC。GCM 預設關閉，特店後台切換後才使用。完整實作見 [guides/14 §AES-GCM 模式](../14-aes-encryption.md#aes-gcm-模式電子收據選用)。
+
+- **原生 API**：同 Node.js — `crypto.createCipheriv('aes-128-gcm', key, iv)` 搭配 `.getAuthTag()`；型別建議定義 `interface ReceiptGcmCiphertext { iv: Buffer; ciphertext: Buffer; tag: Buffer }` 供序列化前展開
+- **依賴**：`@types/node`（TypeScript 專案需要）+ 內建 `crypto`
+- **Key**：`HashKey` 前 16 byte（Buffer）
+- **IV / Nonce**：**12 byte 隨機**（`crypto.randomBytes(12)`，回傳 `Buffer`）
+- **Tag**：16 byte `Buffer`
+- **輸出格式**：`Base64( IV(12B) || Ciphertext || Tag(16B) )`
+- **型別陷阱**：`Buffer.subarray` 回傳 `Buffer`；切勿誤用 `Uint8Array` 直接 concat（TypeScript 型別會通過但運行時可能 slice 不同）
+- **失敗處理**：Tag 驗證失敗 throw `Error`，必用 try/catch 處理（非同步上下文可改 Promise 錯誤鏈）
+
 ## URL Encode 注意
 
 ```typescript

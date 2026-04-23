@@ -237,6 +237,18 @@ logger.error({ transCode, rtnCode }, 'ECPay API 錯誤');
 
 > **日誌安全規則**：HashKey、HashIV、CheckMacValue 為機敏資料，嚴禁出現在任何日誌、錯誤回報或前端回應中。
 
+## AES-GCM API 參考（電子收據 V3.0+ 選用）
+
+> **僅電子收據支援**：其他 AES-JSON 服務仍用 CBC。GCM 預設關閉，特店後台切換後才使用。完整實作見 [guides/14 §AES-GCM 模式](../14-aes-encryption.md#aes-gcm-模式電子收據選用)。
+
+- **原生 API**：`crypto.createCipheriv('aes-128-gcm', key, iv)` → `.update()` + `.final()` + `.getAuthTag()`；解密用 `createDecipheriv` + `.setAuthTag(tag)`
+- **依賴**：內建 `crypto`（與 CBC 共用，無新依賴）
+- **Key**：`HashKey` 前 16 byte（Buffer，與 CBC 共用）
+- **IV / Nonce**：**12 byte 隨機**（`crypto.randomBytes(12)`），不使用 HashIV
+- **Tag**：16 byte，`cipher.getAuthTag()` 取得
+- **輸出格式**：`Base64( IV(12B) || Ciphertext || Tag(16B) )`，使用 `Buffer.concat([iv, ct, tag]).toString('base64')`
+- **失敗處理**：Tag 驗證失敗時 `decipher.final()` throw `Unsupported state or unable to authenticate data`，用 try/catch 捕捉
+
 ## URL Encode 注意
 
 ```javascript

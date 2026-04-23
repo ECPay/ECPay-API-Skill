@@ -1,4 +1,4 @@
-> 對應 ECPay API 版本 | 語言無關 HTTP 協議參考 | 最後更新：2026-03
+> 對應 ECPay API 版本 | 語言無關 HTTP 協議參考 | 最後更新：2026-04
 >
 > **更新頻率**：本協議文件每季驗證一次。最後驗證日期：2026-04。
 > HTTP 基礎協議（POST、Content-Type、Domain 結構）通常穩定，年度變動機率 < 5%。
@@ -26,6 +26,7 @@ ECPay 服務使用 **4 個 HTTP 協議模式**（CMV-SHA256 / AES-JSON / AES-JSO
 | 離線電子發票 | AES-JSON | application/json | AES Data | AES-128-CBC | einvoice.ecpay.com.tw | [18](./18-invoice-offline.md) |
 | 全方位物流 v2 | AES-JSON | application/json | AES Data | AES-128-CBC | logistics.ecpay.com.tw | [07](./07-logistics-allinone.md) |
 | 跨境物流 | AES-JSON | application/json | AES Data | AES-128-CBC | logistics.ecpay.com.tw | [08](./08-logistics-crossborder.md) |
+| 電子收據 | AES-JSON | application/json | AES Data | **AES-128-CBC 或 AES-128-GCM**（後台切換，預設 CBC）| einvoice.ecpay.com.tw | [25](./25-receipt.md) |
 | 電子票證（3 種模式） | AES-JSON + CMV | application/json | AES Data + CheckMacValue | AES-128-CBC + SHA256 | ecticket.ecpay.com.tw | [09](./09-ecticket.md) |
 | 直播收款 | AES-JSON（請求）/ AES-JSON+CMV（callback） | application/json | AES Data（callback 含 CheckMacValue，ECTicket 式 SHA256） | AES-128-CBC + SHA256 | ecpayment.ecpay.com.tw | [17 §直播](./17-hardware-services.md#直播收款指引) |
 | AIO 對帳檔下載 | — | form-urlencoded | CheckMacValue (SHA256) | SHA256 | vendor.ecpay.com.tw(對帳用**專用域名**,非 payment.ecpay.com.tw) | 見 §對帳檔下載 |

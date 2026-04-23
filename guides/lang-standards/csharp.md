@@ -239,6 +239,19 @@ _logger.LogError("ECPay API 錯誤: TransCode={TransCode}, RtnCode={RtnCode}", t
 
 > **日誌安全規則**：HashKey、HashIV、CheckMacValue 為機敏資料，嚴禁出現在任何日誌、錯誤回報或前端回應中。
 
+## AES-GCM API 參考（電子收據 V3.0+ 選用）
+
+> **僅電子收據支援**：其他 AES-JSON 服務仍用 CBC。GCM 預設關閉，特店後台切換後才使用。完整實作見 [guides/14 §AES-GCM 模式](../14-aes-encryption.md#aes-gcm-模式電子收據選用)。
+
+- **原生 API**：`System.Security.Cryptography.AesGcm`（.NET Core 3.0+）— `new AesGcm(key, 16)` → `.Encrypt(nonce, pt, ct, tag)` / `.Decrypt(nonce, ct, tag, pt)`
+- **依賴**：內建 `System.Security.Cryptography`（無需 NuGet）
+- **Key**：`byte[16]`（UTF-8 編碼 HashKey 取前 16）
+- **IV / Nonce**：**12 byte 隨機**（`RandomNumberGenerator.GetBytes(12)`），不使用 HashIV
+- **Tag**：16 byte `byte[]`，`Encrypt` 方法的 out 參數
+- **輸出格式**：`Base64( IV(12B) || Ciphertext || Tag(16B) )`；用 `Buffer.BlockCopy` 或 `Array.Copy` 拼接
+- **失敗處理**：Tag 驗證失敗時 `Decrypt` throw `System.Security.Cryptography.CryptographicException`；必用 try/catch
+- **版本注意**：.NET 8+ 要求 `new AesGcm(key, tagSizeInBytes)` 提供 tag size；舊版本可省略第二參數（預設 16）
+
 ## URL Encode 注意
 
 ```csharp

@@ -6,6 +6,73 @@
 
 ## [Unreleased]
 
+---
+
+## [2.0.0] — 2026-04-23 (V3.0) — 🚀 **Major Release**
+
+> **為何升為 MAJOR（V2.7 → V3.0 / 1.5.7 → 2.0.0）？** 本次釋出**新增一整套 API 規格書（電子收據）**與**首個 AES-GCM 加密機制**，屬 skill 範圍重大擴張（新服務類別 + 新加密演算法），按 skill 維護慣例以 MAJOR 版本升級標示，方便下游使用者識別為重大更新而非常規 patch。現有 V2.7 所有 API 相容性不變（GCM 為 opt-in，CBC 仍為預設）。
+
+### 新增（Phase 2 — AES-GCM 12 語言完整支援）
+
+- **guides/14 §AES-GCM 模式**：在既有 12 語言 AES-CBC 實作後新增 `## AES-GCM 模式（電子收據選用）` 章節（約 650 行），含：
+  - AES-CBC vs AES-GCM 對照表（演算法、Key、IV、Padding、認證、輸出結構）
+  - 加密/解密流程 + 測試向量模式（固定 IV）說明
+  - **12 語言完整實作**：Python / Node.js / TypeScript / Java / C# / Go / C（OpenSSL EVP）/ C++ / Rust（新增 `aes-gcm` crate）/ Swift（首選 CryptoKit）/ Kotlin / Ruby
+  - 「GCM 特有常見錯誤」8 條（IV 長度誤用、固定 IV 洩露、Tag 驗證失敗、順序顛倒、Base64 URL-safe、PHP `$tag` 參數方向、AAD 錯誤、HashIV 誤用）
+  - AI Section Index 更新：新增 GCM 章節 13 個語言的行號範圍
+- **guides/lang-standards/{12 檔}.md**：每檔在「URL Encode 注意」之前新增 `## AES-GCM API 參考（電子收據 V3.0+ 選用）` 小節，含該語言原生 API、依賴、IV/Key/Tag 規範、失敗處理對照
+- **guides/14 Swift 警告修正**：既有「CryptoKit 不支援 CBC」警告擴充為**雙模式版本** — CBC 仍需 CommonCrypto，**GCM 首選 CryptoKit**（iOS 13+ 原生、比 CommonCrypto 大幅簡化）
+- **guides/23 §電子收據 AES-GCM E2E 範例**：Go 完整收據開立 E2E（含 GCM 加密 + 雙層錯誤檢查）+ TypeScript Express Callback handler（含 GCM 解密）；AI Section Index 同步更新
+- **test-vectors 4 組 AES-GCM 測試向量**（向量 #10-13）：基本 ASCII、UTF-8 中文、長資料（>500B）、解密反向驗證。固定 IV（`112233445566778899aabbcc`）確保跨語言決定性
+- **JSON schema 向後相容擴充**：`aes-encryption.json` 新增 `mode: "gcm"` / `iv_hex` / `expected_tag_hex` 欄位；既有 CBC 向量保持無 `mode` 欄位（驗證器預設為 cbc）
+- **5 個驗證器擴充 GCM 支援**：
+  - `verify.py` 新增 `aes_gcm_encrypt` / `aes_gcm_decrypt`（本機驗證 25/25 通過）
+  - `verify-node.js` 新增 `aesGcmEncrypt` / `aesGcmDecrypt`（本機驗證 25/25 通過）
+  - `verify-go.go` 新增 `aesGcmEncrypt` / `aesGcmDecrypt`（CI 驗證）
+  - `verify-java.java` 新增 `aesGcmEncrypt` / `aesGcmDecrypt`（CI 驗證）
+  - `verify-csharp.cs` 新增 `AesGcmEncrypt` / `AesGcmDecrypt`（CI 驗證）
+- **guides/25 §AES-GCM 章節升級**：6 語言 API 快速對照表擴充為**完整 10 語言對照 + 交叉引用 guides/14 §AES-GCM**，避免跨檔內容重複
+
+### 修正（Phase 3 — 文件一致性）
+
+- **guides/19 協議總覽表**：新增電子收據列（AES-128-CBC / AES-128-GCM 雙模式標記）；header SNAPSHOT 日期 2026-03 → 2026-04
+- **guides/20 錯誤碼 109/110 說明**：區分 CBC（PKCS7 padding error）vs GCM（Tag 驗證失敗、IV 長度錯誤）；新增 GCM 特例排查指引連結至 guides/15 §13.1
+- **guides/15 §13 AES 解密失敗**：擴充 CBC 與 GCM 並存說明；新增 §13.1 AES-GCM 解密失敗（電子收據 V3.0+）子節，含 6 項根因、Python 快速檢查指令、跨檔交叉引用
+- **guides/00 行 104**：AES 加解密用途補上「電子收據（含 AES-GCM 可選模式）」；行 126 SNAPSHOT 日期 2026-03 → 2026-04
+- **scripts/validate-guides-refs-consistency.sh**：`GUIDE_MODE_MAP` 新增 `guides/25-receipt.md → AES-JSON` 維度 4 協定模式驗證項目
+- **SKILL.md / AGENTS.md / GEMINI.md / SKILL_OPENAI.md / copilot-instructions.md 四大協定表**：AES-JSON 列同步註記「電子收據另可選 AES-128-GCM」、服務清單加入「電子收據」
+
+### 新增（Phase 1 — 電子收據 API 基礎支援）
+
+- **電子收據 API 全新支援（guides/25、references/Receipt/）**：新增 ECPay 電子收據（Electronic Receipt）API 整合，涵蓋一般收據、公益收據、政治獻金三種類型。整套新增：
+  - `references/Receipt/電子收據API技術串接文件.md` — 12 個官方文件 URL 索引（首頁/更新歷程/介接注意事項/測試介接資訊/收據開立/收據修改/收據作廢/收據通知/單筆查詢/AES-CBC/AES-GCM/URLEncode轉換表）
+  - `guides/25-receipt.md` — 567 行完整整合指南，含概述、AES-JSON 雙層錯誤檢查、RqHeader 跨服務差異說明、Issue/UpdateIssue/Invalid/Notification/GetReceipt 五大作業 API、PHP 範例、AES-GCM 新模式獨立章節、收據類型限制、10 條常見陷阱
+  - **新加密模式 AES-GCM**：電子收據是**首個支援 AES-GCM** 的綠界 API 服務。AES-GCM 需自產 12 byte IV，輸出格式為 `Base64(IV(12B) + Ciphertext + Tag(16B))`，提供 AEAD 認證加密。指南內含 PHP/Python/Node.js/Go/Java/C# 六語言 API 對照表
+  - **跨服務 RqHeader 差異補遺**：電子收據的 RqHeader 僅需 `Timestamp`，不需要 `Revision`（與 B2C=`3.0.0` / B2B=`1.0.0` / 物流 v2=`1.0.0` 不同），已納入 guides/25 跨服務差異說明
+  - **測試帳號（與現有帳號共用但端點不同）**：一般/公益收據用 `2000132`（與 B2C/B2B 發票共用）；政治獻金用 `3002607`（與 AIO 共用）；端點為 `einvoice(-stage).ecpay.com.tw/Receipt/*`，不可與發票 `/B2CInvoice/*` 混用
+
+### 變更
+
+- **references/ 合計數更新**：19 檔 / 431 URL → **20 檔 / 443 URL**（新增 Receipt 分類 1 檔 12 URL）
+- **guides/ 合計數更新**：28 份 → **29 份**（新增 guides/25-receipt.md）
+- **SKILL.md 決策樹新增「電子收據決策樹」**：路由 ReceiptType=1/2/4 三種情境與五大作業到 guides/25
+- **AGENTS.md / GEMINI.md 決策樹新增「### 電子收據」章節**：保持兩檔字面一致（validate-agents-parity.sh 驗證通過）
+- **SKILL_OPENAI.md 新增「E-Receipt (電子收據)」章節**：英文版路由說明，含 AES-GCM 首見標記
+- **guides/00-getting-started.md 服務列表「五大服務 → 六大服務」**：新增電子收據行；協議選擇加上 AES-GCM 新模式註記；下一步導航新增收據入口；測試帳號表新增兩列
+- **測試帳號表（SKILL.md / AGENTS.md / GEMINI.md / SKILL_OPENAI.md / guides/00）**：統一新增電子收據兩列（一般/公益 + 政治獻金），標註 AES-CBC / AES-GCM 雙模式
+
+### 版本同步
+
+- SKILL.md front-matter / SKILL_OPENAI.md / README.md / SETUP.md / AGENTS.md / GEMINI.md / .github/copilot-instructions.md / CONTRIBUTING.md / vscode_copilot.md / visual_studio_2026.md / 父層 skills/CLAUDE.md 全數同步至 **V3.0**
+- `scripts/validate-version-sync.sh` 同步更新 CONTRIBUTING.md guide count 檢查值（28 → 29）
+- `CHANGELOG.md` 新增 `[2.0.0] — 2026-04-23 (V3.0)` 條目（對應 `V3.0` 版本號）
+
+---
+
+## 過渡期累積變更（V2.7 → V3.0，已併入本次 V3.0 release）
+
+> 以下變更在 V2.7（2026-04-10）發布後、V3.0（2026-04-23）之前陸續完成，隨 V3.0 一併釋出。保留 sub-section 結構以便 git log 對應與 diff 審閱。
+
 ### 改善
 
 - **guides 重新編號：消除 18 號跳號**：原 18-livestream-payment（V1.0 存在）在 V2.5 時併入 `guides/17-hardware-services.md`，但刪除後遺留 17→19 跳號。本次將 guides/19-25 整體前移一號（19→18, 20→19, 21→20, 22→21, 23→22, 24→23, 25→24），同步更新 ~290 處跨檔引用（57 個檔案），確保 guides 編號 00-24 連續。同時修正 `SKILL_OPENAI.md` 對不存在的 guides/18 的幽靈引用
@@ -339,7 +406,8 @@
 
 ---
 
-[Unreleased]: https://github.com/ECPay/ECPay-API-Skill/compare/v1.5.4...HEAD
+[Unreleased]: https://github.com/ECPay/ECPay-API-Skill/compare/v2.0.0...HEAD
+[2.0.0]: https://github.com/ECPay/ECPay-API-Skill/compare/v1.5.7...v2.0.0
 [1.5.4]: https://github.com/ECPay/ECPay-API-Skill/compare/v1.5.3...v1.5.4
 [1.5.3]: https://github.com/ECPay/ECPay-API-Skill/compare/v1.5.2...v1.5.3
 [1.5.2]: https://github.com/ECPay/ECPay-API-Skill/compare/v1.5.1...v1.5.2

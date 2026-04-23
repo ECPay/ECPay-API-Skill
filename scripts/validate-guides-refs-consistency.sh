@@ -96,6 +96,7 @@ declare -A GUIDE_MODE_MAP=(
   ["guides/07-logistics-allinone.md"]="AES-JSON"
   ["guides/08-logistics-crossborder.md"]="AES-JSON"
   ["guides/09-ecticket.md"]="AES-JSON"
+  ["guides/25-receipt.md"]="AES-JSON"  # CBC 預設，另支援 AES-GCM 選用模式（V3.0+）
 )
 
 mode_errors=0

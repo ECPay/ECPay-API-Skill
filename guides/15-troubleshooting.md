@@ -315,13 +315,45 @@ ATM 取號成功的 `RtnCode` 是 `2`（不是 `1`）。
 ## 13. AES 解密失敗
 
 排查步驟：
-1. **Key/IV 長度**：必須取前 16 bytes
+1. **Key/IV 長度**：**CBC 必須取前 16 bytes**（HashKey 與 HashIV 各取 16）；**GCM 模式（電子收據 V3.0+）IV 長度為 12 byte**（不是 16），且 IV 自產非來自 HashIV
 2. **加解密順序**：加密前先 URL encode，解密後才 URL decode（ECPay 獨有）
-3. **Padding**：PKCS7
-4. **Base64**：確認沒有多餘的換行或空格
+3. **Padding**：**CBC 用 PKCS7**；**GCM 無 padding**
+4. **Base64**：確認沒有多餘的換行或空格，**必須使用標準字母表**（`+/=`），不可使用 URL-safe 字母表（`-_`）
 5. **URL encode 函式**：AES 使用**純 urlencode**（不做 toLowerCase、不做 .NET 字元替換），與 CheckMacValue 的 `ecpayUrlEncode` **完全不同**。若誤用 CMV 的 URL encode 邏輯，解密將永遠失敗
 
 詳見：[guides/14-aes-encryption.md §AES vs CMV URL Encode 對比表](./14-aes-encryption.md#aes-vs-cmv-url-encode-對比表)
+
+### 13.1 AES-GCM 解密失敗（電子收據 V3.0+）
+
+**症狀**：呼叫電子收據 API，回應 TransCode=1 但 RtnCode=109 或 110，或本地解密 Callback Data 時程式 raise `AuthenticationError` / `AEADBadTagException` / `CryptographicException`。
+
+**根因（按頻率高至低）**：
+
+1. **模式誤配**：特店後台設為 GCM 但程式用 CBC 加密，或反之。後台可切換模式，須確保程式邏輯與後台設定一致。
+2. **IV 長度錯誤**：誤用 CBC 的 16-byte IV 處理 GCM。GCM 規格固定 **12-byte IV**，各語言 API 也期望 12 byte。
+3. **IV 未隨機產生（生產環境）**：每次請求必須產生新的隨機 IV。**固定 IV + 相同 Key 會洩露明文**，且會被綠界檢查阻擋。
+4. **輸出格式解析錯誤**：GCM 輸出為 **`Base64( IV(12B) + Ciphertext + Tag(16B) )`**。解密時必須：
+   - Base64 decode 後取前 12 byte 作為 IV
+   - 取後 16 byte 作為 Tag
+   - 中間為 Ciphertext
+   - 若順序或 offset 錯，Tag 驗證必定失敗
+5. **Tag 驗證失敗**：代表資料在傳輸過程被修改，或 HashKey 錯誤。各語言的 GCM API 會 raise 例外而非回傳 null（Python `ValueError`、Java `AEADBadTagException`、C# `CryptographicException`、Go `gcm.Open` 回傳 `error`）。
+6. **PHP openssl `$tag` 參數方向**：`openssl_encrypt` 的 `$tag` 是 **by-reference 輸出**（由函式寫入），`openssl_decrypt` 的 `$tag` 是 **by-value 輸入**（呼叫端提供）。寫反會解密失敗。
+
+**排查指令**：
+
+```python
+# Python 快速檢查 GCM 輸出結構（pycryptodome）
+import base64
+raw = base64.b64decode(your_encrypted_b64)
+print(f"Total length: {len(raw)}")
+print(f"IV (first 12B, hex): {raw[:12].hex()}")
+print(f"Tag (last 16B, hex): {raw[-16:].hex()}")
+print(f"Ciphertext length: {len(raw) - 28}")
+# 正確：total = 12 + ciphertext + 16
+```
+
+詳見：[guides/14-aes-encryption.md §AES-GCM 模式](./14-aes-encryption.md#aes-gcm-模式電子收據選用) 與 [guides/25-receipt.md §AES-GCM 注意事項](./25-receipt.md#aes-gcm-模式新加密選項)
 
 ## 14. 站內付 2.0 404 雙 Domain 錯誤
 
@@ -655,7 +687,7 @@ ECPay 所有服務僅支援 **新台幣 (TWD)**，不支援多幣別。
 | HashKey/HashIV 是否用**發票組**（2000132 / ejCk326UnaZWKisg / q9jcZX8Ib9LM8wYk） | 確認 Factory 初始化時的 Key/IV |
 | RqHeader.Revision 是否填 `"3.0.0"` | 缺少或值為空/null/undefined → TransCode ≠ 1 |
 | MerchantID 是否在外層 JSON 和 Data 兩層都填 | **兩層都必須填寫**，缺少任何一層**都會**導致驗證失敗 |
-| AES 加密方式是否 AES-128-CBC（不是 AES-256） | 見 [guides/14-aes-encryption.md](./14-aes-encryption.md) |
+| AES 加密方式是否 AES-128-CBC（B2C 發票預設；電子收據另可選 AES-128-GCM，不是 AES-256）| 見 [guides/14-aes-encryption.md](./14-aes-encryption.md) |
 
 > 若 TransCode=1 但 RtnCode ≠ 1，是業務參數錯誤（如 Items 金額加總不等於 SalesAmount），查 [guides/20](./20-error-codes-reference.md)。
 

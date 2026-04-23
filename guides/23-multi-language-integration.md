@@ -1,16 +1,20 @@
-> 對應 ECPay API 版本 | 最後更新：2026-03
+> 對應 ECPay API 版本 | 最後更新：2026-04
 
-<!-- AI Section Index（精確行號，2026-04-11 校準）
-Go E2E: line 136-488 (CMV: 138-270, AES: 271-488)
-Java E2E + 差異指南: line 491-709 (CMV E2E: 493-667, AES 差異: 668-709)
-C# E2E + 差異指南: line 711-872 (CMV E2E: 713-832, AES 差異: 833-872)
+<!-- AI Section Index（精確行號，2026-04-23 校準）
+Go E2E: line 136-488 (CMV: 138-270, AES-CBC: 271-488)
+Java E2E + 差異指南: line 491-709 (CMV E2E: 493-667, AES-CBC 差異: 668-709)
+C# E2E + 差異指南: line 711-872 (CMV E2E: 713-832, AES-CBC 差異: 833-872)
 TypeScript 完整 E2E + 型別定義: line 874-1123
 Kotlin 差異指南: line 1126-1169 | Ruby 差異指南: line 1171-1212
 Swift 差異指南: line 1214-1254 | Rust 差異指南: line 1256-1297
 Mobile App: line 1299-1354 | 非 PHP CMV Checklist: line 1356-1374
 非 PHP AES-JSON Checklist: line 1376-1393
 E2E 組裝步驟: line 1395-1406 | C/C++ 注意事項: line 1408-1675
-跨語言測試: line 1677-1683 | Production 環境切換: line 1685-1699
+跨語言測試: line 1677-1683 | 電子收據 AES-GCM E2E（V3.0+）: line 1685-2022
+  ├ Go 開立完整 E2E: line 1692-1842
+  ├ TypeScript 開立完整 E2E: line 1844-1952
+  └ TypeScript Callback Handler: line 1954-2022
+Production 環境切換: line 2024+ | 相關文件: 檔尾
 -->
 
 # 多語言整合完整指南
@@ -1679,6 +1683,344 @@ int main(void) {
 完整測試向量（SHA256 / MD5 / 含特殊字元）及 12 語言驗證範例見 [guides/13-checkmacvalue.md §測試向量](./13-checkmacvalue.md)。
 
 建議以 guides/13 提供的測試向量驗證你的語言實作，確認 CheckMacValue 與預期值一致後再進入整合測試。
+
+---
+
+## 電子收據 AES-GCM E2E 範例（V3.0+）
+
+> **適用**：電子收據（`/Receipt/*` API）後台設定為 AES-GCM 模式時。其他 AES-JSON 服務仍用 CBC，請參考上方既有 E2E。
+>
+> 完整 12 語言 GCM 實作見 [guides/14 §AES-GCM 模式](./14-aes-encryption.md#aes-gcm-模式電子收據選用)。本節提供 **Go + TypeScript** 兩個完整 E2E（開立 + Callback 解密），其他語言請參考既有 CBC E2E 對照替換加解密函式。
+
+### Go 電子收據開立 + GCM 加密（完整 E2E）
+
+```go
+// go.mod: module ecpay-receipt-gcm
+package main
+
+import (
+    "bytes"
+    "crypto/aes"
+    "crypto/cipher"
+    "crypto/rand"
+    "encoding/base64"
+    "encoding/json"
+    "errors"
+    "fmt"
+    "io"
+    "net/http"
+    "net/url"
+    "strings"
+    "time"
+)
+
+const (
+    MerchantID = "2000132"
+    HashKey    = "ejCk326UnaZWKisg"  // 一般/公益收據帳號
+    EndpointIssue = "https://einvoice-stage.ecpay.com.tw/Receipt/Issue"
+)
+
+type ReceiptRequest struct {
+    MerchantID string `json:"MerchantID"`
+    RqHeader   struct {
+        Timestamp int64 `json:"Timestamp"`
+    } `json:"RqHeader"`
+    Data string `json:"Data"`
+}
+
+type ReceiptResponse struct {
+    TransCode int    `json:"TransCode"`
+    TransMsg  string `json:"TransMsg"`
+    Data      string `json:"Data"`
+}
+
+// aesUrlEncode — Go url.QueryEscape 不編碼 ~!*'()，需手動補齊（見 guides/14 §AES-GCM Go）
+var aesReplacer = strings.NewReplacer("~", "%7E", "!", "%21", "*", "%2A", "'", "%27", "(", "%28", ")", "%29")
+
+func aesGcmEncrypt(plaintextJSON string) (string, error) {
+    // 1. aesUrlEncode（空格→+ 由 QueryEscape 處理，其餘手動補）
+    urlEncoded := aesReplacer.Replace(url.QueryEscape(plaintextJSON))
+    // 2. 產生隨機 12B IV
+    iv := make([]byte, 12)
+    if _, err := rand.Read(iv); err != nil {
+        return "", err
+    }
+    // 3. AES-128-GCM
+    block, _ := aes.NewCipher([]byte(HashKey)[:16])
+    gcm, _ := cipher.NewGCMWithNonceSize(block, 12)
+    // Seal(dst=iv, nonce=iv, pt, aad=nil) → iv || ciphertext || tag
+    sealed := gcm.Seal(iv, iv, []byte(urlEncoded), nil)
+    return base64.StdEncoding.EncodeToString(sealed), nil
+}
+
+func aesGcmDecrypt(encryptedB64 string) (string, error) {
+    raw, err := base64.StdEncoding.DecodeString(encryptedB64)
+    if err != nil {
+        return "", err
+    }
+    if len(raw) < 12+16 {
+        return "", errors.New("ciphertext too short")
+    }
+    iv := raw[:12]
+    ctTag := raw[12:]
+    block, _ := aes.NewCipher([]byte(HashKey)[:16])
+    gcm, _ := cipher.NewGCMWithNonceSize(block, 12)
+    pt, err := gcm.Open(nil, iv, ctTag, nil) // Tag 失敗回傳 error
+    if err != nil {
+        return "", fmt.Errorf("GCM decrypt: %w", err)
+    }
+    urlDecoded, _ := url.QueryUnescape(string(pt))
+    return urlDecoded, nil
+}
+
+func issueReceipt() error {
+    // 準備 Data（電子收據 Issue 必填欄位）
+    data := map[string]interface{}{
+        "MerchantID":      MerchantID,
+        "Amount":          100,
+        "Name":            "王小明",
+        "ReceiptType":     1,             // 1=一般
+        "RetrievalMethod": 2,             // 2=電子
+        "ReceiptDate":     time.Now().Format("2006/01/02 15:04:05"),
+        "RelateNumber":    fmt.Sprintf("RCPT%d", time.Now().Unix()),
+        "Email":           "test@example.com",
+        "Items": []map[string]interface{}{{
+            "ItemSeq": 1, "ItemName": "測試商品",
+            "ItemCount": 1, "ItemPrice": 100, "ItemAmount": 100,
+        }},
+    }
+    dataJSON, _ := json.Marshal(data)
+
+    // GCM 加密
+    encrypted, err := aesGcmEncrypt(string(dataJSON))
+    if err != nil {
+        return err
+    }
+
+    // 組 Request
+    req := ReceiptRequest{
+        MerchantID: MerchantID,
+        Data:       encrypted,
+    }
+    req.RqHeader.Timestamp = time.Now().Unix() // UTC+8，10 分鐘內有效
+    body, _ := json.Marshal(req)
+
+    // POST
+    resp, err := http.Post(EndpointIssue, "application/json", bytes.NewReader(body))
+    if err != nil {
+        return err
+    }
+    defer resp.Body.Close()
+    respBody, _ := io.ReadAll(resp.Body)
+
+    // 外層錯誤檢查
+    var parsed ReceiptResponse
+    json.Unmarshal(respBody, &parsed)
+    if parsed.TransCode != 1 {
+        return fmt.Errorf("傳輸失敗: %s", parsed.TransMsg)
+    }
+
+    // 解密 Data（GCM）
+    decrypted, err := aesGcmDecrypt(parsed.Data)
+    if err != nil {
+        return err
+    }
+    var result map[string]interface{}
+    json.Unmarshal([]byte(decrypted), &result)
+
+    // 內層錯誤檢查
+    if int(result["RtnCode"].(float64)) != 1 {
+        return fmt.Errorf("業務失敗: %v", result["RtnMsg"])
+    }
+
+    fmt.Printf("開立成功：ReceiptNo = %v\n", result["ReceiptNo"])
+    return nil
+}
+
+func main() {
+    if err := issueReceipt(); err != nil {
+        fmt.Printf("錯誤: %v\n", err)
+    }
+}
+```
+
+### TypeScript 電子收據開立 + GCM 加密（完整 E2E）
+
+```typescript
+// 依賴：npm install typescript @types/node
+//      tsc target: ES2020+，Node.js 18+（built-in fetch）
+import * as crypto from 'crypto';
+
+const MERCHANT_ID = '2000132';
+const HASH_KEY = 'ejCk326UnaZWKisg';  // 電子收據一般/公益帳號
+const ENDPOINT_ISSUE = 'https://einvoice-stage.ecpay.com.tw/Receipt/Issue';
+
+interface ReceiptRequest {
+    MerchantID: string;
+    RqHeader: { Timestamp: number };  // ⚠️ 電子收據 RqHeader 不需 Revision
+    Data: string;                      // AES-GCM 加密後的 Base64
+}
+
+interface ReceiptResponse {
+    TransCode: number;  // 1 = 傳輸成功
+    TransMsg: string;
+    Data: string;       // AES-GCM 加密的回應內容
+}
+
+interface IssueResult {
+    RtnCode: number;    // 1 = 業務成功（整數，非字串）
+    RtnMsg: string;
+    ReceiptNo: string;  // 綠界收據編號
+}
+
+// aesUrlEncode — 與 CBC 版本共用；補齊 encodeURIComponent 不編碼的字元
+function aesUrlEncode(s: string): string {
+    return encodeURIComponent(s)
+        .replace(/~/g, '%7E').replace(/!/g, '%21').replace(/'/g, '%27')
+        .replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\*/g, '%2A')
+        .replace(/%20/g, '+');
+}
+
+function aesGcmEncrypt(plaintextJson: string): string {
+    const iv = crypto.randomBytes(12);  // 生產：每次請求隨機 12B IV
+    const urlEncoded = aesUrlEncode(plaintextJson);
+    const key = Buffer.from(HASH_KEY, 'utf8').subarray(0, 16);
+    const cipher = crypto.createCipheriv('aes-128-gcm', key, iv);
+    const ct = Buffer.concat([cipher.update(urlEncoded, 'utf8'), cipher.final()]);
+    const tag = cipher.getAuthTag();
+    // IV (12B) || Ciphertext || Tag (16B) → Base64
+    return Buffer.concat([iv, ct, tag]).toString('base64');
+}
+
+function aesGcmDecrypt(encryptedB64: string): string {
+    const raw = Buffer.from(encryptedB64, 'base64');
+    if (raw.length < 12 + 16) throw new Error('ciphertext too short');
+    const iv = raw.subarray(0, 12);
+    const tag = raw.subarray(raw.length - 16);
+    const ct = raw.subarray(12, raw.length - 16);
+    const key = Buffer.from(HASH_KEY, 'utf8').subarray(0, 16);
+
+    const decipher = crypto.createDecipheriv('aes-128-gcm', key, iv);
+    decipher.setAuthTag(tag);
+    const pt = Buffer.concat([decipher.update(ct), decipher.final()]);  // Tag 失敗 throw
+    return decodeURIComponent(pt.toString('utf8').replace(/\+/g, '%20'));
+}
+
+async function issueReceipt(): Promise<IssueResult> {
+    const data = {
+        MerchantID: MERCHANT_ID,
+        Amount: 100,
+        Name: '王小明',
+        ReceiptType: 1,                                    // 1=一般收據
+        RetrievalMethod: 2,                                // 2=電子
+        ReceiptDate: new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Taipei' }),
+        RelateNumber: `RCPT${Date.now()}`,                 // 唯一編號
+        Email: 'test@example.com',
+        Items: [{
+            ItemSeq: 1, ItemName: '測試商品',
+            ItemCount: 1, ItemPrice: 100, ItemAmount: 100,
+        }],
+    };
+
+    const body: ReceiptRequest = {
+        MerchantID: MERCHANT_ID,
+        RqHeader: { Timestamp: Math.floor(Date.now() / 1000) },  // UTC+8，10 分鐘內有效
+        Data: aesGcmEncrypt(JSON.stringify(data)),
+    };
+
+    const resp = await fetch(ENDPOINT_ISSUE, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+    });
+    const parsed = await resp.json() as ReceiptResponse;
+
+    // 外層錯誤檢查（TransCode 為整數 1 才成功）
+    if (parsed.TransCode !== 1) {
+        throw new Error(`傳輸失敗：${parsed.TransMsg}`);
+    }
+
+    // 解密 + 內層錯誤檢查
+    const decrypted = aesGcmDecrypt(parsed.Data);
+    const result = JSON.parse(decrypted) as IssueResult;
+    if (result.RtnCode !== 1) {  // ⚠️ 整數比較，非 '1' 字串
+        throw new Error(`業務失敗：${result.RtnMsg}`);
+    }
+
+    console.log(`開立成功：ReceiptNo = ${result.ReceiptNo}`);
+    return result;
+}
+
+issueReceipt().catch(err => console.error('錯誤:', err));
+```
+
+### TypeScript 電子收據 Callback Handler + GCM 解密（Express）
+
+```typescript
+// 依賴：npm install express @types/express @types/node
+// 沿用上方 aesUrlEncode / aesGcmDecrypt；此處只展示 Callback handler 骨架
+import express, { Request, Response } from 'express';
+import * as crypto from 'crypto';
+
+const HASH_KEY = 'ejCk326UnaZWKisg'; // 電子收據一般/公益帳號
+
+interface ReceiptCallback {
+    MerchantID: string;
+    RqHeader: { Timestamp: number };
+    Data: string; // AES-GCM 加密
+}
+
+interface DecryptedData {
+    MerchantID: string;
+    ReceiptNo: string;
+    Notified?: 'C' | 'M' | 'A';
+    NotifyTag?: 1 | 2;
+    [key: string]: unknown;
+}
+
+function aesGcmDecrypt(encryptedB64: string): DecryptedData {
+    const raw = Buffer.from(encryptedB64, 'base64');
+    if (raw.length < 12 + 16) throw new Error('ciphertext too short');
+    const iv = raw.subarray(0, 12);
+    const tag = raw.subarray(raw.length - 16);
+    const ct = raw.subarray(12, raw.length - 16);
+    const key = Buffer.from(HASH_KEY, 'utf8').subarray(0, 16);
+
+    const decipher = crypto.createDecipheriv('aes-128-gcm', key, iv);
+    decipher.setAuthTag(tag);
+    const pt = Buffer.concat([decipher.update(ct), decipher.final()]); // Tag 失敗 throw
+    const urlDecoded = decodeURIComponent(pt.toString('utf8').replace(/\+/g, '%20'));
+    return JSON.parse(urlDecoded) as DecryptedData;
+}
+
+const app = express();
+app.use(express.json());
+
+app.post('/ecpay/receipt/callback', (req: Request<{}, {}, ReceiptCallback>, res: Response) => {
+    try {
+        // 1. 外層錯誤檢查（此範例假設是特店自己呼叫 Notification API 後綠界的回應）
+        //    實際 Callback 場景中 TransCode 已由綠界前端檢查過，此處直接解密
+
+        // 2. GCM 解密 Data
+        const decrypted = aesGcmDecrypt(req.body.Data);
+        console.log(`[Receipt Callback] ReceiptNo=${decrypted.ReceiptNo}`);
+
+        // 3. 業務處理（冪等）
+        //    使用 ReceiptNo + RelateNumber 為 key 做 upsert，避免綠界重送 4 次造成重複
+
+        // 4. 回應綠界（JSON 格式，不是 1|OK）
+        res.status(200).json({ RtnCode: 1, RtnMsg: 'Success' });
+    } catch (err) {
+        // Tag 驗證失敗會進到這裡 → 代表資料被竄改或 Key 錯誤
+        console.error('[Receipt Callback] Decrypt failed:', err);
+        res.status(200).json({ RtnCode: 0, RtnMsg: 'Decrypt failed' });
+    }
+});
+
+app.listen(3000, () => console.log('Receipt callback server on :3000'));
+```
+
+> ⚠️ **GCM 生產環境 IV 必須隨機**：上方 Go 範例使用 `rand.Read(iv)` 每次產生新 IV；TypeScript Callback handler 只做解密（IV 由綠界產生並放在密文前 12 byte）。**切勿在生產環境使用 test-vectors 的固定 IV `112233445566778899aabbcc`**。
 
 ---
 

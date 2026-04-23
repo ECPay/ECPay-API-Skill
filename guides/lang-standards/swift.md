@@ -398,6 +398,21 @@ struct EcpayConfig {
 }
 ```
 
+## AES-GCM API 參考（電子收據 V3.0+ 選用）
+
+> **僅電子收據支援**：其他 AES-JSON 服務仍用 CBC。GCM 預設關閉，特店後台切換後才使用。完整實作見 [guides/14 §AES-GCM 模式](../14-aes-encryption.md#aes-gcm-模式電子收據選用)。
+
+- **原生 API**：**`CryptoKit.AES.GCM`**（iOS 13+ / macOS 10.15+ 原生支援，**強烈推薦**；比 CBC 的 CommonCrypto 大幅簡化）
+  - 加密：`AES.GCM.seal(plaintext, using: key)` → `SealedBox`
+  - 解密：`AES.GCM.open(sealedBox, using: key)` → 明文
+- **依賴**：內建 `CryptoKit`（GCM 使用場景只需 CryptoKit，無需 CommonCrypto）
+- **Key**：`SymmetricKey(data: hashKey.data(using: .utf8)!.prefix(16))`
+- **IV / Nonce**：**12 byte 隨機**（`AES.GCM.Nonce()` 自動產生），或傳入 `AES.GCM.Nonce(data: fixedIvData)`
+- **Tag**：自動處理，包含於 `SealedBox.combined`
+- **輸出格式**：`SealedBox.combined` 原生即為 `IV(12B) || Ciphertext || Tag(16B)`，直接 `.base64EncodedString()` 即符合 ECPay 規格
+- **失敗處理**：Tag 驗證失敗時 `AES.GCM.open()` throws `CryptoKitError`（Swift error handling）；用 `try` / `catch`
+- **CBC vs GCM 對比**：CBC 用 `CommonCrypto.CCCrypt`（約 30 行），GCM 用 `CryptoKit.AES.GCM`（約 5 行）。電子收據若啟用 GCM 是 Swift 客戶端的好消息
+
 ## URL Encode 注意
 
 ```swift

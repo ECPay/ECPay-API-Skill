@@ -1,7 +1,8 @@
 {
-  "description": "ECPay AES-128-CBC 測試向量 — 來源: guides/14-aes-encryption.md",
-  "algorithm": "AES-128-CBC with PKCS7 padding",
-  "flow": "JSON → URL encode → AES encrypt → Base64 encode",
+  "description": "ECPay AES 測試向量 — 來源: guides/14-aes-encryption.md。預設 AES-128-CBC；自 V3.0 起新增 AES-128-GCM 向量（for 電子收據，mode:\"gcm\"）",
+  "algorithm": "AES-128-CBC with PKCS7 padding (default) + AES-128-GCM (optional for 電子收據)",
+  "flow_cbc": "JSON → URL encode → AES-128-CBC → Base64 encode",
+  "flow_gcm": "JSON → URL encode → AES-128-GCM → concat(IV 12B, Ciphertext, Tag 16B) → Base64 encode",
   "vectors": [
     {
       "name": "基本測試（插入順序 JSON key）",
@@ -98,6 +99,49 @@
       "expected_url_encoded": "%7B%22MerchantID%22%3A%223002607%22%2C%22RespondType%22%3A%22JSON%22%7D",
       "expected_base64": "udqjXgM+7Q6lCrrculcvzUFnN5zv0ibax1glKFxrORoO0sl6pcoib/QDYPKCAP57ME4+3Yo84XmyabVFnxriMTuy9JK/RXS7DtEOvF+PUoU=",
       "note": "ECPG 金流（站內付 2.0、幕後授權、幕後取號）使用與發票不同的 HashKey/HashIV，但 AES 加密流程完全相同（JSON → URL encode → AES-128-CBC → Base64）。此向量驗證帳號切換時加密邏輯不受影響。JSON key 順序為插入順序（Python/Node.js/C#/Ruby 等保留插入順序語言應比對此值）。"
+    },
+    {
+      "name": "AES-GCM 基本測試 (ASCII, 固定 IV)",
+      "mode": "gcm",
+      "hashKey": "ejCk326UnaZWKisg",
+      "iv_hex": "112233445566778899aabbcc",
+      "plaintext_json": "{\"MerchantID\":\"2000132\",\"ReceiptNo\":\"Sale2026040800000448\"}",
+      "expected_url_encoded": "%7B%22MerchantID%22%3A%222000132%22%2C%22ReceiptNo%22%3A%22Sale2026040800000448%22%7D",
+      "expected_base64": "ESIzRFVmd4iZqrvMVejQIx7b49JVJn6qMLlyhZaRWcgH3bD3KdBB4ysBVF+Dj3Ov+ye01HjhEhIGtZKM+GRLstNcpwJschqx9VuXG6UdlHDKC9x6i0XcoV1uQAcC1116x2X2a3l+D4gmQbzYyZo+0n4=",
+      "expected_tag_hex": "65f66b797e0f882641bcd8c99a3ed27e",
+      "note": "電子收據 ReceiptType=1 基本開立範例。固定 IV for determinism；生產環境必須用隨機 IV（每次請求不同）。輸出 = Base64( IV(12B) || Ciphertext || Tag(16B) )。使用 2000132 一般/公益發票共用帳號。"
+    },
+    {
+      "name": "AES-GCM UTF-8 中文測試 (固定 IV)",
+      "mode": "gcm",
+      "hashKey": "ejCk326UnaZWKisg",
+      "iv_hex": "112233445566778899aabbcc",
+      "plaintext_json": "{\"Name\":\"王小明\",\"Amount\":100,\"ItemName\":\"捐款\"}",
+      "expected_url_encoded": "%7B%22Name%22%3A%22%E7%8E%8B%E5%B0%8F%E6%98%8E%22%2C%22Amount%22%3A100%2C%22ItemName%22%3A%22%E6%8D%90%E6%AC%BE%22%7D",
+      "expected_base64": "ESIzRFVmd4iZqrvMVejQIx7b4NZKIDP5bOgIgJaRWchxq7D9XsdJkT51UkjkjWSyj0HU0G+KT1RbmcfKhC5cw8RLpgIkL12M4BLAG7Ac43HOC8F4+FDeoyAuHU9+hBUopiDFgw5r2v/j9GMHyGgjtBxiV9qUlWy4R29HwaOF+XteljwP3w4Byy7s6f5ZSl4GOg==",
+      "expected_tag_hex": "963c0fdf0e01cb2eece9fe594a5e063a",
+      "note": "驗證多位元組字元（中文）經 urlencode 後 GCM 加密正確性。各語言 JSON 序列化 ensure_ascii 差異需注意（Python default True 會輸出 \\uXXXX，本向量固定使用 literal UTF-8 輸入）"
+    },
+    {
+      "name": "AES-GCM 長資料測試 (固定 IV, >500 byte)",
+      "mode": "gcm",
+      "hashKey": "ejCk326UnaZWKisg",
+      "iv_hex": "112233445566778899aabbcc",
+      "plaintext_json": "{\"MerchantID\":\"2000132\",\"Note\":\"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\",\"Items\":[{\"ItemName\":\"test\",\"ItemAmount\":100}]}",
+      "expected_url_encoded_length": 641,
+      "expected_base64": "ESIzRFVmd4iZqrvMVejQIx7b49JVJn6qMLlyhZaRWcgH3bD3KdBB4ysBVF+Dj3Ov+ye01Hj9GAUG+dDKkzgvpdNLzBsRGHC6zG+qcc13+himY7wS4y20yTECIHpovSAV20qv/mVyp5WJiX5ptQg/yX0KKsf66HWjOnVavMnvhBRCaxtB/usurKGCCbwJs1d57QxTCqFmpgnxJe9bL9b0GMCZR3xn300LtDj6rcVCtFhUZ/QeikwV7iIz3BAHMgqwCRU3Xlu00fgUIXU89Q13H41ct4SyOWDBABuwKac7htL610qTvixLd9GsE+tkGC8uACoJoVBHs5GIXpj0QrOzhCPci41ATp4nnku44a972pqe/FVUMcutzm+QBlLN6SXyQsgDFLn69RakSbzr1c73GAsr8KtaWbwQkXIzyhtoRf8aE+UWMeXvAF86Jf/pmh8Q4bPuDUYHy0P11KMUdWdzQTJnGVlBdetsCMhLCCCwtBfWskcT2X+P40K/2JgjxecTh9/jFQofdLuCHdCFwJDs7uXOg4jbacWfodloNWzImJ7/icv5eLkcvd8RgAN2Yms56Xtc34VzkO9t/NW3IR7vYqleiKeCZHTZc701t0lin4jK8U1PCzS/t2vkjC5CYfo1Go5g2USiQkm2z0X1mLBhrQ1k03EZmHBeVlLMPG7gNYwsb2lDJjo/DGirw9EXmSn4wySTD4JpNOKqaS2NRSUBtjPJurnwP0OhkYpCyA4cAeH++Uu0FzWEEf0/+tzkGSjuykm2CTYmfjHuUPHxFRpunEpoyxevMcyTrmT0RWRa6TX8x7GjwNJ9X6D2DQg5Jo+v3nRnBw12FcE80LUCTFGgKIFsHgBE5ccz+p5f9PVgM0O4sMmRiPbbkO5Wz8lr",
+      "expected_tag_hex": "603343b8b0c99188f6db90ee56cfc96b",
+      "note": "驗證大 plaintext 的 GCM 加密（非 block-size 邊界）。GCM 無 padding，密文長度 = plaintext(urlencode 後) 長度 + 28 byte（IV 12 + Tag 16）。base64 長度 = ceil((plaintext_len + 28) / 3) * 4"
+    },
+    {
+      "name": "AES-GCM 解密測試 (反向驗證 Vector 1)",
+      "mode": "gcm",
+      "direction": "decrypt",
+      "hashKey": "ejCk326UnaZWKisg",
+      "encrypted_base64": "ESIzRFVmd4iZqrvMVejQIx7b49JVJn6qMLlyhZaRWcgH3bD3KdBB4ysBVF+Dj3Ov+ye01HjhEhIGtZKM+GRLstNcpwJschqx9VuXG6UdlHDKC9x6i0XcoV1uQAcC1116x2X2a3l+D4gmQbzYyZo+0n4=",
+      "expected_decrypted": "%7B%22MerchantID%22%3A%222000132%22%2C%22ReceiptNo%22%3A%22Sale2026040800000448%22%7D",
+      "expected_json": "{\"MerchantID\":\"2000132\",\"ReceiptNo\":\"Sale2026040800000448\"}",
+      "note": "Callback 解密路徑驗證：Base64 decode → 取前 12B IV / 後 16B Tag / 中間 Ciphertext → GCM decrypt (with Tag verify) → URL decode → JSON。若 Tag 驗證失敗代表資料被竄改或 Key 錯誤，各語言 API 會 raise 例外而非回傳 null"
     }
   ]
 }

@@ -10,7 +10,7 @@
 
 ## 目錄結構
 
-**快速跳轉**：[金流](#payment-金流) | [發票](#invoice-電子發票) | [物流](#logistics-物流) | [電子票證](#ecticket-電子票證) | [購物車](#cart-購物車)
+**快速跳轉**：[金流](#payment-金流) | [發票](#invoice-電子發票) | [物流](#logistics-物流) | [電子票證](#ecticket-電子票證) | [電子收據](#receipt-電子收據) | [購物車](#cart-購物車)
 
 ### Payment 金流
 
@@ -50,13 +50,19 @@
 | 價金保管（分期核銷） | `Ecticket/價金保管-分期核銷API技術文件.md` | 12 | [guides/09](../guides/09-ecticket.md) |
 | 純發行（使用後核銷） | `Ecticket/純發行-使用後核銷API技術文件.md` | 23 | [guides/09](../guides/09-ecticket.md) |
 
+### Receipt 電子收據
+
+| 服務 | 檔案 | URL 數量 | 對應指南 |
+|------|------|---------|---------|
+| 電子收據（AES-CBC / AES-GCM） | `Receipt/電子收據API技術串接文件.md` | 12 | [guides/25](../guides/25-receipt.md) |
+
 ### Cart 購物車
 
 | 服務 | 檔案 | URL 數量 | 對應指南 |
 |------|------|---------|---------|
 | 購物車設定 | `Cart/購物車設定說明.md` | 5 | [guides/10](../guides/10-cart-plugins.md) |
 
-**合計**：19 個檔案，約 431 個 URL。
+**合計**：20 個檔案，約 443 個 URL。
 
 ## 使用方式
 

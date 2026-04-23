@@ -251,6 +251,19 @@ logger.error("ECPay API 錯誤: TransCode={}, RtnCode={}", transCode, rtnCode)
 
 > **日誌安全規則**：HashKey、HashIV、CheckMacValue 為機敏資料，嚴禁出現在任何日誌、錯誤回報或前端回應中。SLF4J + Logback 為 JVM 標準日誌方案。
 
+## AES-GCM API 參考（電子收據 V3.0+ 選用）
+
+> **僅電子收據支援**：其他 AES-JSON 服務仍用 CBC。GCM 預設關閉，特店後台切換後才使用。完整實作見 [guides/14 §AES-GCM 模式](../14-aes-encryption.md#aes-gcm-模式電子收據選用)。
+
+- **原生 API**：`Cipher.getInstance("AES/GCM/NoPadding")` + `GCMParameterSpec(128, iv)`（Java 標準庫，Kotlin 語法使用）
+- **依賴**：內建 `javax.crypto`（JVM 1.7+；**Android 須 API 19+**，GCM 較穩定的實作建議 API 26+）
+- **Key**：`SecretKeySpec(hashKey.toByteArray().copyOf(16), "AES")`
+- **IV / Nonce**：**12 byte 隨機**（`ByteArray(12).also { SecureRandom().nextBytes(it) }`）
+- **Tag**：16 byte，由 `cipher.doFinal()` 附加於 ciphertext
+- **輸出格式**：`Base64.getEncoder().encodeToString(iv + ctWithTag)`（使用 Kotlin 原生 `+` 運算子串接 ByteArray）
+- **失敗處理**：Tag 驗證失敗 throws `AEADBadTagException`（`javax.crypto`）；用 try-catch 或 `runCatching`
+- **Android 注意**：若目標 API < 26，需測試 GCM 支援度；API 19-25 部分 OEM 實作有 bug，建議用 Bouncy Castle（`org.bouncycastle:bcprov-jdk15on`）作為 fallback
+
 ## URL Encode 注意
 
 ```kotlin

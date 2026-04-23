@@ -363,6 +363,19 @@ svr.Post("/ecpay/callback", [&](const httplib::Request& req, httplib::Response& 
 svr.listen("0.0.0.0", 8080);
 ```
 
+## AES-GCM API 參考（電子收據 V3.0+ 選用）
+
+> **僅電子收據支援**：其他 AES-JSON 服務仍用 CBC。GCM 預設關閉，特店後台切換後才使用。完整實作見 [guides/14 §AES-GCM 模式](../14-aes-encryption.md#aes-gcm-模式電子收據選用)。
+
+- **原生 API**：同 C 版本，使用 OpenSSL EVP；C++ 習慣以 `std::vector<uint8_t>` 封裝 buffer 管理
+- **依賴**：OpenSSL 1.1.1+，C++17；建議 RAII 包裝 `EVP_CIPHER_CTX`（例：`std::unique_ptr<EVP_CIPHER_CTX, decltype(&EVP_CIPHER_CTX_free)>`）
+- **Key**：`std::vector<uint8_t>(hashKey.begin(), hashKey.begin() + 16)`
+- **IV / Nonce**：**12 byte 隨機**（`RAND_bytes`），用 `std::vector<uint8_t>` 管理
+- **Tag**：16 byte `std::vector<uint8_t>`
+- **輸出格式**：`Base64( IV(12B) || Ciphertext || Tag(16B) )`；使用 `std::vector::insert` 拼接
+- **失敗處理**：Tag 驗證失敗時 `EVP_DecryptFinal_ex()` 回傳 `0`；建議 throw `std::runtime_error` 讓呼叫端 try/catch
+- **現代替代**：若可引入 Crypto++（`cryptlib.lib`），`CryptoPP::GCM<AES>::Encryption` 提供更高層 C++ API；但 ECPay 通用範例以 OpenSSL EVP 為主
+
 ## URL Encode 注意
 
 ```cpp

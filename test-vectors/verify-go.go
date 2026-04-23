@@ -20,6 +20,7 @@ import (
 	"crypto/md5"
 	"crypto/sha256"
 	"encoding/base64"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"net/url"
@@ -238,6 +239,65 @@ func aesDecrypt(encryptedB64, hashKey, hashIV string) (string, error) {
 }
 
 // ──────────────────────────────────────────────
+// aesGcmEncrypt — ECPay AES-128-GCM encryption (electronic receipt V3.0+)
+//
+// Flow:
+//   1. aesUrlEncode(plaintextJSON)
+//   2. AES-128-GCM with key[:16] and 12-byte IV (no padding)
+//   3. Output: IV (12B) || Ciphertext || Tag (16B), then Base64
+// ──────────────────────────────────────────────
+func aesGcmEncrypt(plaintextJSON, hashKey, ivHex string) (string, string, string, error) {
+	urlEncoded := aesUrlEncode(plaintextJSON)
+	iv, err := hex.DecodeString(ivHex)
+	if err != nil {
+		return "", "", "", fmt.Errorf("iv hex decode: %w", err)
+	}
+	block, err := aes.NewCipher([]byte(hashKey)[:16])
+	if err != nil {
+		return "", "", "", fmt.Errorf("aes.NewCipher: %w", err)
+	}
+	gcm, err := cipher.NewGCMWithNonceSize(block, 12)
+	if err != nil {
+		return "", "", "", fmt.Errorf("cipher.NewGCM: %w", err)
+	}
+	// Seal appends Tag (16B by default) to ciphertext. dst=iv so the result is IV || Ciphertext || Tag.
+	sealed := gcm.Seal(iv, iv, []byte(urlEncoded), nil)
+	tag := sealed[len(sealed)-16:]
+	return base64.StdEncoding.EncodeToString(sealed), hex.EncodeToString(tag), urlEncoded, nil
+}
+
+// ──────────────────────────────────────────────
+// aesGcmDecrypt — ECPay AES-128-GCM decryption
+//
+// Input: Base64(IV 12B || Ciphertext || Tag 16B)
+// Returns error if Tag verification fails (data tampered or wrong key).
+// ──────────────────────────────────────────────
+func aesGcmDecrypt(encryptedB64, hashKey string) (string, error) {
+	raw, err := base64.StdEncoding.DecodeString(encryptedB64)
+	if err != nil {
+		return "", fmt.Errorf("base64 decode: %w", err)
+	}
+	if len(raw) < 12+16 {
+		return "", fmt.Errorf("ciphertext too short: %d", len(raw))
+	}
+	iv := raw[:12]
+	ctTag := raw[12:]
+	block, err := aes.NewCipher([]byte(hashKey)[:16])
+	if err != nil {
+		return "", fmt.Errorf("aes.NewCipher: %w", err)
+	}
+	gcm, err := cipher.NewGCMWithNonceSize(block, 12)
+	if err != nil {
+		return "", fmt.Errorf("cipher.NewGCM: %w", err)
+	}
+	plaintext, err := gcm.Open(nil, iv, ctTag, nil)
+	if err != nil {
+		return "", fmt.Errorf("gcm.Open (tag verify): %w", err)
+	}
+	return string(plaintext), nil
+}
+
+// ──────────────────────────────────────────────
 // Test runner helpers
 // ──────────────────────────────────────────────
 
@@ -287,14 +347,17 @@ type CMVFile struct {
 
 type AESVector struct {
 	Name                    string `json:"name"`
+	Mode                    string `json:"mode"`   // "gcm" for AES-GCM; default/missing = CBC
 	HashKey                 string `json:"hashKey"`
 	HashIV                  string `json:"hashIV"`
+	IVHex                   string `json:"iv_hex"` // GCM only (fixed IV for deterministic testing)
 	Direction               string `json:"direction"`
 	PlaintextJSON           string `json:"plaintext_json"`
 	EncryptedBase64         string `json:"encrypted_base64"`
 	ExpectedURLEncoded      string `json:"expected_url_encoded"`
 	ExpectedURLEncodedLength int   `json:"expected_url_encoded_length"`
 	ExpectedBase64          string `json:"expected_base64"`
+	ExpectedTagHex          string `json:"expected_tag_hex"` // GCM only
 	ExpectedDecrypted       string `json:"expected_decrypted"`
 	ExpectedJSON            string `json:"expected_json"`
 }
@@ -390,7 +453,56 @@ func main() {
 	json.Unmarshal(aesRaw, &aesFile)
 
 	for i, v := range aesFile.Vectors {
-		if v.Direction == "decrypt" {
+		if v.Mode == "gcm" {
+			// ── AES-GCM branch (electronic receipt V3.0+) ──
+			if v.Direction == "decrypt" {
+				result, err := aesGcmDecrypt(v.EncryptedBase64, v.HashKey)
+				if err != nil {
+					failures++
+					fmt.Printf("  Vector %d: FAIL | %s (error: %v)\n", i+1, v.Name, err)
+					continue
+				}
+				status := "PASS"
+				if result != v.ExpectedDecrypted {
+					status = "FAIL"
+					failures++
+				}
+				fmt.Printf("  Vector %d: %s | %s\n", i+1, status, v.Name)
+				if result != v.ExpectedDecrypted {
+					fmt.Printf("    Expected: %s\n", v.ExpectedDecrypted)
+					fmt.Printf("    Got:      %s\n", result)
+				}
+				urlDecoded, _ := url.QueryUnescape(result)
+				check("GCM URL decode -> JSON", v.ExpectedJSON, urlDecoded)
+			} else {
+				b64, tagHex, urlEncoded, err := aesGcmEncrypt(v.PlaintextJSON, v.HashKey, v.IVHex)
+				if err != nil {
+					failures++
+					fmt.Printf("  Vector %d: FAIL | %s (error: %v)\n", i+1, v.Name, err)
+					continue
+				}
+				status := "PASS"
+				if b64 != v.ExpectedBase64 {
+					status = "FAIL"
+					failures++
+				}
+				fmt.Printf("  Vector %d: %s | %s\n", i+1, status, v.Name)
+				if b64 != v.ExpectedBase64 {
+					fmt.Printf("    Expected: %s\n", v.ExpectedBase64)
+					fmt.Printf("    Got:      %s\n", b64)
+				}
+				if v.ExpectedTagHex != "" {
+					check("GCM tag", v.ExpectedTagHex, tagHex)
+				}
+				if v.ExpectedURLEncoded != "" {
+					check("GCM URL encode", v.ExpectedURLEncoded, urlEncoded)
+				}
+				if v.ExpectedURLEncodedLength > 0 {
+					actualLen := len([]byte(urlEncoded))
+					checkInt(fmt.Sprintf("GCM URL encode length (%d bytes)", actualLen), v.ExpectedURLEncodedLength, actualLen)
+				}
+			}
+		} else if v.Direction == "decrypt" {
 			result, err := aesDecrypt(v.EncryptedBase64, v.HashKey, v.HashIV)
 			if err != nil {
 				failures++

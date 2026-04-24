@@ -568,7 +568,7 @@ Token 10 分鐘到期，調試中斷後必須清除所有狀態：
 □ ReturnURL 回應格式：純文字 1|OK，不含引號、換行、JSON
 ```
 
-**所有步驟都確認後仍然無法成功？** 聯繫綠界技術支援：sysanalydep.sa@ecpay.com.tw，提供：MerchantTradeNo、呼叫時間、完整的 request/response JSON（注意遮蔽 HashKey/HashIV）。
+**所有步驟都確認後仍然無法成功？** 請至 [GitHub Issues](https://github.com/ECPay/ECPay-API-Skill/issues) 或聯繫 techsupport@ecpay.com.tw，提供：MerchantTradeNo、呼叫時間、完整的 request/response JSON（注意遮蔽 HashKey/HashIV）。
 
 ---
 
@@ -866,7 +866,7 @@ def mask_sensitive_data(data: dict) -> dict:
 
 聯絡方式：
 - 一般技術支援信箱：techsupport@ecpay.com.tw（ECPay 技術支援部門，適用一般 API 串接問題）
-- Skill 整合諮詢信箱：sysanalydep.sa@ecpay.com.tw（ECPay 系統分析部，適用本 Skill 相關的整合問題）
+- Skill 問題回報：[GitHub Issues](https://github.com/ECPay/ECPay-API-Skill/issues)
 - 開發者文件：https://developers.ecpay.com.tw
 - 特店後台：可在後台提交技術問題單
 

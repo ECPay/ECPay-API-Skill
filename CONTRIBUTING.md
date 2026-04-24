@@ -20,7 +20,7 @@ This is a **Markdown-only AI knowledge base** (no build system, no package manag
 
 **Security**: Never commit real MerchantID / HashKey / HashIV. Use official test credentials only. See [SECURITY.md](./SECURITY.md).
 
-**Contact**: sysanalydep.sa@ecpay.com.tw | Technical support: techsupport@ecpay.com.tw
+**Contact**: techsupport@ecpay.com.tw | GitHub Issues: https://github.com/ECPay/ECPay-API-Skill/issues
 
 </details>
 
@@ -35,7 +35,7 @@ This is a **Markdown-only AI knowledge base** (no build system, no package manag
 
 詳見 [SECURITY.md](./SECURITY.md)。
 
-**重點提醒**：安全漏洞請**不要**在公開 Issues 中提交，請直接聯繫 sysanalydep.sa@ecpay.com.tw。
+**重點提醒**：安全漏洞請**不要**在公開 Issues 中提交，請參閱 [SECURITY.md](./SECURITY.md) 的回報流程。
 
 ## 修改指南
 

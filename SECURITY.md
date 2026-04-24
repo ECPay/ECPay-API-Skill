@@ -6,9 +6,9 @@
 
 ### 通報方式
 
-直接聯繫綠界科技系統分析部：
+請透過 GitHub Issues 或以下方式回報：
 
-- **Email**：sysanalydep.sa@ecpay.com.tw
+- **GitHub**：[提交 Security Issue](https://github.com/ECPay/ECPay-API-Skill/issues)
 - **主旨格式**：`[Security] ECPay API Skill 安全漏洞通報`
 - **內容建議包含**：漏洞描述、影響範圍、重現步驟、建議修復方式（如有）
 

@@ -1,7 +1,7 @@
 # ECPay 綠界科技 API 整合助手 — OpenAI Codex CLI
 
 > **V3.0** | 適用 OpenAI Codex CLI | 完整知識庫入口：`SKILL.md`
-> 官方維護：ECPay (綠界科技) | sysanalydep.sa@ecpay.com.tw
+> 官方維護：ECPay (綠界科技)
 >
 > **Note**：本檔案為 Codex CLI 獨立入口，核心決策樹與規則同步自 `SKILL.md`。如有差異以 `SKILL.md` 為準。
 > **最近一次 parity 驗證**：2026-04-23 — 已與 `SKILL_OPENAI.md` 規則對齊（V3.0 新增電子收據決策樹與測試帳號；AGENTS.md 31 條，SKILL_OPENAI.md 28 條主要規則（另含 Code Generation Rules 6 條、Response Format 規則），差異為 AGENTS.md 含繁中擴充說明，SKILL_OPENAI.md 依功能分節）。

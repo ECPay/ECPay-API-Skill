@@ -228,7 +228,7 @@ VS Code Copilot Chat 會自動讀取專案根目錄 `.github/copilot-instruction
 
 AI 的回答基於綠界官方文件，準確度高。但涉及具體金額上限、手續費率、合約細節等商務問題，請聯繫綠界業務確認。
 
-API 技術問題請洽：sysanalydep.sa@ecpay.com.tw
+API 技術問題請至 [GitHub Issues](https://github.com/ECPay/ECPay-API-Skill/issues) 提問。
 
 ### Q：我的資料會被看到嗎？
 
@@ -240,5 +240,5 @@ API 技術問題請洽：sysanalydep.sa@ecpay.com.tw
 
 - **技術問題**：在 Copilot Chat 中直接問 AI
 - **帳號申請 / 合約問題**：聯繫綠界業務
-- **API 技術支援**：sysanalydep.sa@ecpay.com.tw
+- **API 技術支援**：[GitHub Issues](https://github.com/ECPay/ECPay-API-Skill/issues)
 - **Skill 使用問題 / 回報錯誤**：[GitHub Issues](https://github.com/ECPay/ECPay-API-Skill/issues)

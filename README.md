@@ -606,13 +606,13 @@ A：會。`references/` 目錄存放 443 個指向 `developers.ecpay.com.tw` 的
 
 1. **API 規格**：比對 [developers.ecpay.com.tw](https://developers.ecpay.com.tw) 官方文件
 2. **PHP SDK**：比對 [ECPay 官方 GitHub](https://github.com/ECPay/ECPayAIO_PHP) 的範例程式碼
-3. **技術諮詢**：聯繫綠界科技 系統分析部 sysanalydep.sa@ecpay.com.tw 確認
+3. **技術諮詢**：至 [GitHub Issues](https://github.com/ECPay/ECPay-API-Skill/issues) 提問確認
 
 ## 聯繫我們
 
 | 用途 | 聯繫方式 |
 |------|---------|
-| Skill 技術諮詢 | sysanalydep.sa@ecpay.com.tw（綠界科技 系統分析部）|
+| Skill 技術諮詢 | [GitHub Issues](https://github.com/ECPay/ECPay-API-Skill/issues) |
 
 ## 貢獻
 

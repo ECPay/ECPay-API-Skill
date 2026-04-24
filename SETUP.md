@@ -179,5 +179,3 @@ cd <skill-path> && git pull origin main
 不需要。本 Skill 是純知識文件。
 
 ---
-
-> 技術支援：sysanalydep.sa@ecpay.com.tw

@@ -14,7 +14,6 @@ license: All-Rights-Reserved
 metadata:
   {
     "author": "ECPay (綠界科技)",
-    "contact": "sysanalydep.sa@ecpay.com.tw",
     "platforms": ["claude-code", "github-copilot", "vscode-copilot-chat", "cursor", "openai-gpts", "codex-cli", "gemini-cli"]
   }
 ---
@@ -22,7 +21,6 @@ metadata:
 # 綠界科技 ECPay 整合助手
 
 > **官方維護**：本 Skill 由綠界科技 ECPay 官方團隊開發與維護，內容與 API 同步更新。
-> 技術諮詢：綠界科技 系統分析部 sysanalydep.sa@ecpay.com.tw
 >
 > 📌 **ChatGPT GPTs 使用者**：請將 [`SKILL_OPENAI.md`](./SKILL_OPENAI.md) 上傳至 GPT Builder 的 Knowledge 欄位，
 > 並依 [`SETUP.md §ChatGPT`](./SETUP.md#chatgpt-gpts-建置) 的建議清單上傳其餘 Knowledge Files。

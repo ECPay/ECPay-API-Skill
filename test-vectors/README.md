@@ -122,7 +122,7 @@ python test-vectors/verify.py
 | 4 | 特殊字元 `~` | 各語言 `~` → `%7E` 替換處理 |
 | 5 | **空格處理** | `%20` vs `+` 陷阱（Node.js、Rust 預設產生 `%20`，必須手動替換為 `+`） |
 | 6 | **Callback 驗證** | 模擬收到付款通知，驗證 CMV 比對流程（反向驗證） |
-| 7 | **E-Ticket CMV** | 電子票證用完全不同的公式：`SHA256(toLowerCase(URL_encode(Key+JSON+IV)))`，**和 AIO 的 CMV 不相容，不可混用** |
+| 7 | **E-Ticket CMV** | ECTicket用完全不同的公式：`SHA256(toLowerCase(URL_encode(Key+JSON+IV)))`，**和 AIO 的 CMV 不相容，不可混用** |
 | 8 | **AllowanceByCollegiate MD5** | B2C 發票唯一帶 CMV 的 API，使用 MD5 + 發票帳號（不是 AIO 金流帳號） |
 
 ### 2️⃣ AES 加密 / 解密（9 組，含 2 組說明性向量）

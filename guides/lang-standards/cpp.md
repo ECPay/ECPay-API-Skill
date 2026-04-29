@@ -95,7 +95,7 @@ struct AioParams {
 // RqHeader.Revision 依服務填入（詳見 guides/14 §使用場景 / guides/19 §2.1 AES-JSON）：
 //   發票 B2C: "3.0.0" | 發票 B2B: "1.0.0"（且必填 RqID UUID v4）
 //   全方位物流 / 跨境物流: "1.0.0"
-//   站內付 2.0 / 幕後授權 / 幕後取號 / 電子票證 / 直播收款: 不使用（省略 key）
+//   站內付 2.0 / 幕後授權 / 幕後取號 / ECTicket / 直播收款: 不使用（省略 key）
 // ⚠️ 把電子發票的 "3.0.0" 加到站內付 2.0 請求會導致 TransCode ≠ 1
 
 struct AesResponse {

@@ -125,8 +125,8 @@ declare -a TEST_ACCOUNTS=(
   "2000132:5294y06JbISpM5x9:v77hoKGq4kWxNNIS:物流"
   "2000933:XBERn1YOvpM9nfZc:h1ONHk4P4yqbl5LK:物流C2C"
   "3085340:HwiqPsywG1hLQNuN:YqITWD4TyKacYXpn:離線發票"
-  "3085676:7b53896b742849d3:37a0ad3c6ffa428b:電子票證特店"
-  "3085672:b15bd8514fed472c:9c8458263def47cd:電子票證平台商"
+  "3085676:7b53896b742849d3:37a0ad3c6ffa428b:ECTicket特店"
+  "3085672:b15bd8514fed472c:9c8458263def47cd:ECTicket平台商"
 )
 
 # 確認所有帳號都在 SKILL.md 中

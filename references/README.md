@@ -10,7 +10,7 @@
 
 ## 目錄結構
 
-**快速跳轉**：[金流](#payment-金流) | [發票](#invoice-電子發票) | [物流](#logistics-物流) | [電子票證](#ecticket-電子票證) | [電子收據](#receipt-電子收據) | [購物車](#cart-購物車)
+**快速跳轉**：[金流](#payment-金流) | [發票](#invoice-電子發票) | [物流](#logistics-物流) | [ECTicket](#ecticket-ECTicket) | [電子收據](#receipt-電子收據) | [購物車](#cart-購物車)
 
 ### Payment 金流
 
@@ -42,7 +42,7 @@
 | 全方位物流 v2（AES-JSON） | `Logistics/全方位物流服務API技術文件.md` | 27 | [guides/07](../guides/07-logistics-allinone.md) |
 | 跨境物流 | `Logistics/綠界科技跨境物流API技術文件.md` | 13 | [guides/08](../guides/08-logistics-crossborder.md) |
 
-### Ecticket 電子票證
+### Ecticket ECTicket
 
 | 服務 | 檔案 | URL 數量 | 對應指南 |
 |------|------|---------|---------|

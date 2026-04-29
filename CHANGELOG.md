@@ -8,6 +8,29 @@
 
 ---
 
+## [2.1.0] — 2026-04-29 (V3.1)
+
+### 變更（術語標準化）
+
+- **「電子票證」/「電子票券」統一為英文「ECTicket」**：作為 ECPay 服務名稱在 35 個檔案中替換為 `ECTicket`，與其他英文服務名（ECPG、AIO、ECPay）命名風格一致。共替換 199 處（電子票證 193 處 + 電子票券作為服務名 1 處 + 英文註解贅冗整理 5 處）
+- **泛指物品的「票券」保留中文**：在演唱會門票、餐券、課程套票等實體票語境下保留「票券」中文用字（共 88 處），維持語意自然
+- **泛指動作的「電子票券」保留中文**：在「電子票券發行」、「電子票券核銷與退票」等動作描述、guides 名稱引用等泛指語境下保留中文（共 5 處）
+- **影響範圍**：SKILL.md / AGENTS.md / GEMINI.md / SKILL_OPENAI.md / README.md / SETUP.md / CONTRIBUTING.md / 13 份 guides / commands / docs / references / scripts / test-vectors
+
+### 同步
+
+- 8 個 CI 驗證入口檔同步至 V3.1：SKILL.md / SKILL_OPENAI.md / README.md / SETUP.md / AGENTS.md / GEMINI.md / .github/copilot-instructions.md / CONTRIBUTING.md
+- 3 個手動同步檔同步至 V3.1：vscode_copilot.md / visual_studio_2026.md / 業務說明.md（業務說明 V2.6 → V3.1，修正先前未同步遺漏）
+
+### 驗證
+
+- ✅ `validate-version-sync.sh`：8 同步檔全綠
+- ✅ `validate-internal-links.sh`：26 guides / 93 source files 全部連結有效（唯一錨點 `README.md → docs/prompt-examples.md#ECTicket` 對應 `## ECTicket` 標題）
+- ✅ `validate-agents-parity.sh`：AGENTS ↔ GEMINI 三大不變區段一致
+- ✅ `validate-guides-refs-consistency.sh`：5 維度 guides ↔ references ↔ scripts 一致
+
+---
+
 ## [2.0.0] — 2026-04-23 (V3.0) — 🚀 **Major Release**
 
 > **為何升為 MAJOR（V2.7 → V3.0 / 1.5.7 → 2.0.0）？** 本次釋出**新增一整套 API 規格書（電子收據）**與**首個 AES-GCM 加密機制**，屬 skill 範圍重大擴張（新服務類別 + 新加密演算法），按 skill 維護慣例以 MAJOR 版本升級標示，方便下游使用者識別為重大更新而非常規 patch。現有 V2.7 所有 API 相容性不變（GCM 為 opt-in，CBC 仍為預設）。
@@ -160,8 +183,8 @@
 
 ### 修正
 
-- **guides/lang-standards/{go,cpp,typescript}.md RqHeader.Revision 註解重寫**:原誤將「發票 B2C/B2B」合併為 `3.0.0`、站內付 2.0 誤寫為 `1.0.0`。正確為 B2C=`3.0.0`、B2B=`1.0.0`(+RqID);站內付 2.0/幕後授權/幕後取號/電子票證/直播收款**不使用** Revision
-- **guides/14 §使用場景 電子票證 Revision**:由 `1.0.0` 改為**不使用**,與 guides/09:220 及 guides/19:138「ECTicket RqHeader 僅需 Timestamp」統一
+- **guides/lang-standards/{go,cpp,typescript}.md RqHeader.Revision 註解重寫**:原誤將「發票 B2C/B2B」合併為 `3.0.0`、站內付 2.0 誤寫為 `1.0.0`。正確為 B2C=`3.0.0`、B2B=`1.0.0`(+RqID);站內付 2.0/幕後授權/幕後取號/ECTicket/直播收款**不使用** Revision
+- **guides/14 §使用場景 ECTicket Revision**:由 `1.0.0` 改為**不使用**,與 guides/09:220 及 guides/19:138「ECTicket RqHeader 僅需 Timestamp」統一
 - **guides/19:137 全方位物流 Revision**:補全為 `Timestamp + Revision: "1.0.0"`,並合併跨境物流同列
 - **guides/05 B2B 發票 ItemTax vs ItemTaxType 警告強化**:新增三層警告框、功能對照表補充稅額欄位橫列、Issue.php:31 SDK 已知 bug 獨立標註
 - **guides/04 新增 InvoiceNo vs InvoiceNumber 跨 B2C/B2B 欄位名差異警告**
@@ -230,12 +253,12 @@
 ### 新增
 
 - **guides/11 場景一端到端 Mermaid 序列圖**：以 `sequenceDiagram` 呈現消費者→你的伺服器→ECPay 金流/發票/物流的完整互動時序，RtnCode 型別標注內嵌於圖中
-- **guides/21 各服務 Callback 重試規則對照表**：獨立表格列出 AIO/站內付 2.0/幕後授權/物流/電子票證/直播收款各自的重試間隔、最大次數、觸發條件與重試停止後應對策略
+- **guides/21 各服務 Callback 重試規則對照表**：獨立表格列出 AIO/站內付 2.0/幕後授權/物流/ECTicket/直播收款各自的重試間隔、最大次數、觸發條件與重試停止後應對策略
 - **guides/22 如何測定你的基線**：新增「基線建立步驟」4 步指引（選取穩定期→計算關鍵指標→設定警示門檻→記錄促銷期行為），補充「若無歷史資料（新服務）」的初始門檻建議
 - **guides/08 AES-JSON 雙層錯誤檢查區塊**：跨境物流原缺少此必讀警告，補入完整 `⚠️ AES-JSON 開發者必讀：雙層錯誤檢查` 區塊（含 RtnCode **整數**型別標注）
 - **guides/00 lang-standards/ 快速索引**：新增 12 種語言的直連連結表（nodejs/python/typescript/go/java/csharp/kotlin/ruby/swift/rust/c/cpp），說明每份檔案涵蓋的內容
 - **guides/02a-c 延伸閱讀導航**：三個 ECPG 子指南各自新增「延伸閱讀」底部導航表，清楚標示本文位置並連結所有兄弟指南
-- **references/README.md 分段標題與快速跳轉**：原單一大表拆分為 5 個 `###` 小節（金流/發票/物流/電子票證/購物車），頂部加入快速跳轉鏈路
+- **references/README.md 分段標題與快速跳轉**：原單一大表拆分為 5 個 `###` 小節（金流/發票/物流/ECTicket/購物車），頂部加入快速跳轉鏈路
 
 ### 修正
 
@@ -243,7 +266,7 @@
 - **guides/00 新手最常踩的坑補入第 6 坑（ECPG 雙 Domain 混用）**：症狀為查詢/退款呼叫回 404，解法明確區分 `ecpg(-stage)` 與 `ecpayment(-stage)` 的用途
 - **README.md 測試帳號表補入 HashKey / HashIV**：原表僅列 MerchantID，補齊 HashKey、HashIV、協定欄位，並加入金流/物流/發票不可混用警告
 - **guides/04/07/08/09 RtnCode 整數型別標注**：AES-JSON 雙層檢查說明中，`RtnCode === 1` 補充 `（**整數** 1，非字串 '1'）`，消除型別混淆靜默失敗
-- **guides/19 §2.4 頂部 URLEncode 差異提示**：在 AES-JSON+CMV 小節最上方加入顯眼 ⚠️ 告示，提醒電子票證 URLEncode 與 AIO `ecpayUrlEncode` 不同
+- **guides/19 §2.4 頂部 URLEncode 差異提示**：在 AES-JSON+CMV 小節最上方加入顯眼 ⚠️ 告示，提醒ECTicket URLEncode 與 AIO `ecpayUrlEncode` 不同
 
 ### 工具
 
@@ -263,7 +286,7 @@
 
 ### 修正（企業級多維審查）
 
-- **guides/13 電子票證 CMV 公式措辭統一**：將 `strtoupper(SHA256(toLowerCase(urlencode(...))))` 改為 `strtoupper(SHA256(URLEncode(...)))` 並明確說明 `URLEncode = urlencode() 後接 strtolower()，不做 .NET 字元替換`，與 guides/19 line 324 完全一致；修正原描述「`toLowerCase` 僅作用於 URL 編碼的輸入字串」的錯誤（實際作用於 urlencode 輸出結果）
+- **guides/13 ECTicket CMV 公式措辭統一**：將 `strtoupper(SHA256(toLowerCase(urlencode(...))))` 改為 `strtoupper(SHA256(URLEncode(...)))` 並明確說明 `URLEncode = urlencode() 後接 strtolower()，不做 .NET 字元替換`，與 guides/19 line 324 完全一致；修正原描述「`toLowerCase` 僅作用於 URL 編碼的輸入字串」的錯誤（實際作用於 urlencode 輸出結果）
 - **guides/14 AES URL Encode `%7E` 說明補充**：對照表「`~` 處理」欄位補充「AES URL Encode 不做 strtolower，故 hex 保持大寫 `%7E`（所有語言實作均統一如此）」，消除文件與程式碼之間的潛在歧義
 - **guides/05 B2B RqID UUID v4 格式規範**：RqID 補充 UUID v4 格式詳細說明（`xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx`、含連字符）及 Python/Node.js/Java/C#/Go 各語言產生方式
 - **guides/21 Callback 安全處理清單強化**：補充「何時需要佇列」決策矩陣（日交易 < 1,000 不需要 / > 1,000 建議 / 高並發必須），並重構清單為六步驟（驗簽→型別→業務狀態→冪等→立即回應→非同步後處理）
@@ -380,7 +403,7 @@
 
 ### 新增
 - 初始版本發布
-- 25 份整合指南（guides/00–24），涵蓋金流、物流、電子發票、電子票證、直播收款、離線 POS
+- 25 份整合指南（guides/00–24），涵蓋金流、物流、電子發票、ECTicket、直播收款、離線 POS
 - 19 份即時 API 規格 URL 索引 + 1 份索引說明（references/），共 431 個官方文件 URL
 - 12 種程式語言的加密實作（guides/13、14）與 E2E 範例（guides/23）
 - 18 個加密測試向量（test-vectors/），含 CheckMacValue SHA256/MD5、AES-128-CBC、URL 編碼

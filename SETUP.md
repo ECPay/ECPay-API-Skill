@@ -1,6 +1,6 @@
 # 各平台安裝指南
 
-> **版本**：V3.0
+> **版本**：V3.1
 
 > 將 ECPay API Skill 安裝到 OpenAI Codex CLI、Google Gemini CLI 或 ChatGPT GPTs。
 > VS Code Copilot Chat 的安裝方式請見 [vscode_copilot.md](./vscode_copilot.md)。
@@ -86,7 +86,7 @@ codex "請問綠界 AIO 金流的測試 MerchantID 是什麼？"   # 或 gemini 
 | 欄位 | 建議值 |
 |------|--------|
 | **Name** | ECPay 綠界科技整合助手 |
-| **Description** | 綠界科技官方 API 整合顧問 — 金流、物流、電子發票、電子票證。支援 12 種語言。 |
+| **Description** | 綠界科技官方 API 整合顧問 — 金流、物流、電子發票、ECTicket。支援 12 種語言。 |
 
 **Conversation Starters**：
 1. 我要用 Node.js 串接信用卡付款，前後端分離架構
@@ -127,7 +127,7 @@ codex "請問綠界 AIO 金流的測試 MerchantID 是什麼？"   # 或 gemini 
 | 16 | `guides/05-invoice-b2b.md` | B2B 發票 |
 | 17 | `guides/06-logistics-domestic.md` | 國內物流 |
 | 18 | `guides/07-logistics-allinone.md` | 全方位物流 |
-| 18 | `guides/09-ecticket.md` | 電子票證 |
+| 18 | `guides/09-ecticket.md` | ECTicket |
 | 19 | `guides/11-cross-service-scenarios.md` | 跨服務整合 |
 
 > 共 20 個，達 Knowledge Files 上限。`guides/02b`、`02c`、`guides/16` 為選用，可替換低優先度檔案。

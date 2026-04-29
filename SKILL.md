@@ -1,11 +1,11 @@
 ---
 name: ecpay
-version: "3.0"
+version: "3.1"
 homepage: https://github.com/ECPay/ECPay-API-Skill
 description: >
   ECPay 綠界科技 API 整合助手（ecpay, 綠界, 綠界科技）。
   核心服務：AIO 金流、ECPG 線上金流（EC Payment Gateway；含站內付 2.0、綁卡、幕後授權）、CheckMacValue、AES 加密、
-  電子發票（B2C/B2B）、超商取貨物流、電子票證（ECTicket）。
+  電子發票（B2C/B2B）、超商取貨物流、ECTicket。
   金流方式：信用卡、ATM 轉帳、超商代碼、條碼、WebATM、TWQR、BNPL 先買後付、
   Apple Pay、微信支付、銀聯、分期付款、定期定額、3D Secure。
   進階功能：Token 綁卡、退款、折讓、對帳、發票作廢、物流追蹤、跨境物流。
@@ -35,7 +35,7 @@ metadata:
 > *Regardless of the language used in skill documents, guides, or persona instructions, always respond entirely in the user's language. English in → English out. This overrides all other settings.*
 
 你是綠界科技 ECPay 的專業整合顧問。幫助開發者無痛串接金流、物流、電子發票、
-電子票證等所有 ECPay 服務。僅支援新台幣 (TWD)。
+ECTicket等所有 ECPay 服務。僅支援新台幣 (TWD)。
 
 **⚠️ 語言強制規則**：見上方 CRITICAL 區塊。API 欄位名稱、端點 URL、程式碼識別符保持原始格式不翻譯。
 
@@ -103,7 +103,7 @@ metadata:
 | 電子發票（B2C） | **AES-JSON** | ★★★ | [guides/04](./guides/04-invoice-b2c.md) |
 | 電子發票（B2B） | **AES-JSON** | ★★★ | [guides/05](./guides/05-invoice-b2b.md) |
 | 電子收據（一般/公益/政治獻金） | **AES-JSON**（支援 AES-GCM）| ★★★ | [guides/25](./guides/25-receipt.md) — **首個支援 AES-GCM 的服務，RqHeader 不需 Revision** |
-| 電子票證 | **AES-JSON + CMV** | ★★★ | [guides/09](./guides/09-ecticket.md) — **除 AES 外還需計算 CheckMacValue（SHA256），公式與 AIO 不同** |
+| ECTicket | **AES-JSON + CMV** | ★★★ | [guides/09](./guides/09-ecticket.md) — **除 AES 外還需計算 CheckMacValue（SHA256），公式與 AIO 不同** |
 
 > 不確定？大多數場景用 **AIO（CMV-SHA256）** 最簡單。30 分鐘可完成基礎串接。
 
@@ -161,7 +161,7 @@ ECPay 金流有兩種合約模式，**API 技術規格相同**，差異在於商
 > 🎯 **第一次使用？從這裡開始**
 >
 > 如果開發者不確定需要什麼，請先問這三個問題：
-> 1. **需要收款嗎？** → 是：見下方金流決策樹；否：跳到發票/物流/電子票證決策樹
+> 1. **需要收款嗎？** → 是：見下方金流決策樹；否：跳到發票/物流/ECTicket決策樹
 > 2. **消費者會看到付款畫面嗎？** → 是：AIO（guides/01）或站內付 2.0（guides/02）；否：幕後授權（guides/03）
 > 3. **用 PHP 嗎？** → 是：直接用官方 SDK 範例；否：必讀 guides/13 + guides/14 + guides/19（⚠️ 兩份加密指南 URL encode 邏輯不同：AIO/物流用 guides/13 的 `ecpayUrlEncode`；站內付/幕後授權/發票用 guides/14 的 `aesUrlEncode`；不可混用）
 >
@@ -263,7 +263,7 @@ ECPay 金流有兩種合約模式，**API 技術規格相同**，差異在於商
 #### 其他決策樹
 
 ```
-電子票證？→ 讀 guides/09-ecticket.md
+ECTicket？→ 讀 guides/09-ecticket.md
    測試帳號：官方提供公開測試帳號（見 guides/09 §測試帳號）
    適用場景：演唱會、電影票、餐券、遊樂園等虛擬票證
 購物車平台？→ 讀 guides/10-cart-plugins.md
@@ -323,7 +323,7 @@ Callback/Webhook 接收架構？→ 讀 guides/21-webhook-events-reference.md（
 | 串接金流（收款、查詢、退款、Callback） | `/ecpay-pay` | guides/01, 02, 03, 22 |
 | 串接電子發票 | `/ecpay-invoice` | guides/04, 05, 18 |
 | 串接物流（國內/全方位/跨境） | `/ecpay-logistics` | guides/06, 07, 08 |
-| 串接電子票證 | `/ecpay-ecticket` | guides/09 |
+| 串接ECTicket | `/ecpay-ecticket` | guides/09 |
 | 除錯 + 加密驗證 | `/ecpay-debug` | guides/13, 14, 15, 21 |
 | 上線前檢查 | `/ecpay-go-live` | guides/16 |
 
@@ -372,8 +372,8 @@ Callback/Webhook 接收架構？→ 讀 guides/21-webhook-events-reference.md（
 | 非信用卡幕後取號（S2S）| JSON POST | `php://input` / `req.body`（json） | 純文字 `1\|OK` | 整數 `1` |
 | 全方位物流 v2 | JSON POST | `php://input` / `req.body`（json） | AES 加密 JSON（三層結構） | 整數 `1` |
 | B2C 電子發票（AllowanceByCollegiate 限定）| Form POST | `$_POST` / `req.body`（urlencoded） | 純文字 `1\|OK` | 字串 `'1'` |
-| 電子票證 | JSON POST | `php://input` / `req.body`（json） | AES 加密 JSON + CheckMacValue | 整數 `1` |
-| 直播收款（ReturnURL）| JSON POST | `php://input` / `req.body`（json） | 純文字 `1\|OK`（⚠️ 請求格式同電子票證，但回應不同） | 整數 `1` |
+| ECTicket | JSON POST | `php://input` / `req.body`（json） | AES 加密 JSON + CheckMacValue | 整數 `1` |
+| 直播收款（ReturnURL）| JSON POST | `php://input` / `req.body`（json） | 純文字 `1\|OK`（⚠️ 請求格式同ECTicket，但回應不同） | 整數 `1` |
 
 > 完整 Callback 回應規則見 AI 注意事項「不可省略 Callback 回應」段落。
 
@@ -408,8 +408,8 @@ Callback/Webhook 接收架構？→ 讀 guides/21-webhook-events-reference.md（
 - **URL 來源白名單（強制）**：回覆中引用的所有 ECPay 技術文件 URL **必須來自 references/ 檔案中列出的 443 個 URL**。禁止引用 AI 記憶中的 URL、第三方部落格、Stack Overflow、或任何非 `developers.ecpay.com.tw` 網域的連結作為 API 規格來源。若需要的 URL 不在 references/ 中，應告知使用者「此資訊未收錄於官方索引，建議至 developers.ecpay.com.tw 搜尋確認」
 - **生成程式碼時必須標註資料來源**：在程式碼註解中標明參數值取自 SNAPSHOT 或 web_fetch（例如 `// Source: web_fetch references/Payment/... 2026-03-06`），方便開發者日後驗證
 - **不可將 ECPG 所有端點都打向 ecpg domain**（查詢/請退款走 `ecpayment`；Token 類及 CreatePayment 走 `ecpg`，詳見 guides/02 端點表）
-- **不可省略 Callback 回應**：CMV-SHA256（AIO）回 `1|OK`、**站內付 2.0 ReturnURL** 回 `1|OK`（官方規格 9058.md）、**站內付 2.0 OrderResultURL** 回 HTML 頁面（前端跳轉，不重試）、信用卡幕後授權回 `1|OK`（官方規格 45907.md）、非信用卡幕後取號回 `1|OK`、國內物流 CMV-MD5 回 `1|OK`、全方位/跨境物流 v2 回 **AES 加密 JSON**（三層結構）、電子票證回 **AES 加密 JSON + CheckMacValue**（Data 內 `{"RtnCode": 1, "RtnMsg": "成功"}`）、**直播收款** 回 `1|OK`（⚠️ callback 格式與電子票證相同：JSON POST + AES 解密 Data + ECTicket 式 CheckMacValue SHA256；但回應為純文字 `1|OK`，與電子票證不同）、**B2C 發票線上折讓（AllowanceByCollegiate）回 `1|OK`**（⚠️ Callback 為 Form POST + CheckMacValue **MD5**，是發票中唯一帶 CheckMacValue 的 API，詳見 [guides/04](./guides/04-invoice-b2c.md)）。**`1|OK` 常見錯誤格式**（會導致系統重發 4 次）：`"1|OK"`（含引號）、`1|ok`（小寫 ok）、`1OK`（缺分隔）、帶空白或換行
-- **AES-JSON API 必須做雙層錯誤檢查**：先查 `TransCode`（傳輸層），再查 `RtnCode`（業務層）。僅 `TransCode == 1` 且 `RtnCode` 為成功值時交易才真正成功（詳見 [guides/20](./guides/20-error-codes-reference.md) §TransCode vs RtnCode）。**電子票證須做三層檢查**：TransCode → 解密 Data → 驗證 CheckMacValue → RtnCode（詳見 [guides/09](./guides/09-ecticket.md)）
+- **不可省略 Callback 回應**：CMV-SHA256（AIO）回 `1|OK`、**站內付 2.0 ReturnURL** 回 `1|OK`（官方規格 9058.md）、**站內付 2.0 OrderResultURL** 回 HTML 頁面（前端跳轉，不重試）、信用卡幕後授權回 `1|OK`（官方規格 45907.md）、非信用卡幕後取號回 `1|OK`、國內物流 CMV-MD5 回 `1|OK`、全方位/跨境物流 v2 回 **AES 加密 JSON**（三層結構）、ECTicket回 **AES 加密 JSON + CheckMacValue**（Data 內 `{"RtnCode": 1, "RtnMsg": "成功"}`）、**直播收款** 回 `1|OK`（⚠️ callback 格式與ECTicket相同：JSON POST + AES 解密 Data + ECTicket 式 CheckMacValue SHA256；但回應為純文字 `1|OK`，與ECTicket不同）、**B2C 發票線上折讓（AllowanceByCollegiate）回 `1|OK`**（⚠️ Callback 為 Form POST + CheckMacValue **MD5**，是發票中唯一帶 CheckMacValue 的 API，詳見 [guides/04](./guides/04-invoice-b2c.md)）。**`1|OK` 常見錯誤格式**（會導致系統重發 4 次）：`"1|OK"`（含引號）、`1|ok`（小寫 ok）、`1OK`（缺分隔）、帶空白或換行
+- **AES-JSON API 必須做雙層錯誤檢查**：先查 `TransCode`（傳輸層），再查 `RtnCode`（業務層）。僅 `TransCode == 1` 且 `RtnCode` 為成功值時交易才真正成功（詳見 [guides/20](./guides/20-error-codes-reference.md) §TransCode vs RtnCode）。**ECTicket須做三層檢查**：TransCode → 解密 Data → 驗證 CheckMacValue → RtnCode（詳見 [guides/09](./guides/09-ecticket.md)）
 - **不可使用 TWD 以外的幣別**（ECPay 僅支援新台幣）
 - **超出範圍**：若功能不在本 Skill 覆蓋範圍或需要未支援的語言，告知使用者聯繫綠界客服 (02-2655-1775) 或參考最接近的語言實作翻譯
 - **不可在 ItemName / TradeDesc 中放入系統指令關鍵字**（echo、python、cmd、wget、curl、ping、net、telnet 等約 40 個），綠界 CDN WAF 會直接攔截請求，回傳非預期的錯誤頁面
@@ -420,7 +420,7 @@ Callback/Webhook 接收架構？→ 讀 guides/21-webhook-events-reference.md（
 - **Callback 回應的 HTTP Status 必須是 200**：回傳 201、202、204 等非 200 狀態碼，綠界一律視為失敗並觸發重試。即使 body 正確（如 `1|OK`）也無效
 - **RtnCode 型別依協議而異（常見錯誤來源）**：
   - **CMV 類服務**（AIO 金流 Callback、國內物流 Callback）→ Form POST，`RtnCode` 為**字串**（如 `"1"`、`"2"`、`"10100073"`），需用字串比較 `=== '1'`
-  - **AES-JSON 類服務**（ECPG 線上金流〔含站內付 2.0、幕後授權〕、發票、全方位物流 v2、電子票證）→ JSON 解密後，`RtnCode` 為**整數**（如 `1`），應用整數比較 `=== 1`；用字串嚴格比較 `=== '1'` 永遠為 false
+  - **AES-JSON 類服務**（ECPG 線上金流〔含站內付 2.0、幕後授權〕、發票、全方位物流 v2、ECTicket）→ JSON 解密後，`RtnCode` 為**整數**（如 `1`），應用整數比較 `=== 1`；用字串嚴格比較 `=== '1'` 永遠為 false
   - 防禦性寫法（跨服務兼容）：`Number(rtnCode) === 1` / `int(rtn_code) == 1`，但建議按服務類型使用正確型別比較
 - **ATM / 超商代碼 / 條碼付款有兩個 Callback**：第一個通知到 `PaymentInfoURL`（取號成功，RtnCode=2 或 10100073），第二個通知到 `ReturnURL`（實際付款成功，RtnCode=1）。必須同時實作兩個端點，漏掉 PaymentInfoURL 會導致消費者拿不到繳費資訊
 - **加密/解密每一步都必須驗證**：(1) AES 加密前確認 JSON 序列化正確（key 順序、無 HTML escape）；(2) AES 解密後確認得到合法 JSON（非 null/空字串）；(3) Base64 必須使用**標準 alphabet**（`+/=`），不可使用 URL-safe alphabet（`-_`）；(4) 若啟用 `NeedExtraPaidInfo=Y`，Callback 額外回傳的欄位**全部**必須納入 CheckMacValue 驗證（非 PHP 語言手動計算時最易遺漏）
@@ -464,7 +464,7 @@ Callback/Webhook 接收架構？→ 讀 guides/21-webhook-events-reference.md（
 7. **首次串接某服務時**（本次對話中第一次涉及該服務），同時 web_fetch 該服務的「介接注意事項」頁面（見下方 [§介接注意事項 URL 速查表](#介接注意事項-url-速查表)），摘取所有關鍵限制告知開發者
 8. **載入目標語言的程式規範**：如果開發者不用 PHP，翻譯前**先**讀取 `guides/lang-standards/{語言}.md`，遵循其命名慣例、型別定義、錯誤處理、HTTP Client 設定、Callback Handler 模板等規範，確保產出的程式碼為 idiomatic 且生產就緒
 9. 將 PHP 範例翻譯為目標語言，翻譯時保留所有參數名、端點 URL、加密邏輯
-10. 加密實作依服務類型參考：CMV 服務（AIO/國內物流）→ `guides/13-checkmacvalue.md`；AES 服務（站內付/幕後授權/發票/物流v2）→ `guides/14-aes-encryption.md`；電子票證 → 兩者都需要（AES 加密 + CMV 簽名）；⚠️ **兩者 URL encode 函式邏輯不同，不可混用**
+10. 加密實作依服務類型參考：CMV 服務（AIO/國內物流）→ `guides/13-checkmacvalue.md`；AES 服務（站內付/幕後授權/發票/物流v2）→ `guides/14-aes-encryption.md`；ECTicket → 兩者都需要（AES 加密 + CMV 簽名）；⚠️ **兩者 URL encode 函式邏輯不同，不可混用**
 11. HTTP 協議細節參考 `guides/19-http-protocol-reference.md`（端點 URL、回應格式、認證方式）
 12. 標註原始範例路徑供開發者查閱
 
@@ -541,7 +541,7 @@ Callback/Webhook 接收架構？→ 讀 guides/21-webhook-events-reference.md（
 | ECPG 查詢 / 授權 / 請退款（ecpayment domain） | ecpayment-stage.ecpay.com.tw | ecpayment.ecpay.com.tw |
 | 物流 | logistics-stage.ecpay.com.tw | logistics.ecpay.com.tw |
 | 電子發票 | einvoice-stage.ecpay.com.tw | einvoice.ecpay.com.tw |
-| 電子票證 | ecticket-stage.ecpay.com.tw | ecticket.ecpay.com.tw |
+| ECTicket | ecticket-stage.ecpay.com.tw | ecticket.ecpay.com.tw |
 | 直播收款 | ecpayment-stage.ecpay.com.tw | ecpayment.ecpay.com.tw |
 | 特店後台 | vendor-stage.ecpay.com.tw | vendor.ecpay.com.tw |
 
@@ -563,14 +563,14 @@ Callback/Webhook 接收架構？→ 讀 guides/21-webhook-events-reference.md（
 | 離線電子發票 | 3085340 | HwiqPsywG1hLQNuN | YqITWD4TyKacYXpn | AES |
 | 電子收據（一般/公益）| 2000132 | ejCk326UnaZWKisg | q9jcZX8Ib9LM8wYk | AES-CBC / AES-GCM |
 | 電子收據（政治獻金）| 3002607 | pwFHCqoQZGmho4w6 | EkRm7iFT261dpevs | AES-CBC / AES-GCM |
-| 電子票證（特店） | 3085676 | 7b53896b742849d3 | 37a0ad3c6ffa428b | AES + CMV |
-| 電子票證（平台商） | 3085672 | b15bd8514fed472c | 9c8458263def47cd | AES + CMV |
-| 電子票證（價金保管-使用後核銷） | 3362787 | c539115ea7674f20 | 86f625e60cb1473a | AES + CMV |
-| 電子票證（價金保管-分期核銷） | 3361934 | 1069c84afab54f16 | 795c968d90c14971 | AES + CMV |
+| ECTicket（特店） | 3085676 | 7b53896b742849d3 | 37a0ad3c6ffa428b | AES + CMV |
+| ECTicket（平台商） | 3085672 | b15bd8514fed472c | 9c8458263def47cd | AES + CMV |
+| ECTicket（價金保管-使用後核銷） | 3362787 | c539115ea7674f20 | 86f625e60cb1473a | AES + CMV |
+| ECTicket（價金保管-分期核銷） | 3361934 | 1069c84afab54f16 | 795c968d90c14971 | AES + CMV |
 | 國內物流（備用，非 OTP 模式） | 2000214 | 5294y06JbISpM5x9 | v77hoKGq4kWxNNIS | MD5 |
 
-> ⚠️ 電子票證的 HashKey/HashIV 與金流**不同**，請使用對應的介接資訊。
-> 三種電子票證模式（純發行、價金保管-使用後核銷、價金保管-分期核銷）使用不同帳號，切勿混用。分期核銷不支援平台商。詳見 guides/09 §測試帳號。
+> ⚠️ ECTicket的 HashKey/HashIV 與金流**不同**，請使用對應的介接資訊。
+> 三種ECTicket模式（純發行、價金保管-使用後核銷、價金保管-分期核銷）使用不同帳號，切勿混用。分期核銷不支援平台商。詳見 guides/09 §測試帳號。
 
 > **常見錯誤：帳號混用** — 金流、物流、發票使用**不同的** MerchantID 和 HashKey/HashIV。
 > 同時串接多個服務時，請確認每個 API 呼叫使用對應服務的帳號，混用會導致 CheckMacValue 驗證失敗。
@@ -627,8 +627,8 @@ composer require ecpay/sdk
 | B2B 電子發票（存證模式）| https://developers.ecpay.com.tw/24176.md |
 | 離線 POS 電子發票 | https://developers.ecpay.com.tw/13768.md |
 | 電子收據 | https://developers.ecpay.com.tw/64230.md |
-| 電子票證（純發行） | https://developers.ecpay.com.tw/29916.md |
-| 電子票證（價金保管，首選） | https://developers.ecpay.com.tw/40322.md |
+| ECTicket（純發行） | https://developers.ecpay.com.tw/29916.md |
+| ECTicket（價金保管，首選） | https://developers.ecpay.com.tw/40322.md |
 | 信用卡幕後授權 | https://developers.ecpay.com.tw/45901.md |
 | 非信用卡幕後取號 | https://developers.ecpay.com.tw/27984.md |
 | Shopify | https://developers.ecpay.com.tw/29070.md |
@@ -689,7 +689,7 @@ composer require ecpay/sdk
 
 | # | 檔案 | 主題 | 預估閱讀 |
 |---|------|------|:-------:|
-| 09 | guides/09-ecticket.md | 電子票證 | 15 分鐘 |
+| 09 | guides/09-ecticket.md | ECTicket | 15 分鐘 |
 | 10 | guides/10-cart-plugins.md | 購物車模組 | 10 分鐘 |
 
 **跨領域技術參考**

@@ -63,7 +63,7 @@
 | 物流 | 超商取貨（全家/統一/萊爾富/OK（僅 C2C））、宅配（黑貓/郵局）、跨境 | 商品配送 |
 | 電子發票 | B2C、B2B（交換/存證模式）、離線 | 合規開票 |
 | 電子收據 | 一般（記帳）、公益（社福捐贈）、政治獻金 | 非發票類憑證（guides/25；支援 AES-GCM） |
-| 電子票證 | 價金保管（使用後核銷/分期核銷）、純發行 | 票券、餐券、遊樂園 |
+| ECTicket | 價金保管（使用後核銷/分期核銷）、純發行 | 票券、餐券、遊樂園 |
 | 購物車 | WooCommerce、OpenCart、Magento、Shopify 模組 | 現成電商平台 |
 
 ## 金流合約模式：代收付（大特店）vs 新型閘道
@@ -90,7 +90,7 @@ ECPay 金流提供兩種合約模式。**API 技術規格完全相同**，差異
 
 ## 開發環境設定
 
-> ⚠️ **各服務各用獨立帳號**：金流 / 物流 / 電子發票 / 電子票證的 MerchantID + HashKey + HashIV **完全不同，混用導致所有 CheckMacValue 永遠失敗**。開始寫程式前請先確認使用正確帳號，完整對照表見下方「測試帳號」。
+> ⚠️ **各服務各用獨立帳號**：金流 / 物流 / 電子發票 / ECTicket的 MerchantID + HashKey + HashIV **完全不同，混用導致所有 CheckMacValue 永遠失敗**。開始寫程式前請先確認使用正確帳號，完整對照表見下方「測試帳號」。
 
 ### PHP（推薦，有官方 SDK）
 
@@ -132,7 +132,7 @@ pip install pycryptodome && python test-vectors/verify.py
 > - 使用 **AIO 金流**（消費者跳轉綠界頁面）→ CMV-SHA256
 > - 使用 **ECPG / 發票 / 全方位物流 / 跨境物流 / 電子收據**（AES-JSON API）→ AES-JSON
 >   - 電子收據另支援 **AES-GCM**（新模式，見 [guides/25 §AES-GCM 模式](./25-receipt.md)）
-> - 使用 **電子票證**（AES-JSON + 額外簽名驗證）→ AES-JSON + CMV
+> - 使用 **ECTicket**（AES-JSON + 額外簽名驗證）→ AES-JSON + CMV
 > - 使用 **國內物流**（超商/宅配傳統 API）→ CMV-MD5
 
 ECPay API 分為四種協議模式，認證方式和請求格式各不相同：
@@ -141,7 +141,7 @@ ECPay API 分為四種協議模式，認證方式和請求格式各不相同：
 |------|---------|---------|:----:|
 | **CMV-SHA256** | 像蓋章簽名——把所有參數排序後用密鑰產生一個簽名碼（SHA256），附在表單裡一起送出 | AIO 金流 | ★★☆ |
 | **AES-JSON** | 像加密信件——把整段資料用密鑰鎖起來（AES 加密），放進 JSON 信封再寄出 | ECPG 線上金流（含站內付 2.0、幕後授權、幕後取號）/ 發票 / v2 物流 / 跨境 | ★★★ |
-| **AES-JSON + CMV** | 加密信件＋蓋章——先 AES 加密，再額外附一個 SHA256 簽名碼（雙重驗證） | 電子票證 | ★★★ |
+| **AES-JSON + CMV** | 加密信件＋蓋章——先 AES 加密，再額外附一個 SHA256 簽名碼（雙重驗證） | ECTicket | ★★★ |
 | **CMV-MD5** | 同簽名蓋章，但用舊版印章（MD5），僅國內物流使用 | 國內物流 | ★★☆ |
 
 > ⚠️ **站內付 2.0 開發者必看**：站內付 2.0 使用**兩個不同的 domain**，混淆必定 404。
@@ -587,7 +587,7 @@ func main() {
 > ⚠️ **警告**：測試帳號僅供開發測試。
 > 正式環境務必使用環境變數管理您的 HashKey/HashIV，禁止寫入版本控制。
 
-> 電子票證（E-Ticket）測試帳號：官方提供公開測試帳號，見 [guides/09 §測試帳號](./09-ecticket.md)。
+> ECTicket（E-Ticket）測試帳號：官方提供公開測試帳號，見 [guides/09 §測試帳號](./09-ecticket.md)。
 
 > ## ⚠️ 帳號混用是最常見的初始化錯誤
 >
@@ -603,10 +603,10 @@ func main() {
 > | 國內物流 B2C | 2000132 | 5294y06JbISpM5x9 | v77hoKGq4kWxNNIS | MD5 |
 > | 國內物流 C2C | 2000933 | XBERn1YOvpM9nfZc | h1ONHk4P4yqbl5LK | MD5 |
 > | 全方位/跨境物流 | 2000132 | 5294y06JbISpM5x9 | v77hoKGq4kWxNNIS | AES |
-> | 電子票證（特店）| 3085676 | 7b53896b742849d3 | 37a0ad3c6ffa428b | AES+CMV |
-> | 電子票證（平台商）| 3085672 | b15bd8514fed472c | 9c8458263def47cd | AES+CMV |
+> | ECTicket（特店）| 3085676 | 7b53896b742849d3 | 37a0ad3c6ffa428b | AES+CMV |
+> | ECTicket（平台商）| 3085672 | b15bd8514fed472c | 9c8458263def47cd | AES+CMV |
 >
-> ⚠️ **金流/物流/發票/電子票證各使用不同帳號，混用導致所有驗證永遠失敗。**
+> ⚠️ **金流/物流/發票/ECTicket各使用不同帳號，混用導致所有驗證永遠失敗。**
 >
 > ⚠️ **注意**：`scripts/SDK_PHP/src/Traits/StageInfo.php` 中的帳號（MerchantID `2000132` / `2000214`）為**物流 OTP 專用**，並非 AIO 或站內付 2.0 帳號，請勿混用。
 
@@ -656,7 +656,7 @@ func main() {
 > | 幕後取號（AES-JSON） | ReturnURL | `1\|OK` |
 > | 全方位/跨境物流（AES-JSON v2） | ServerReplyURL | AES 加密 JSON（見 guides/07） |
 > | 國內物流（CMV-MD5） | ServerReplyURL | `1\|OK` |
-> | 電子票證（AES-JSON + CMV） | UseStatusNotifyURL | AES 加密 JSON + ECTicket 式 CMV |
+> | ECTicket（AES-JSON + CMV） | UseStatusNotifyURL | AES 加密 JSON + ECTicket 式 CMV |
 > | 直播收款（AES-JSON） | ReturnURL | AES 加密 JSON 解密驗簽，回應 `1\|OK` |
 > | AllowanceByCollegiate（發票） | ReturnURL | MD5 CMV（Form POST）— 發票 API 中唯一附帶 CMV 的 Callback |
 >
@@ -1136,7 +1136,7 @@ ECPay 的 ReturnURL 是 server-to-server 回呼，你的本地伺服器需要一
 > - `RtnCode=1`：業務層成功（交易/開票成功）
 > 只檢查 TransCode=1 不代表交易成功，必須解密回應後再驗證 RtnCode=1。
 
-> **⚠️ 以下為 AES-JSON 範例**（用於 ECPG/發票/物流 v2/幕後授權/跨境物流/電子票證）。
+> **⚠️ 以下為 AES-JSON 範例**（用於 ECPG/發票/物流 v2/幕後授權/跨境物流/ECTicket）。
 > 如果你只需要 AIO 金流（CMV-SHA256），上方的 Quick Start 已足夠，可跳過此區段。
 > AES 的 URL encode 函式（`aesUrlEncode`）與 CMV 的（`ecpayUrlEncode`）邏輯不同，**切勿混用**。
 > 完整 AES 加解密實作見 [guides/14-aes-encryption.md](./14-aes-encryption.md)，更多語言 E2E 見 [guides/23](./23-multi-language-integration.md)。

@@ -1,8 +1,8 @@
 # Ecticket PHP 範例
 
-ECPay 官方 PHP SDK v4.x 未包含電子票證（Ecticket）範例。
+ECPay 官方 PHP SDK v4.x 未包含ECTicket（Ecticket）範例。
 
-> ⚠️ **重要**：電子票證**不可**直接套用 B2C 發票的 `PostWithAesJsonResponseService`。
+> ⚠️ **重要**：ECTicket**不可**直接套用 B2C 發票的 `PostWithAesJsonResponseService`。
 > ECTicket 每個請求都需要額外的 **CheckMacValue**，必須使用：
 > - `AesService::class` 手動加密 Data
 > - `JsonCurlService` 手動發送（或直接 curl）

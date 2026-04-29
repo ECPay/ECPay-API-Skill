@@ -959,18 +959,18 @@
 
 ---
 
-## 電子票證
+## ECTicket
 
 ### 24. 電子票券發行 — 演唱會門票（Rust）
 
-> 我要用 Rust 串接 ECPay 電子票證服務發行演唱會電子票券（價金保管-使用後核銷模式）。
+> 我要用 Rust 串接 ECPay ECTicket服務發行演唱會電子票券（價金保管-使用後核銷模式）。
 >
-> **服務**：ECPay 電子票證（ECTicket）— 價金保管-使用後核銷
+> **服務**：ECPay ECTicket — 價金保管-使用後核銷
 > **功能**：發行電子票券，消費者購買後取得票券，入場使用後核銷並撥款
 > **程式語言**：Rust（使用 reqwest + serde_json + aes crate）
 > **加密方式**：AES-128-CBC + JSON + CheckMacValue SHA256（三重驗證！與其他服務不同）
 >
-> **測試帳號**（電子票證專用，與金流、發票完全不同！）：
+> **測試帳號**（ECTicket專用，與金流、發票完全不同！）：
 > - MerchantID：3085676（特店模式）
 > - HashKey：7b53896b742849d3
 > - HashIV：37a0ad3c6ffa428b
@@ -982,8 +982,8 @@
 > **步驟 1 — 發行票券（IssueVoucher）**：
 > 1. 組合 Data 明文 JSON：MerchantID、VoucherName（票券名稱）、VoucherAmount（票價）、VoucherQuantity（發行數量）、VoucherExpireDate（有效期限）、UseStatusNotifyURL（核銷通知 URL）等
 > 2. AES 加密 Data：JSON → URL encode（AES 版：只做 urlencode，不轉小寫，不做 .NET 替換）→ AES-128-CBC(key=HashKey, iv=HashIV, PKCS7) → Base64
-> 3. **計算 CheckMacValue**（電子票證特有！）：`HashKey={HashKey}&Data={加密後Data字串}&HashIV={HashIV}` → SHA256 → 轉大寫
->    - 注意：CMV 公式與 AIO 不同！AIO 是排序所有參數，電子票證是固定 `HashKey + Data + HashIV`
+> 3. **計算 CheckMacValue**（ECTicket特有！）：`HashKey={HashKey}&Data={加密後Data字串}&HashIV={HashIV}` → SHA256 → 轉大寫
+>    - 注意：CMV 公式與 AIO 不同！AIO 是排序所有參數，ECTicket是固定 `HashKey + Data + HashIV`
 > 4. 組合完整 Request JSON：`{ MerchantID, RqHeader: { Timestamp }, Data: "加密字串", CheckMacValue: "CMV字串" }`
 > 5. POST 到 `https://ecticket-stage.ecpay.com.tw/Voucher/IssueVoucher`
 >
@@ -998,7 +998,7 @@
 > - **回應格式與 AIO 完全不同！** 不是回�� `1|OK`，而是必須回傳 AES 加密 JSON + CheckMacValue
 > - 回傳格式：`{ MerchantID, RqHeader: { Timestamp }, Data: "AES加密的回應JSON", CheckMacValue }`
 >
-> **電子票證特有注意事項**：
+> **ECTicket特有注意事項**：
 > - 加密用獨立帳號（3085676），HashKey/HashIV 與金流、發票、物流全都不同
 > - CheckMacValue 計算公式與 AIO 不同：固定 `HashKey + Data + HashIV` 組合，非參數排序
 > - 回應需要三重檢查（TransCode → CMV → RtnCode）
@@ -1014,13 +1014,13 @@
 
 ### 25. 電子票券核銷與退票（C++）
 
-> 我要用 C++ 實作 ECPay 電子票證的核銷和退票功能。
+> 我要用 C++ 實作 ECPay ECTicket的核銷和退票功能。
 >
-> **服務**：ECPay 電子票證（ECTicket）— 核銷（UseVoucher）+ 退票（ReturnVoucher）
+> **服務**：ECPay ECTicket — 核銷（UseVoucher）+ 退票（ReturnVoucher）
 > **程式語言**：C++17（使用 libcurl + OpenSSL + nlohmann/json）
 > **加密方式**：AES-128-CBC + JSON + CheckMacValue SHA256
 >
-> **測試帳號**（電子票證專用）：
+> **測試帳號**（ECTicket專用）：
 > - MerchantID：3085676
 > - HashKey：7b53896b742849d3
 > - HashIV：37a0ad3c6ffa428b
@@ -1403,7 +1403,7 @@
 > - 站內付查詢：`ecpayment-stage.ecpay.com.tw` → `ecpayment.ecpay.com.tw`
 > - 物流：`logistics-stage.ecpay.com.tw` → `logistics.ecpay.com.tw`
 > - 發票：`einvoice-stage.ecpay.com.tw` → `einvoice.ecpay.com.tw`
-> - 電子票證：`ecticket-stage.ecpay.com.tw` → `ecticket.ecpay.com.tw`
+> - ECTicket：`ecticket-stage.ecpay.com.tw` → `ecticket.ecpay.com.tw`
 >
 > **2. 帳號切換**：
 > - 測試帳號（公開共用）→ 正式帳號（向綠界申請取得，每個商家���立）
@@ -1861,7 +1861,7 @@
 | 電子發票 | 2000132 | ejCk326UnaZWKisg | q9jcZX8Ib9LM8wYk | AES |
 | **電子收據（一般/公益）**（V3.0+）| **2000132** | **ejCk326UnaZWKisg** | **q9jcZX8Ib9LM8wYk** | **AES-CBC 或 AES-GCM** |
 | **電子收據（政治獻金）**（V3.0+）| **3002607** | **pwFHCqoQZGmho4w6** | **EkRm7iFT261dpevs** | **AES-CBC 或 AES-GCM** |
-| 電子票證（特店） | 3085676 | 7b53896b742849d3 | 37a0ad3c6ffa428b | AES+CMV |
+| ECTicket（特店） | 3085676 | 7b53896b742849d3 | 37a0ad3c6ffa428b | AES+CMV |
 
 > **嚴禁帳號混用！** 金流、物流、發票、收據使用不同的 MerchantID 和 HashKey/HashIV。
 >
@@ -1874,7 +1874,7 @@
 | 步驟 1 | percent-encode | percent-encode |
 | 步驟 2 | 全轉小寫 | **（無）** |
 | 步驟 3 | .NET 字元替換（%2d→- 等） | **（無）** |
-| 使用場景 | AIO 金流、國內物流 | 站內付 2.0、發票、全方位物流、跨境物流、電子票證、**電子收據**（V3.0+） |
+| 使用場景 | AIO 金流、國內物流 | 站內付 2.0、發票、全方位物流、跨境物流、ECTicket、**電子收據**（V3.0+） |
 
 ### 測試信用卡號
 

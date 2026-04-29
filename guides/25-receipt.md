@@ -42,7 +42,7 @@
 > - **離線電子發票**:需 `Revision: "1.0.0"`
 > - **全方位 / 跨境物流 v2**:需 `Revision: "1.0.0"`
 > - **站內付 2.0 / 幕後授權 / 幕後取號**:只需 `Timestamp`
-> - **電子票證**:只需 `Timestamp`
+> - **ECTicket**:只需 `Timestamp`
 >
 > 誤加 Revision 不會導致錯誤（綠界忽略不認識的欄位），但漏加於發票類 API 會造成 TransCode ≠ 1。
 

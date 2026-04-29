@@ -186,7 +186,7 @@ POS 刷卡機的串接規格包含：
 | Callback 格式 | JSON POST (`application/json`) |
 | 認證 | **AES-128-CBC**(Block Mode,PKCS7 padding)加密 Data 欄位;Key=HashKey(16 bytes ASCII)、IV=HashIV(16 bytes ASCII)— 詳見 [guides/14-aes-encryption.md](./14-aes-encryption.md) |
 | 回應結構 | 三層 JSON(TransCode → 解密 Data → RtnCode) |
-| CMV 驗證 | ECTicket 式 CheckMacValue(SHA256);與電子票證相同公式(詳見 [guides/09 §CheckMacValue 計算](./09-ecticket.md))。⚠️ **直播收款 CMV 公式尚未完整公開**,實作前**必須 web_fetch `references/Payment/直播主收款網址串接技術文件.md` 中列出的官方 URL** 確認最新規格。驗證使用 timing-safe 比對(`hash_equals` / `crypto.timingSafeEqual` / `hmac.compare_digest`) |
+| CMV 驗證 | ECTicket 式 CheckMacValue(SHA256);與ECTicket相同公式(詳見 [guides/09 §CheckMacValue 計算](./09-ecticket.md))。⚠️ **直播收款 CMV 公式尚未完整公開**,實作前**必須 web_fetch `references/Payment/直播主收款網址串接技術文件.md` 中列出的官方 URL** 確認最新規格。驗證使用 timing-safe 比對(`hash_equals` / `crypto.timingSafeEqual` / `hmac.compare_digest`) |
 | 回應 | 純文字 `1\|OK` |
 
 ### 建立收款網址（後台操作）
@@ -251,7 +251,7 @@ POS 刷卡機的串接規格包含：
 
 - **有效期限**：建立時於後台設定，過期後消費者無法付款
 - **狀態管理**：透過綠界後台關閉不再需要的收款網址（無對應 API）
-- **付款通知**：消費者付款後，綠界以 **JSON POST** 傳送到 ReturnURL（格式同 ECTicket：AES 解密 Data + ECTicket-式 CMV，**非** AIO Form POST 格式）；驗證順序：TransCode === 1 → AES 解密 → CMV timing-safe 驗證 → RtnCode === 1（**整數**）；**回應純文字 `1|OK`**（⚠️ 與電子票證不同 — ECTicket 回 AES+CMV，直播收款回純文字）
+- **付款通知**：消費者付款後，綠界以 **JSON POST** 傳送到 ReturnURL（格式同 ECTicket：AES 解密 Data + ECTicket-式 CMV，**非** AIO Form POST 格式）；驗證順序：TransCode === 1 → AES 解密 → CMV timing-safe 驗證 → RtnCode === 1（**整數**）；**回應純文字 `1|OK`**（⚠️ 與ECTicket不同 — ECTicket 回 AES+CMV，直播收款回純文字）
 
 ### 完整規格文件
 
@@ -264,12 +264,12 @@ POS 刷卡機的串接規格包含：
 | 步驟 | 說明 |
 |:---:|------|
 | 1 | 向綠界申請「直播收款」功能（需獨立申請）|
-| 2 | 使用 **AES-JSON + CheckMacValue（ECTicket 式 SHA256）**雙重驗證（與電子票證相同協議）|
+| 2 | 使用 **AES-JSON + CheckMacValue（ECTicket 式 SHA256）**雙重驗證（與ECTicket相同協議）|
 | 3 | 外層 JSON 需包含 `CheckMacValue`（公式同 ECTicket，非 AIO）|
-| 4 | **ECPay 通知格式**（你收到的）：JSON POST，Data 欄位為 AES 加密 JSON，外層含 ECTicket 式 CheckMacValue（與電子票證相同協議）。**你必須回應**：純文字 `1\|OK`（⚠️ 與電子票證不同——電子票證回應需 AES 加密 JSON + CheckMacValue）|
+| 4 | **ECPay 通知格式**（你收到的）：JSON POST，Data 欄位為 AES 加密 JSON，外層含 ECTicket 式 CheckMacValue（與ECTicket相同協議）。**你必須回應**：純文字 `1\|OK`（⚠️ 與ECTicket不同——ECTicket回應需 AES 加密 JSON + CheckMacValue）|
 | 5 | API 端點：`https://ecpayment.ecpay.com.tw/`（測試環境：`https://ecpayment-stage.ecpay.com.tw/`）（詳見 `references/Payment/直播主收款網址串接技術文件.md`）|
 
-> ⚠️ **直播收款的協議混淆**：雖然直播收款的 Callback 使用 ECTicket 式 CheckMacValue，但回應格式為 `1|OK`（不同於電子票證的 AES JSON 回應）。
+> ⚠️ **直播收款的協議混淆**：雖然直播收款的 Callback 使用 ECTicket 式 CheckMacValue，但回應格式為 `1|OK`（不同於ECTicket的 AES JSON 回應）。
 >
 > ℹ️ **完整規格**：請 web_fetch `references/Payment/直播主收款網址串接技術文件.md` 中的 URL 取得最新參數表。
 

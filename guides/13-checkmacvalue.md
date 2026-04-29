@@ -27,7 +27,7 @@ CheckMacValue 是 ECPay 用於驗證請求/回應完整性的檢查碼。用於 
 |------|----------|---------|
 | AIO 金流 | SHA256 | 送出請求時附加 / 接收通知時驗證 |
 | 國內物流 | MD5 | 送出請求時附加 / 接收通知時驗證 |
-| 電子票證 | SHA256 | 送出請求與回應都需附加（**公式與 AIO 完全不同**：`strtoupper(SHA256(URLEncode(HashKey + JSON + HashIV)))`，其中 `URLEncode = urlencode() 後接 strtolower()`、**不做 .NET 字元替換**；直接串接（無排序、無 `=` 分隔符），`strtoupper` 將 SHA256 輸出轉為大寫，見 [guides/09 §CheckMacValue 計算](./09-ecticket.md)） |
+| ECTicket | SHA256 | 送出請求與回應都需附加（**公式與 AIO 完全不同**：`strtoupper(SHA256(URLEncode(HashKey + JSON + HashIV)))`，其中 `URLEncode = urlencode() 後接 strtolower()`、**不做 .NET 字元替換**；直接串接（無排序、無 `=` 分隔符），`strtoupper` 將 SHA256 輸出轉為大寫，見 [guides/09 §CheckMacValue 計算](./09-ecticket.md)） |
 | ECPG / 發票 / 全方位物流 | **不使用**（例外見下方） | 改用 AES 加密 |
 
 > ⚠️ **例外**：B2C 發票的 `AllowanceByCollegiate`（線上折讓）其 ReturnURL Callback 使用 **Form POST + CheckMacValue（MD5）**，是電子發票中唯一帶 CheckMacValue 的 API。計算公式與 AIO 相同但雜湊演算法為 MD5，詳見 [guides/04 §線上折讓](./04-invoice-b2c.md)。
@@ -1261,4 +1261,4 @@ Method=SHA256
 
 - AIO 金流 CheckMacValue：`references/Payment/全方位金流API技術文件.md` → §附錄 / 檢查碼機制說明
 - 國內物流 CheckMacValue：`references/Logistics/物流整合API技術文件.md` → §附錄 / 檢查碼機制說明
-- 電子票證 CheckMacValue（公式與 AIO 不同）：`references/Ecticket/電子票證API技術文件.md` → §附錄 / 檢查碼機制說明
+- ECTicket CheckMacValue（公式與 AIO 不同）：`references/Ecticket/ECTicketAPI技術文件.md` → §附錄 / 檢查碼機制說明

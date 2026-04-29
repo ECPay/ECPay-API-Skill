@@ -19,7 +19,7 @@
 > | 服務類別 | 協議 | RtnCode 型別 | 正確比較 | 錯誤寫法 |
 > |---------|------|-------------|---------|---------|
 > | AIO 金流、國內物流 | CMV（Form POST） | **字串** `"1"` | `=== '1'` | `=== 1`（永遠 false） |
-> | ECPG 線上金流、發票、全方位物流 v2、電子票證 | AES-JSON | **整數** `1` | `=== 1` | `=== '1'`（永遠 false） |
+> | ECPG 線上金流、發票、全方位物流 v2、ECTicket | AES-JSON | **整數** `1` | `=== 1` | `=== '1'`（永遠 false） |
 >
 > 防禦性寫法：`Number(rtnCode) === 1`（JavaScript）/ `int(rtn_code) == 1`（Python），但建議按服務使用正確型別。
 
@@ -38,17 +38,17 @@
 | 國內物流 | ServerReplyURL | `1\|OK`（純文字） | text/plain | 約每 2 小時重試 |
 | 全方位 / 跨境物流 | ServerReplyURL | AES 加密 JSON 三層結構 | application/json | 約每 2 小時重試 |
 | **B2C 發票（線上折讓）** | ReturnURL | `1\|OK`（純文字） | text/plain | 未公開（CheckMacValue MD5，發票中唯一帶 CMV 的 callback） |
-| 電子票證 | UseStatusNotifyURL | AES 加密 JSON + **CheckMacValue**（Data 內 `RtnCode=1`）| application/json | 每 5-15 分鐘重送，每日最多 4 次 |
+| ECTicket | UseStatusNotifyURL | AES 加密 JSON + **CheckMacValue**（Data 內 `RtnCode=1`）| application/json | 每 5-15 分鐘重送，每日最多 4 次 |
 | **直播收款** | ReturnURL | `1\|OK`(純文字) | text/plain | 每 5-15 分鐘重送,每日最多 4 次 |
 
-> 📋 **直播收款 Callback 驗證流程(4 步驟)** — 請求格式同電子票證,回應格式同 AIO:
+> 📋 **直播收款 Callback 驗證流程(4 步驟)** — 請求格式同ECTicket,回應格式同 AIO:
 > 1. **接收**:綠界以 JSON POST 送達 `{MerchantID, RqHeader, Data, CheckMacValue}`
 > 2. **AES 解密** `Data` 欄位 → 得到明文 JSON(含 RtnCode, RtnMsg, MerchantTradeNo 等業務欄位)
 > 3. **驗證 CheckMacValue**:使用 **ECTicket 式 CMV 公式**(不是 AIO 式)
 >    - 公式:`strtoupper(SHA256(toLowerCase(URLEncode(HashKey + Data 明文 JSON + HashIV))))`
->    - **不做 .NET 字元替換**(與 AIO `ecpayUrlEncode` 不同)— 詳見 [guides/13](./13-checkmacvalue.md) §電子票證 CMV 公式
+>    - **不做 .NET 字元替換**(與 AIO `ecpayUrlEncode` 不同)— 詳見 [guides/13](./13-checkmacvalue.md) §ECTicket CMV 公式
 >    - 必須用 timing-safe compare(`hash_equals` / `hmac.compare_digest` 等)
-> 4. **回應**:純文字 `1|OK`(**與電子票證唯一差異** — 電子票證需回 AES 加密 JSON)
+> 4. **回應**:純文字 `1|OK`(**與ECTicket唯一差異** — ECTicket需回 AES 加密 JSON)
 >
 > ⚠️ 若將直播收款套用 AIO 的 `ecpayUrlEncode`(含 .NET 字元替換)會永遠驗簽失敗。
 
@@ -209,8 +209,8 @@ return '1|OK'  # 必須回應
 | 國內物流 | ClientReplyURL | 消費者選店結果（前端跳轉） | CheckMacValue (MD5) | HTML 頁面 | 不重試 |
 | 全方位物流 | ServerReplyURL | 物流狀態變更 | AES 解密 | AES 加密 JSON | 約每 2 小時重試（次數未公開）|
 | 跨境物流 | ServerReplyURL | 物流狀態變更 | AES 解密 | AES 加密 JSON（與全方位物流相同） | 約每 2 小時重試（次數未公開）|
-| 電子票證 | UseStatusNotifyURL | 退款/核退通知 | AES 解密 Data + CheckMacValue (SHA256) | AES 加密 JSON + **CheckMacValue**（Data 內 `RtnCode=1`） | 每 5-15 分鐘重送，每日最多 4 次 |
-| **直播收款** | ReturnURL | 付款通知 | AES 解密 Data + **ECTicket 式** CheckMacValue (SHA256)(格式與電子票證相同) | `1\|OK`(純文字,與電子票證 AES-JSON 回應不同) | 每 5-15 分鐘重送,每日最多 4 次 |
+| ECTicket | UseStatusNotifyURL | 退款/核退通知 | AES 解密 Data + CheckMacValue (SHA256) | AES 加密 JSON + **CheckMacValue**（Data 內 `RtnCode=1`） | 每 5-15 分鐘重送，每日最多 4 次 |
+| **直播收款** | ReturnURL | 付款通知 | AES 解密 Data + **ECTicket 式** CheckMacValue (SHA256)(格式與ECTicket相同) | `1\|OK`(純文字,與ECTicket AES-JSON 回應不同) | 每 5-15 分鐘重送,每日最多 4 次 |
 | B2C 發票（線上折讓） | ReturnURL | 消費者同意折讓 | CheckMacValue (**MD5**) | `1\|OK` | 未公開 |
 | 電子發票（其他 API） | — | 通常由 API 主動查詢 | AES 解密 | JSON | — |
 
@@ -230,7 +230,7 @@ return '1|OK'  # 必須回應
 | **非信用卡幕後取號**（ReturnURL） | 每 5-15 分鐘 | **每日 4 次** | 同上 | 同上 |
 | **國內物流**（ServerReplyURL） | 約每 2 小時 | 未公開 | HTTP 非 200 / 逾時 / 回應非 `1\|OK` | 主動查詢物流狀態 |
 | **全方位/跨境物流**（ServerReplyURL） | 約每 2 小時 | 未公開 | HTTP 非 200 / 逾時 / 回應非 AES-JSON | 主動查詢物流狀態 |
-| **電子票證**（UseStatusNotifyURL） | 每 5-15 分鐘 | **每日 4 次** | HTTP 非 200 / 逾時 / 回應格式錯誤 | 主動查詢票證狀態 |
+| **ECTicket**（UseStatusNotifyURL） | 每 5-15 分鐘 | **每日 4 次** | HTTP 非 200 / 逾時 / 回應格式錯誤 | 主動查詢票證狀態 |
 | **直播收款**（ReturnURL） | 每 5-15 分鐘 | **每日 4 次** | HTTP 非 200 / 逾時 / 回應非 `1\|OK` | 同上 |
 | **B2C 發票（線上折讓）** | 未公開 | 未公開 | 未公開 | — |
 | **OrderResultURL**（所有服務） | — | **不重試** | 前端跳轉，一次性，不重試 | — |
@@ -245,8 +245,8 @@ return '1|OK'  # 必須回應
 |-------------|-----------|------------|------|
 | Form POST (URL-encoded) | 含 `CheckMacValue` | SHA256（金流）或 MD5（物流） | [guides/13](./13-checkmacvalue.md) |
 | JSON POST | 含 `Data`（Base64 字串），**無** `CheckMacValue` | AES 解密 | [guides/14](./14-aes-encryption.md) |
-| JSON POST | 含 `Data`（Base64 字串）**且**含 `CheckMacValue` | 先驗 ECTicket 式 CMV（見 [guides/09](./09-ecticket.md) §CheckMacValue 計算），再 AES 解密 | **電子票證**：回應 **AES 加密 JSON + CMV**（Data 內 `{"RtnCode": 1, "RtnMsg": "成功"}`） |
-| JSON POST | 含 `Data`（Base64 字串）**且**含 `CheckMacValue` | 同上（ECTicket 式 CMV + AES 解密） | **直播收款**：驗證方式同電子票證，但回應為**純文字 `1\|OK`**（非 AES 加密 JSON） |
+| JSON POST | 含 `Data`（Base64 字串）**且**含 `CheckMacValue` | 先驗 ECTicket 式 CMV（見 [guides/09](./09-ecticket.md) §CheckMacValue 計算），再 AES 解密 | **ECTicket**：回應 **AES 加密 JSON + CMV**（Data 內 `{"RtnCode": 1, "RtnMsg": "成功"}`） |
+| JSON POST | 含 `Data`（Base64 字串）**且**含 `CheckMacValue` | 同上（ECTicket 式 CMV + AES 解密） | **直播收款**：驗證方式同ECTicket，但回應為**純文字 `1\|OK`**（非 AES 加密 JSON） |
 
 > **最常見錯誤**：國內物流的 CheckMacValue 使用 **MD5**（不是 SHA256）。用錯雜湊演算法會導致驗證永遠失敗。
 > - 金流 AIO → SHA256
@@ -1131,7 +1131,7 @@ ECPay 的 callback 重試行為：
 | 國內物流 | 約每 2 小時 | 次數未公開 | 持續數天 |
 | 全方位物流 | 約每 2 小時 | 次數未公開 | 持續數天 |
 | 跨境物流 | 約每 2 小時 | 次數未公開 | 持續數天 |
-| 電子票證 | 每 5-15 分鐘 | 最多 4 次 | 持續數天 |
+| ECTicket | 每 5-15 分鐘 | 最多 4 次 | 持續數天 |
 | 直播收款 | 每 5-15 分鐘 | 最多 4 次 | 持續數天 |
 | B2C 發票（AllowanceByCollegiate） | 未公開 | 未公開 | 未公開 |
 

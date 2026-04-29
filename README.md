@@ -2,7 +2,7 @@
 
 > **綠界科技官方出品** — 由 ECPay 團隊開發與維護，內容與 API 同步更新。
 
-**當前版本:V3.0**
+**當前版本:V3.1**
 
 ## 目錄
 
@@ -199,7 +199,7 @@ cd ~/.claude/skills/ecpay
 git tag -l
 
 # 固定至指定版本（以 git tag -l 查到的實際 tag 為準）
-git checkout v3.0   # 例如：固定至 V3.0
+git checkout v3.1   # 例如：固定至 V3.1
 
 # 之後如需升級
 git fetch --tags
@@ -229,7 +229,7 @@ git checkout v3.0   # 升級至新版本（以實際發布 tag 為準）
 | `/ecpay-pay` | 串接金流（AIO / 站內付 2.0 / 幕後授權）、查詢、退款、Callback |
 | `/ecpay-invoice` | 串接電子發票（B2C / B2B / 離線） |
 | `/ecpay-logistics` | 串接物流（國內 / 全方位 / 跨境） |
-| `/ecpay-ecticket` | 串接電子票證（價金保管 / 純發行） |
+| `/ecpay-ecticket` | 串接ECTicket（價金保管 / 純發行） |
 | `/ecpay-debug` | 除錯排查 + CheckMacValue/AES 加密驗證 |
 | `/ecpay-go-live` | 上線前檢查清單 |
 
@@ -247,7 +247,7 @@ git checkout v3.0   # 升級至新版本（以實際發布 tag 為準）
 | [電子發票](docs/prompt-examples.md#電子發票) | 4 | Python, Java, C#, Rust | B2C 開立、B2B 開立、折讓、作廢+查詢 |
 | [**電子收據**（V3.0+）](docs/prompt-examples.md#電子收據v30) | **4** | **Python, TypeScript, Go, C#** | **一般收據、公益捐贈、政治獻金（AES-GCM）、查詢+修改+作廢+通知** |
 | [物流](docs/prompt-examples.md#物流) | 4 | C#, Go, TypeScript, PHP | 超商取貨付款、宅配+列印、跨境物流、狀態查詢 |
-| [電子票證](docs/prompt-examples.md#電子票證) | 2 | Rust, C++ | 票券發行、核銷+退票 |
+| [ECTicket](docs/prompt-examples.md#ECTicket) | 2 | Rust, C++ | 票券發行、核銷+退票 |
 | [跨服務整合](docs/prompt-examples.md#跨服務整合) | 2 | Python Django, Node.js | 收款+發票+出貨、訂閱制+自動開發票 |
 | [除錯與排查](docs/prompt-examples.md#除錯與排查) | 5 | 通用 | CheckMacValue 失敗、AES 解密亂碼、404 錯誤、Callback 收不到、驗證重試 |
 | [上線與環境切換](docs/prompt-examples.md#上線與環境切換) | 1 | 通用 | 測試→正式完整檢查清單 |
@@ -261,7 +261,7 @@ git checkout v3.0   # 升級至新版本（以實際發布 tag 為準）
 | **物流** | 國內物流（超商取貨 + 宅配）、全方位物流、跨境物流 | guides/06-08 |
 | **電子發票** | B2C（企業對消費者）、B2B（企業對企業，交換 + 存證模式）、離線 | guides/04-05, 18 |
 | **電子收據**（V3.0+ 新增） | 一般收據、公益捐贈、政治獻金；支援 AES-CBC 與 **AES-GCM** 雙加密模式（首個啟用 GCM 的 ECPay 服務） | guides/25 |
-| **電子票證** | 價金保管（使用後核銷 / 分期核銷）、純發行 | guides/09 |
+| **ECTicket** | 價金保管（使用後核銷 / 分期核銷）、純發行 | guides/09 |
 | **購物車** | WooCommerce、OpenCart、Magento、Shopify | guides/10 |
 | **POS 刷卡機 + 直播收款** | 實體門市刷卡機串接 / 直播電商收款網址 | guides/17 |
 
@@ -341,10 +341,10 @@ ECPay API 使用不同的認證和請求格式，本 Skill 完整涵蓋：
 |------|---------|---------|---------|
 | **CMV-SHA256** | CheckMacValue + SHA256 | Form POST | AIO 金流 |
 | **AES-JSON** | AES-128-CBC 加密（**電子收據另可選 AES-128-GCM**，V3.0+）| JSON POST | ECPG 線上金流、電子發票、全方位/跨境物流、直播收款、**電子收據** |
-| **AES-JSON + CMV** | AES-128-CBC + CheckMacValue（SHA256） | JSON POST | 電子票證（CMV 公式與 AIO 不同） |
+| **AES-JSON + CMV** | AES-128-CBC + CheckMacValue（SHA256） | JSON POST | ECTicket（CMV 公式與 AIO 不同） |
 | **CMV-MD5** | CheckMacValue + MD5 | Form POST | 國內物流 |
 
-> **注意**：直播收款的 API **請求**使用 AES-JSON（無 CMV）；其 ReturnURL **callback 驗證**需使用 ECTicket 式 CheckMacValue（公式同電子票證），詳見 [guides/17 §直播收款](./guides/17-hardware-services.md#直播收款指引)。
+> **注意**：直播收款的 API **請求**使用 AES-JSON（無 CMV）；其 ReturnURL **callback 驗證**需使用 ECTicket 式 CheckMacValue（公式同ECTicket），詳見 [guides/17 §直播收款](./guides/17-hardware-services.md#直播收款指引)。
 
 ## 指南索引
 
@@ -393,7 +393,7 @@ ECPay API 使用不同的認證和請求格式，本 Skill 完整涵蓋：
 
 | # | 檔案 | 主題 |
 |---|------|------|
-| 09 | guides/09-ecticket.md | 電子票證 |
+| 09 | guides/09-ecticket.md | ECTicket |
 | 10 | guides/10-cart-plugins.md | 購物車模組 |
 
 ### 跨領域技術參考
@@ -562,14 +562,14 @@ references/*/  →  取得「最新規格」
 | **電子收據（政治獻金）** | `3002607` | `pwFHCqoQZGmho4w6` | `EkRm7iFT261dpevs` | AES-CBC / **AES-GCM** |
 | **物流 B2C / 全方位 / 宅配** | `2000132` | `5294y06JbISpM5x9` | `v77hoKGq4kWxNNIS` | MD5 / AES |
 | **物流 C2C** | `2000933` | `XBERn1YOvpM9nfZc` | `h1ONHk4P4yqbl5LK` | MD5 |
-| **電子票證** | `3085676` | `7b53896b742849d3` | `37a0ad3c6ffa428b` | AES+CMV |
+| **ECTicket** | `3085676` | `7b53896b742849d3` | `37a0ad3c6ffa428b` | AES+CMV |
 
 > 💡 **快速測試提示**：建立訂單時設定 `SimulatePaid=1`，無需真實信用卡即可模擬付款成功。
 > ⚠️ **注意**：金流、物流、發票使用**不同** HashKey / HashIV，切勿混用。
 
 測試信用卡：`4311-9522-2222-2222`，CVV：任意 3 位，有效期：任意未來日期，3DS：`1234`。
 
-完整帳號（含離線發票、電子票證平台商等）見 [guides/00-getting-started.md §測試帳號](./guides/00-getting-started.md)。
+完整帳號（含離線發票、ECTicket平台商等）見 [guides/00-getting-started.md §測試帳號](./guides/00-getting-started.md)。
 
 ## 常見問題
 

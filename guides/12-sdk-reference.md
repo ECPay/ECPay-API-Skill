@@ -26,7 +26,7 @@ scripts/SDK_PHP/
 ├── README.md
 ├── CHANGELOG.md
 ├── example/                    # 134 個 PHP 範例
-│   ├── Ecticket/               # 電子票證
+│   ├── Ecticket/               # ECTicket
 │   ├── Invoice/                # 電子發票
 │   │   ├── B2B/
 │   │   └── B2C/

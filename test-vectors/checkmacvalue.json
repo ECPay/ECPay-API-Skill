@@ -101,7 +101,7 @@
       "formula": "ecticket",
       "plaintext_json": "{\"MerchantID\":\"3085676\",\"BarCode\":\"/1234567\"}",
       "expected": "025168759A37FAADD6AC443CDC6C95D534674611E6BD9F8143E5065B16F77796",
-      "note": "E-Ticket（電子票證）CMV 公式與 AIO 完全不同：SHA256(toLowerCase(URL_encode(HashKey + JSON_string + HashIV)))。不使用參數排序，不使用 .NET 字元替換，但需要 toLowerCase。使用電子票證專用測試帳號（7b53896b742849d3 / 37a0ad3c6ffa428b），與電子發票測試帳號不同"
+      "note": "E-Ticket（ECTicket）CMV 公式與 AIO 完全不同：SHA256(toLowerCase(URL_encode(HashKey + JSON_string + HashIV)))。不使用參數排序，不使用 .NET 字元替換，但需要 toLowerCase。使用ECTicket專用測試帳號（7b53896b742849d3 / 37a0ad3c6ffa428b），與電子發票測試帳號不同"
     },
     {
       "name": "MD5 測試（B2C 發票 AllowanceByCollegiate Callback）",

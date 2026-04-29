@@ -127,7 +127,7 @@ def query_trade_with_retry(merchant_trade_no, max_retries=5):
 
 - ECPay 在 callback 未收到正確回應時會自動重試
 - 重試頻率依服務不同：
-  - **AIO 金流 / 非信用卡幕後取號 / 電子票證**：每 **5-15 分鐘**重送，每日最多 **4 次**（持續數天後停止）
+  - **AIO 金流 / 非信用卡幕後取號 / ECTicket**：每 **5-15 分鐘**重送，每日最多 **4 次**（持續數天後停止）
   - **站內付 2.0 / 幕後授權 / 物流**：約每 **2 小時**重試（次數未公開，持續數天後停止）
 - 詳見 [guides/21](./21-webhook-events-reference.md) §Callback 總覽表
 

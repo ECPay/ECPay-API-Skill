@@ -165,7 +165,7 @@ ECPAY_LOGISTICS_HASH_IV=v77hoKGq4kWxNNIS
 #### Callback 回應格式差異
 
 > 各服務 Callback 回應格式完整對照表見 [guides/21-webhook-events-reference.md](./21-webhook-events-reference.md) §Callback 總覽表。
-> 重點提醒：AIO 金流回應 `1|OK`，國內物流回應 `1|OK`，站內付 2.0 / 信用卡幕後授權回應 `1|OK`，全方位/跨境物流回應 AES 加密 JSON，電子票證回應 AES 加密 JSON + ECTicket 式 CMV。
+> 重點提醒：AIO 金流回應 `1|OK`，國內物流回應 `1|OK`，站內付 2.0 / 信用卡幕後授權回應 `1|OK`，全方位/跨境物流回應 AES 加密 JSON，ECTicket回應 AES 加密 JSON + ECTicket 式 CMV。
 
 #### 冪等性與事件驅動建議
 

@@ -1261,4 +1261,4 @@ Method=SHA256
 
 - AIO 金流 CheckMacValue：`references/Payment/全方位金流API技術文件.md` → §附錄 / 檢查碼機制說明
 - 國內物流 CheckMacValue：`references/Logistics/物流整合API技術文件.md` → §附錄 / 檢查碼機制說明
-- ECTicket CheckMacValue（公式與 AIO 不同）：`references/Ecticket/ECTicketAPI技術文件.md` → §附錄 / 檢查碼機制說明
+- ECTicket CheckMacValue（公式與 AIO 不同）：`references/Ecticket/純發行-使用後核銷API技術文件.md` → §附錄 / 檢查碼機制

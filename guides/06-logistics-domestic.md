@@ -653,7 +653,7 @@ $input = [
     'AllPayLogisticsID'=> '物流編號',
     'TimeStamp'        => time(),
 ];
-$response = $postService->post($input, 'https://logistics-stage.ecpay.com.tw/Helper/QueryLogisticsTradeInfo/V5');
+$response = $postService->post($input, 'https://logistics-stage.ecpay.com.tw/Helper/QueryLogisticsTradeInfo/V2');
 ```
 
 ## 列印托運單

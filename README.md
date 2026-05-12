@@ -2,7 +2,7 @@
 
 > **綠界科技官方出品** — 由 ECPay 團隊開發與維護，內容與 API 同步更新。
 
-**當前版本:V3.1**
+**當前版本:V3.2**
 
 ## 目錄
 
@@ -199,7 +199,7 @@ cd ~/.claude/skills/ecpay
 git tag -l
 
 # 固定至指定版本（以 git tag -l 查到的實際 tag 為準）
-git checkout v3.1   # 例如：固定至 V3.1
+git checkout v3.2   # 例如：固定至 V3.2
 
 # 之後如需升級
 git fetch --tags

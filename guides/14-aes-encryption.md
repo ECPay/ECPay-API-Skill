@@ -1,11 +1,11 @@
 > 對應 ECPay API 版本 | 基於 PHP SDK ecpay/sdk | 最後更新：2026-04
 
-<!-- AI Section Index（供 AI 部分讀取大檔案用，2026-04-23 校準）
+<!-- AI Section Index（供 AI 部分讀取大檔案用，2026-05-12 校準）
 == AES-CBC 實作 ==
-Python: line 255-302 | Node.js: line 303-351 | TypeScript: line 352-405
-Java: line 407-492 | C#: line 494-555 | Go: line 557-670
-C: line 672-874 | C++: line 876-1029 | Rust: line 1031-1096
-Swift: line 1098-1198 | Kotlin: line 1203-1258 | Ruby: line 1260-1308
+Python: line 265-311 | Node.js: line 313-360 | TypeScript: line 362-415
+Java: line 417-502 | C#: line 504-565 | Go: line 567-680
+C: line 682-884 | C++: line 886-1039 | Rust: line 1041-1106
+Swift: line 1108-1211 | Kotlin: line 1213-1268 | Ruby: line 1270-1320
 
 == AES-GCM 實作（電子收據 V3.0+ 選用）==
 AES-GCM 章節起點: line 1322 | GCM Python: line 1382-1411 | GCM Node.js: line 1413-1448
@@ -2236,6 +2236,6 @@ URL encode 結果：`%7B%22N%22%3A%221234567890%22%7D`（長度 32 bytes = 2 個
 
 - 站內付 2.0 加密方式：`references/Payment/站內付2.0API技術文件Web.md` → §附錄 / 參數加密方式說明
 - B2C 發票加密：`references/Invoice/B2C電子發票介接技術文件.md` → §附錄 / 參數加密方式說明
-- 全方位物流 v2 加密：`references/Logistics/全方位物流API技術文件.md` → §附錄 / 參數加密方式說明
-- ECTicket加密（另需 CMV 雙重驗證）：`references/Ecticket/ECTicketAPI技術文件.md` → §附錄 / 參數加密方式說明
+- 全方位物流 v2 加密：`references/Logistics/全方位物流服務API技術文件.md` → §附錄 / 參數加密方式說明
+- ECTicket加密（另需 CMV 雙重驗證）：`references/Ecticket/純發行-使用後核銷API技術文件.md` → §附錄 / 參數加密方式說明
 - 全方位物流加密：`references/Logistics/全方位物流服務API技術文件.md` → §附錄 / 參數加密方式說明

@@ -8,6 +8,45 @@
 
 ---
 
+## [2.2.0] — 2026-05-12 (V3.2)
+
+### 修正(CI 失敗)
+
+- **`guides/14-aes-encryption.md` AI Section Index 行號全面校準**:AES-CBC 12 個語言區段行號全部失準(Python 255-302 → 265-311 ... Ruby 1260-1308 → 1270-1320),導致 `validate-ai-index.sh` 在 CI 失敗。校準日期 2026-04-23 → 2026-05-12
+- **`guides/23-multi-language-integration.md` AI Section Index 行號全面校準**:全部 16 個主區段 + 3 個 AES-GCM 子區段行號偏移 2-4 行,語言快速導航表 8 行同步,line 79 過時行號參照修正(`見 line 471 和 691` → `見 line 495 和 715`)
+
+### 修正(guides ↔ references ↔ scripts 一致性)
+
+深度比對 29 個 guides 與 references + scripts/SDK_PHP,共修正 11 處杜撰或失準引用:
+
+- **`guides/06-logistics-domestic.md`**:`/Helper/QueryLogisticsTradeInfo/V5` → `/V2`(SDK example 為 V2,guide 杜撰 V5,複製貼上後直接 404)
+- **`guides/02-payment-ecpg.md`**:ThreeDURL 範例從杜撰的 `payment-stage.ecpay.com.tw/Cashier/3DVerify?tk=...` 改為官方真實格式 `https://3durl.com.tw/...`(經 web_fetch 9053.md 確認)
+- **`guides/05-invoice-b2b.md`**:B2B 存證模式作廢折讓 endpoint `/B2BInvoice/AllowanceInvalid` → `/B2BInvoice/CancelAllowance`(經 web_fetch 24253.md 官方文件確認)
+- **`guides/13-checkmacvalue.md` / `guides/14-aes-encryption.md`**:`references/Ecticket/ECTicketAPI技術文件.md`(不存在的合成檔名)→ `references/Ecticket/純發行-使用後核銷API技術文件.md`(實際存在的檔)
+- **`guides/14-aes-encryption.md`**:`references/Logistics/全方位物流API技術文件.md` → `全方位物流服務API技術文件.md`(原檔名漏「服務」二字)
+- **`guides/19-http-protocol-reference.md`**:服務對應檔案速查表 5 處檔名修正(「介接技術文件」→「API技術文件」、加「服務」、加「整合」、B2B 拆分為「交換模式 / 存證模式」雙檔)
+
+### 待人工核實 → web_fetch 真實查證後確認 guides 正確
+
+- ✅ `/1.0.0/Cashier/BackAuth`(guides/03 信用卡幕後授權):web_fetch 45958.md 證實 guide 正確,SDK 僅還沒同步
+- ✅ `/1.0.0/Cashier/GenPaymentCode`(guides/03 非信用卡幕後取號):web_fetch 27995.md 證實 guide 正確
+- ✅ `/B2CInvoice/GetIssueList`(guides/04 B2C 查詢多筆發票):web_fetch 17229.md 證實 guide 正確
+
+### 驗證
+
+- ✅ `validate-ai-index.sh`:Phase 1 標題行號驗證 + Phase 2 導航表交叉驗證全綠(CI 恢復轉綠)
+- ✅ `validate-version-sync.sh`:8 同步檔全綠
+- ✅ `validate-internal-links.sh`:26 guides / 93 source files 全部連結有效
+- ✅ `validate-agents-parity.sh`:AGENTS ↔ GEMINI 三大不變區段一致
+- ✅ `validate-guides-refs-consistency.sh`:5 維度 guides ↔ references ↔ scripts 一致
+
+### 同步
+
+- 8 個 CI 驗證入口檔同步至 V3.2:SKILL.md / SKILL_OPENAI.md / README.md / SETUP.md / AGENTS.md / GEMINI.md / .github/copilot-instructions.md / CONTRIBUTING.md
+- 3 個手動同步檔同步至 V3.2:vscode_copilot.md / visual_studio_2026.md / 業務說明.md
+
+---
+
 ## [2.1.0] — 2026-04-29 (V3.1)
 
 ### 變更（術語標準化）

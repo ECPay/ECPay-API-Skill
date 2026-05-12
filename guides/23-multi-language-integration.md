@@ -1,20 +1,20 @@
 > 對應 ECPay API 版本 | 最後更新：2026-04
 
-<!-- AI Section Index（精確行號，2026-04-23 校準）
-Go E2E: line 136-488 (CMV: 138-270, AES-CBC: 271-488)
-Java E2E + 差異指南: line 491-709 (CMV E2E: 493-667, AES-CBC 差異: 668-709)
-C# E2E + 差異指南: line 711-872 (CMV E2E: 713-832, AES-CBC 差異: 833-872)
-TypeScript 完整 E2E + 型別定義: line 874-1123
-Kotlin 差異指南: line 1126-1169 | Ruby 差異指南: line 1171-1212
-Swift 差異指南: line 1214-1254 | Rust 差異指南: line 1256-1297
-Mobile App: line 1299-1354 | 非 PHP CMV Checklist: line 1356-1374
-非 PHP AES-JSON Checklist: line 1376-1393
-E2E 組裝步驟: line 1395-1406 | C/C++ 注意事項: line 1408-1675
-跨語言測試: line 1677-1683 | 電子收據 AES-GCM E2E（V3.0+）: line 1685-2022
-  ├ Go 開立完整 E2E: line 1692-1842
-  ├ TypeScript 開立完整 E2E: line 1844-1952
-  └ TypeScript Callback Handler: line 1954-2022
-Production 環境切換: line 2024+ | 相關文件: 檔尾
+<!-- AI Section Index（精確行號，2026-05-12 校準）
+Go E2E: line 140-492 (CMV: 142-273, AES-CBC: 275-492)
+Java E2E + 差異指南: line 495-713 (CMV E2E: 497-670, AES-CBC 差異: 672-713)
+C# E2E + 差異指南: line 715-876 (CMV E2E: 717-835, AES-CBC 差異: 837-876)
+TypeScript 完整 E2E + 型別定義: line 878-1127
+Kotlin 差異指南: line 1130-1173 | Ruby 差異指南: line 1175-1216
+Swift 差異指南: line 1218-1258 | Rust 差異指南: line 1260-1301
+Mobile App: line 1303-1358 | 非 PHP CMV Checklist: line 1360-1378
+非 PHP AES-JSON Checklist: line 1380-1397
+E2E 組裝步驟: line 1399-1410 | C/C++ 注意事項: line 1412-1679
+跨語言測試: line 1681-1687 | 電子收據 AES-GCM E2E（V3.0+）: line 1689-2025
+  ├ Go 開立完整 E2E: line 1695-1845
+  ├ TypeScript 開立完整 E2E: line 1847-1955
+  └ TypeScript Callback Handler: line 1957-2025
+Production 環境切換: line 2027+ | 相關文件: 檔尾
 -->
 
 # 多語言整合完整指南
@@ -43,18 +43,18 @@ Production 環境切換: line 2024+ | 相關文件: 檔尾
 
 | 語言 | CMV-SHA256 (AIO) | AES-JSON (發票) | 類型 | 位置 / 行號 |
 |------|:-:|:-:|:-:|---------|
-| **Go** | ✅ Web Server | ✅ B2C 發票 | 完整 E2E | line 136-488 |
-| **Java** | ✅ Web Server | ✅ | E2E + 差異指南 | line 491-709 |
-| **C#** | ✅ Web Server | ✅ | E2E + 差異指南 | line 711-872 |
-| **TypeScript** | ✅ Web Server | → Node.js | 完整範例 | line 874-1123 |
-| **Kotlin** | ✅ | ✅ | 差異指南 | line 1126-1169 |
-| **Ruby** | ✅ | ✅ | 差異指南 | line 1171-1212 |
-| **Swift** | ✅ | ✅ | 差異指南 | line 1214-1254 |
-| **Rust** | ✅ | ✅ | 差異指南 | line 1256-1297 |
+| **Go** | ✅ Web Server | ✅ B2C 發票 | 完整 E2E | line 140-492 |
+| **Java** | ✅ Web Server | ✅ | E2E + 差異指南 | line 495-713 |
+| **C#** | ✅ Web Server | ✅ | E2E + 差異指南 | line 715-876 |
+| **TypeScript** | ✅ Web Server | → Node.js | 完整範例 | line 878-1127 |
+| **Kotlin** | ✅ | ✅ | 差異指南 | line 1130-1173 |
+| **Ruby** | ✅ | ✅ | 差異指南 | line 1175-1216 |
+| **Swift** | ✅ | ✅ | 差異指南 | line 1218-1258 |
+| **Rust** | ✅ | ✅ | 差異指南 | line 1260-1301 |
 | **Python** | ✅ | ✅ | 完整 E2E | → [guides/00](./00-getting-started.md) §Quick Start |
 | **Node.js** | ✅ | ✅ | 完整 E2E | → [guides/00](./00-getting-started.md) §Quick Start |
-| **Mobile App** | — | — | iOS + Android 指引 | line 1299-1354 |
-| **C/C++** | ✅ minimal | ✅ minimal | 最小骨架 | line 1408-1675 |
+| **Mobile App** | — | — | iOS + Android 指引 | line 1303-1358 |
+| **C/C++** | ✅ minimal | ✅ minimal | 最小骨架 | line 1412-1679 |
 
 > **只需看你的語言**：使用 AI Section Index 行號範圍只讀取對應區段，不需載入全文。
 > **只需加密函式？** → [guides/13 CheckMacValue](./13-checkmacvalue.md) 或 [guides/14 AES](./14-aes-encryption.md)（12 語言全覆蓋）。
@@ -76,7 +76,7 @@ Production 環境切換: line 2024+ | 相關文件: 檔尾
 > 2. **組裝順序**：先讀 guides/13-14 目標語言區段 → 再讀本文 Go E2E 了解業務流程 → 最後套用差異指南的依賴和 API 差異
 > 3. **必驗項目**：用 `test-vectors/` 驗證加密輸出正確性，再整合到 E2E 流程
 >
-> Java、C# 已提供完整 E2E，可直接執行（見 line 471 和 691）。TypeScript 建議使用下方完整範例。
+> Java、C# 已提供完整 E2E，可直接執行（見 line 495 和 715）。TypeScript 建議使用下方完整範例。
 
 ## 概述
 

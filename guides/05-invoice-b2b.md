@@ -890,9 +890,9 @@ $input = [
     ],
 ];
 try {
-    $response = $postService->post($input, 'https://einvoice-stage.ecpay.com.tw/B2BInvoice/AllowanceInvalid');
+    $response = $postService->post($input, 'https://einvoice-stage.ecpay.com.tw/B2BInvoice/CancelAllowance');
 } catch (\Exception $e) {
-    error_log('ECPay B2B Attestation AllowanceInvalid Error: ' . $e->getMessage());
+    error_log('ECPay B2B Attestation CancelAllowance Error: ' . $e->getMessage());
 }
 ```
 

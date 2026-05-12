@@ -1,6 +1,6 @@
 ---
 name: ecpay
-version: "3.1"
+version: "3.2"
 homepage: https://github.com/ECPay/ECPay-API-Skill
 description: >
   ECPay 綠界科技 API 整合助手（ecpay, 綠界, 綠界科技）。

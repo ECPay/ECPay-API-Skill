@@ -576,13 +576,13 @@ MerchantID=2000132&MerchantTradeDate=2026%2f03%2f05+12%3a00%3a00&LogisticsType=C
 > **references/ 服務對應檔案速查**：
 > | 服務 | 對應 references/ 檔案 |
 > |------|---------------------|
-> | AIO 金流 | `references/Payment/全方位金流介接技術文件.md` |
+> | AIO 金流 | `references/Payment/全方位金流API技術文件.md` |
 > | ECPG（站內付 2.0）| `references/Payment/站內付2.0API技術文件Web.md` |
-> | 幕後授權 / 幕後取號 | `references/Payment/信用卡幕後授權介接技術文件.md` 等 |
+> | 幕後授權 / 幕後取號 | `references/Payment/信用卡幕後授權API技術文件.md` 等 |
 > | B2C 電子發票 | `references/Invoice/B2C電子發票介接技術文件.md` |
-> | B2B 電子發票 | `references/Invoice/B2B電子發票介接技術文件.md` |
-> | 國內物流 | `references/Logistics/物流介接技術文件.md` |
-> | 全方位 / 跨境物流 | `references/Logistics/全方位物流介接技術文件.md` 等 |
+> | B2B 電子發票 | `references/Invoice/B2B電子發票API技術文件_交換模式.md` / `_存證模式.md` |
+> | 國內物流 | `references/Logistics/物流整合API技術文件.md` |
+> | 全方位 / 跨境物流 | `references/Logistics/全方位物流服務API技術文件.md` 等 |
 > | ECTicket | `references/Ecticket/` 目錄下各模式文件 |
 > | 直播收款 | `references/Payment/直播主收款網址串接技術文件.md` |
 

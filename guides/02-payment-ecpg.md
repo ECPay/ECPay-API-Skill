@@ -862,7 +862,7 @@ interface CreatePaymentResponse {
     "MerchantTradeNo": "test1741830961"
   },
   "ThreeDInfo": {
-    "ThreeDURL": "https://payment-stage.ecpay.com.tw/Cashier/3DVerify?tk=abc123..."
+    "ThreeDURL": "https://3durl.com.tw/..."
   }
 }
 ```

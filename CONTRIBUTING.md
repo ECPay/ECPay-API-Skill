@@ -155,7 +155,7 @@ cd ~/.codex/ecpay-skill
 git tag -l
 
 # 切換至指定版本（以 git tag -l 查到的實際 tag 為準）
-git checkout v3.1   # 例如：固定至 V3.1
+git checkout v3.2   # 例如：固定至 V3.2
 
 # 之後如需升級
 git fetch --tags

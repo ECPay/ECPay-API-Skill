@@ -853,7 +853,7 @@ MerchantID=2000132&MerchantTradeDate=2026%2f03%2f05+12%3a00%3a00&LogisticsType=C
 > Base URL（正式）：`https://ecpayment.ecpay.com.tw`
 > 詳細端點路徑請查閱 `references/Payment/直播主收款網址串接技術文件.md`。
 
-**POS 刷卡機**：使用專用 POS 串接協定（TCP/IP 或 COM Port），非標準 HTTP API。詳見 [guides/17-hardware-services.md §POS 刷卡機串接指引](./17-hardware-services.md#pos-刷卡機串接指引)。
+**POS 刷卡機**：使用 **RS-232 序列通訊**（ASCII 電文 + LRC 校驗）連接綠界 EDC 刷卡機硬體，**非 HTTP API、無 REST 端點**。詳見 [guides/17-hardware-services.md §POS 刷卡機串接指引](./17-hardware-services.md#pos-刷卡機串接指引)。
 
 **Shopify 金流**：依 Shopify 平台規格整合，詳見 [guides/10-cart-plugins.md](./10-cart-plugins.md)。
 

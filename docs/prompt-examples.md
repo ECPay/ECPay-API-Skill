@@ -1442,30 +1442,30 @@
 > **程式語言**：Node.js（POS 應用程式端）
 >
 > **POS 串接與線上金流的差異**：
-> - POS 使用 TCP/IP 或 COM Port 通訊協議（非標準 HTTP API）
-> - 需要搭配綠界提供的實體刷卡終端機設備
-> - 不使用 CheckMacValue 或 AES 加密（加密方式依 POS 規格文件）
+> - POS 使用 **RS-232 序列通訊**（115200 Baud Rate、8N1、ASCII 電文 + LRC XOR 校驗），**非標準 HTTP API、無 REST 端點**
+> - 需要搭配綠界出貨的 **EDC 刷卡機**硬體；EDC 自身負責與收單銀行授權連線
+> - 不使用 CheckMacValue 或 AES 加密；驗證以電文層級 SHA-1 雜湊為主（依規格）
 >
 > **請幫我實作以下功能**：
-> 1. 建立與 POS 終端機的通訊連線（TCP/IP socket 或 Serial port）
-> 2. 組合交易電文（依綠界 POS 規格）
-> 3. 發送交易請求到 POS 終端機
-> 4. 接收並解析交易回應
-> 5. 查詢交易狀態
-> 6. 取消/退貨功能
+> 1. 建立與 EDC 刷卡機的 **RS-232 序列埠**連線（如 Node.js `serialport`、Python `pyserial`）
+> 2. 依綠界 POS 規格組合 ASCII 交易電文（`STX + DATA + ETX + LRC`），計算 LRC（DATA + ETX 進行 XOR）
+> 3. 透過序列埠送出交易電文至 EDC 刷卡機，並等待 ACK（`0x06`）
+> 4. 接收回應電文、校驗 LRC、解析欄位（信用卡銷售 / 紅利 / 分期 / 預先授權 等）
+> 5. 查詢交易、取消（void）、退貨指令
+> 6. 營業結束送出結帳批次上傳指令對帳
 >
 > **測試帳號**（POS 串接需聯繫綠界取得測試設備和帳號）：
 > - MerchantID：需向綠界申請 POS 專用帳號
-> - 測試需使用綠界提供的測試刷卡機
+> - 測試需使用綠界出貨的 EDC 測試刷卡機
 >
 > **重要參考**：
-> - 技術規格詳見 `references/Payment/刷卡機POS串接規格.md`
+> - 技術規格詳見 `references/Payment/刷卡機POS串接規格.md`（13 個官方 URL，含通訊規格、資料格式、各交易流程）
 > - POS 無官方 SDK PHP 範例（`scripts/SDK_PHP/example/` 無對應範例）
-> - 需自行依照通訊協議規格實作
+> - 需自行依照 RS-232 通訊協議規格實作
 >
 > **注意事項**：
-> - POS 串接前須先向綠界申請，取得測試設備和相關文件
-> - 部分雲端 POS 廠商有封裝為 HTTP/HTTPS API，具體依合作廠商而定
+> - POS 串接前須先向綠界申請，取得 EDC 測試刷卡機與相關文件
+> - 所有交易電文一律透過 RS-232 序列埠送至 EDC 刷卡機，**無 ECPay 線上 REST API 可呼叫**
 > - 感應支付（NFC）、Apple Pay 實體感應付款，取決於刷卡機型號支援度
 
 ---

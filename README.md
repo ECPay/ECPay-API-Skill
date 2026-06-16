@@ -182,24 +182,19 @@ Clone 後，在專案根目錄建立或編輯 `AGENTS.md`，加入以下內容�
 
 ### 版本固定（生產環境建議）
 
-生產環境建議固定到特定版本以避免非預期的破壞性變更：
+生產環境建議固定到特定版本，避免非預期的破壞性變更：
 
 ```bash
 git clone https://github.com/ECPay/ECPay-API-Skill.git ~/.claude/skills/ecpay
 cd ~/.claude/skills/ecpay
 
-# 查看所有可用版本（先確認 tag 名稱，再 checkout）
-git tag -l
+git tag -l               # 列出所有可用版本
+git checkout <版本 tag>   # 固定至指定版本，例如 git checkout v3.3
 
-# 固定至指定版本（以 git tag -l 查到的實際 tag 為準）
-git checkout v3.3   # 例如：固定至 V3.3
-
-# 之後如需升級
-git fetch --tags
-git checkout v3.3   # 升級至新版本（以 git tag -l 查到的最新 tag 為準）
+# 升級：git fetch --tags 後再 checkout 新的 tag
 ```
 
-> 💡 **目前可用 tag**：`v1.0`、`v2.5`、`v2.6`、`v2.7`、`v3.0`、`v3.1`、`v3.2`、`v3.3`（後續版本隨 release 陸續建立）。開發環境使用 `git pull` 取得最新版即可。
+> 💡 開發環境使用 `git pull` 取得最新版即可；生產環境建議固定 tag。
 
 ### 驗證安裝
 

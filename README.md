@@ -2,7 +2,7 @@
 
 > **綠界科技官方出品** — 由 ECPay 團隊開發與維護，內容與 API 同步更新。
 
-**當前版本:V3.2**
+**當前版本:V3.3**
 
 ## 目錄
 
@@ -34,11 +34,10 @@
 | Cursor | Cursor 安裝完成 | [下載頁面](https://cursor.com/download) |
 | OpenAI Codex CLI | OpenAI 帳號；`npm install -g @openai/codex` | [SETUP.md §CLI](./SETUP.md#cli-安裝openai-codex-cli--google-gemini-cli) |
 | Google Gemini CLI | Google 帳號；`npm install -g @google/gemini-cli` | [SETUP.md §CLI](./SETUP.md#cli-安裝openai-codex-cli--google-gemini-cli) |
-| ChatGPT GPTs（custom GPT）| 可建立 GPTs 的 ChatGPT 方案 | [GPT Builder](https://chatgpt.com/gpts/editor) |
 
 ## 這是什麼？
 
-ECPay API Skill 是一個 **AI 知識套件**——安裝到 AI 程式開發助手（Claude Code、VS Code Copilot Chat、GitHub Copilot CLI、Cursor 等），或透過 ChatGPT **GPT Builder** 等平台上傳後，AI 就能根據你的需求，直接生成綠界 API 串接程式碼、診斷錯誤、引導完整串接流程。
+ECPay API Skill 是一個 **AI 知識套件**——安裝到 AI 程式開發助手（Claude Code、VS Code Copilot Chat、GitHub Copilot CLI、Cursor 等）後，AI 就能根據你的需求，直接生成綠界 API 串接程式碼、診斷錯誤、引導完整串接流程。
 
 不需要自己翻文件，用自然語言描述需求即可。
 
@@ -106,7 +105,6 @@ flowchart LR
 > | Claude Code | `git clone ...ECPay-API-Skill.git ~/.claude/skills/ecpay` | 同上 |
 > | GitHub Copilot CLI | Clone 後將 `.github/copilot-instructions.md` 內容貼至目標專案 | 同上 |
 > | Cursor | Clone 至專案 + 建立 `AGENTS.md` 引用 | 同上 |
-> | ChatGPT GPTs | 上傳 `SKILL_OPENAI.md` 至 GPT Builder Knowledge | 同上 |
 > | OpenAI Codex CLI | 讀取 `AGENTS.md`，見 `SETUP.md` | 同上 |
 > | Google Gemini CLI | 讀取 `GEMINI.md`，見 `SETUP.md` | 同上 |
 
@@ -180,13 +178,6 @@ Clone 後，在專案根目錄建立或編輯 `AGENTS.md`，加入以下內容�
 
 安裝後，在 Cursor 中詢問「綠界 AIO 金流的測試 MerchantID 是多少？」，若回應為 `3002607` 表示 Skill 已載入。
 
-**ChatGPT GPTs（custom GPT）**
-
-1. 開啟 [GPT Builder](https://chatgpt.com/gpts/editor)，建立新的 GPT
-2. 在 Configure → **Knowledge**，上傳 `SKILL_OPENAI.md`（檔案超過 8,000 字元，無法貼入 Instructions）
-3. 同樣在 **Knowledge**，上傳 `guides/`、`references/` 等關鍵檔案（最多 20 個）
-4. 詳細步驟（含建議上傳的檔案清單）見 [`SETUP.md §ChatGPT`](./SETUP.md#chatgpt-gpts-建置)
-
 **其他框架**：將此資料夾放入框架的 skill 目錄。
 
 ### 版本固定（生產環境建議）
@@ -201,7 +192,7 @@ cd ~/.claude/skills/ecpay
 git tag -l
 
 # 固定至指定版本（以 git tag -l 查到的實際 tag 為準）
-git checkout v3.2   # 例如：固定至 V3.2
+git checkout v3.3   # 例如：固定至 V3.3
 
 # 之後如需升級
 git fetch --tags
@@ -287,7 +278,7 @@ git checkout v3.0   # 升級至新版本（以實際發布 tag 為準）
 ### 維護工具
 
 - **`scripts/validate-ai-index.sh`**：驗證 guides/13、14、23 中的 AI Section Index 行號是否準確（確認行號指向的行為 `#` 開頭的標題）。維護者更新這些 guide 的章節結構後建議執行此指令碼確認行號索引無誤。
-- **`scripts/validate-version-sync.sh`**：驗證 9 個平台入口文件（SKILL.md 為版本來源，另外 8 個被驗證）的版本號是否一致。版本號異動後執行：
+- **`scripts/validate-version-sync.sh`**：驗證 7 個平台入口文件（SKILL.md 為版本來源，另外 6 個被驗證）的版本號是否一致。版本號異動後執行：
   ```bash
   bash scripts/validate-version-sync.sh
   ```
@@ -315,7 +306,7 @@ git checkout v3.0   # 升級至新版本（以實際發布 tag 為準）
 | 步驟 | 指令碼 | 檢查內容 |
 |------|--------|---------|
 | 1 | `validate-ai-index.sh` | `guides/13`、`14`、`23` 的 AI Section Index 行號是否仍指向正確的 `#` 標題行（行號錯誤會讓 AI 查到錯誤章節） |
-| 2 | `validate-version-sync.sh` | 9 個平台入口文件（SKILL.md、AGENTS.md、GEMINI.md 等）版本號是否完全一致 |
+| 2 | `validate-version-sync.sh` | 7 個平台入口文件（SKILL.md、AGENTS.md、GEMINI.md 等）版本號是否完全一致 |
 | 3 | `validate-agents-parity.sh` | AGENTS.md（Codex CLI）↔ GEMINI.md（Gemini CLI）的決策樹、關鍵規則、測試帳號三大區段是否相同 |
 | 4 | `test-vectors/verify.py` + `verify-node.js` | 25 個加密測試向量（CheckMacValue / AES-CBC / AES-GCM / URL Encode）的跨語言計算結果驗證（Python + Node.js 雙語言 cross-check）|
 
@@ -442,10 +433,9 @@ ECPay API 使用不同的認證和請求格式，本 Skill 完整涵蓋：
 ```
 ecpay-skill/
 ├── SKILL.md                    # AI 進入點（Claude Code / Cursor）：決策樹 + 導航
-├── SKILL_OPENAI.md             # ChatGPT GPTs（custom GPT）Instructions 設定檔
 ├── AGENTS.md                   # OpenAI Codex CLI AI 進入點
 ├── GEMINI.md                   # Google Gemini CLI AI 進入點
-├── SETUP.md                    # 統一安裝指南（Codex CLI / Gemini CLI / ChatGPT GPTs）
+├── SETUP.md                    # 統一安裝指南（Codex CLI / Gemini CLI）
 ├── README.md                   # 本文件
 ├── CONTRIBUTING.md             # 貢獻指南
 ├── SECURITY.md                 # 安全政策（漏洞通報、憑證安全須知）
@@ -457,7 +447,7 @@ ecpay-skill/
 │   ├── verify-node.js          # Node.js 驗證器（零依賴，CI cross-check）
 │   └── verify-{go,java,csharp} # Go/Java/C# 跨語言驗證器
 ├── commands/                   # Claude Code 快速指令（6 個 /ecpay-* 指令）
-├── guides/                     # 29 份深度整合指南（ChatGPT GPTs 依 SETUP.md §ChatGPT 選擇上傳子集）
+├── guides/                     # 29 份深度整合指南
 │   └── lang-standards/         # 12 語言程式規範（Python/Node.js/TS/Go/Java/C#/Kotlin/Ruby/Rust/Swift/C/C++）
 ├── references/                 # 官方 API 文件 URL 索引（20 個檔案，443 個 URL）— AI 即時讀取入口
 │   ├── Payment/   (8 個)
@@ -535,7 +525,6 @@ references/*/  →  取得「最新規格」
 | GitHub Copilot CLI | `.github/copilot-instructions.md` | 在此 repo 工作時**自動載入**，無需手動引用 |
 | OpenAI Codex CLI | `AGENTS.md` | 濃縮版入口，隨 Codex CLI 設定自動載入 |
 | Google Gemini CLI | `GEMINI.md` | 濃縮版入口，含 Google Search 策略說明 |
-| ChatGPT GPTs | `SKILL_OPENAI.md` | 上傳至 GPT Builder Knowledge 欄位 |
 
 ### 各平台存取 references/ 的方式
 
@@ -547,10 +536,6 @@ references/*/  →  取得「最新規格」
 | Cursor | `@web` / Fetch MCP | 直接讀取 reference URL |
 | OpenAI Codex CLI | `web_fetch` | 直接讀取 reference URL |
 | Google Gemini CLI | `web_fetch` / Google Search | 直接讀取 reference URL，或以 `site:developers.ecpay.com.tw` + API 名稱搜尋 |
-| ChatGPT GPTs | Web Search | 以 `site:developers.ecpay.com.tw` + API 名稱搜尋 |
-
-> **ChatGPT GPTs 注意**：無法直接讀取 `references/` 中的 URL，改用 Web Search 搜尋官方文件。
-> 若 Web Search 無法取得結果，以 `guides/` SNAPSHOT 為備援並標示「此為 SNAPSHOT，可能非最新版本」。
 
 ## 測試環境快速參考
 
@@ -594,7 +579,7 @@ A：AI 基於 134 個官方驗證的 PHP 範例和 12 語言加密實作生成�
 A：每次 Skill 發布前都會自動跑 **25 組跨語言加密測試向量**（`test-vectors/verify.py` + `verify-node.js` 雙語言 cross-check），涵蓋 CheckMacValue（SHA256 / MD5）、AES-128-CBC 加密/解密、**AES-128-GCM 加密/解密**（V3.0 新增，for 電子收據）、URL Encode 差異等所有核心演算法。25/25 全部通過才能發布；任何加密演算法錯誤會在 CI 階段就被攔下，不會進入客戶環境。白話說明（為什麼需要、如果沒有會怎樣、誰要關心）請見 [`test-vectors/README.md`](./test-vectors/README.md)，FAE 可直接引用該文件回覆客戶的品質疑慮。
 
 **Q：API 規格更新時，AI 會讀到最新的嗎？**
-A：會。`references/` 目錄存放 443 個指向 `developers.ecpay.com.tw` 的 URL 索引（不是靜態副本），AI 會即時讀取最新官方規格。ChatGPT GPTs 因平台限制改以 Web Search 替代。
+A：會。`references/` 目錄存放 443 個指向 `developers.ecpay.com.tw` 的 URL 索引（不是靜態副本），AI 會即時讀取最新官方規格。
 
 ## 相關資源
 
@@ -628,7 +613,6 @@ A：會。`references/` 目錄存放 443 個指向 `developers.ecpay.com.tw` 的
 
 - 僅支援新台幣（TWD）
 - references/ URL 索引需要網路連線才能即時讀取最新 API 規格
-- ChatGPT GPTs 無法直接讀取 references/ 檔案（透過 Web Search 替代，可靠性略低於 web_fetch 直讀）
 - AI 翻譯品質可能因模型與語言組合而異，生成的程式碼片段應經人工驗證
 
 ## 授權

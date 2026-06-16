@@ -28,7 +28,7 @@
 本安全政策涵蓋以下內容的安全漏洞：
 
 - `guides/13`（12 語言 CheckMacValue 實作）、`guides/14`（12 語言 AES 加密實作）
-- `SKILL.md` / `SKILL_OPENAI.md` 中的安全規則與決策樹
+- `SKILL.md` 中的安全規則與決策樹
 - `scripts/SDK_PHP/` 官方 PHP SDK 範例
 - `test-vectors/` 加密測試向量
 - `guides/` 中的程式碼範例（所有語言）

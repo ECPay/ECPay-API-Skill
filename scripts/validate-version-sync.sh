@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # validate-version-sync.sh
-# Verifies that the version number in SKILL.md is consistent across all 9 version-synced files.
+# Verifies that the version number in SKILL.md is consistent across all 7 version-synced files.
 # Exit code 0 = all consistent; non-zero = mismatch(es) found.
 
 set -euo pipefail
@@ -36,7 +36,6 @@ check_file() {
 }
 
 FILES=(
-  "SKILL_OPENAI.md"
   "README.md"
   "SETUP.md"
   "AGENTS.md"
@@ -58,7 +57,7 @@ fi
 
 echo ""
 if [[ $ERRORS -eq 0 ]]; then
-  echo "Version sync check passed: all 8 synced files (1 source + 7 dependents) contain V$CANONICAL"
+  echo "Version sync check passed: all 7 synced files (1 source + 6 dependents) contain V$CANONICAL"
 else
   echo "Version sync check FAILED: $ERRORS file(s) missing V$CANONICAL or guide count" >&2
   exit 1

@@ -1,6 +1,6 @@
 # 用 VS Code Copilot Chat 使用 ECPay 綠界整合助手
 
-> **版本**:V3.2
+> **版本**:V3.3
 >
 > 不需要會寫程式、不需要用終端機。
 > 只要有 VS Code 和 GitHub Copilot 擴充套件，就能讓 AI 幫你回答綠界 API 串接的所有問題。

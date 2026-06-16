@@ -12,7 +12,6 @@ on:
       - 'scripts/validate-guides-refs-consistency.sh'
       - 'test-vectors/**'
       - 'SKILL.md'
-      - 'SKILL_OPENAI.md'
       - 'README.md'
       - 'SETUP.md'
       - 'AGENTS.md'
@@ -33,7 +32,6 @@ on:
       - 'scripts/validate-guides-refs-consistency.sh'
       - 'test-vectors/**'
       - 'SKILL.md'
-      - 'SKILL_OPENAI.md'
       - 'README.md'
       - 'SETUP.md'
       - 'AGENTS.md'
@@ -68,7 +66,7 @@ jobs:
 
       - name: Validate AI Section Index line numbers
         run: bash scripts/validate-ai-index.sh
-      - name: Validate version sync across all 9 files
+      - name: Validate version sync across all 7 files
         run: bash scripts/validate-version-sync.sh
       - name: Validate AGENTS.md ↔ GEMINI.md invariant sections
         run: bash scripts/validate-agents-parity.sh

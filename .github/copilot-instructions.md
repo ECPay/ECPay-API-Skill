@@ -25,8 +25,7 @@ The critical pattern: **guides/ tells you HOW to integrate; references/ gives yo
 
 ### Supporting Files
 
-- **`SKILL_OPENAI.md`** — Condensed version of SKILL.md for ChatGPT GPTs (custom GPT). Upload to GPT Builder Knowledge. When both exist, SKILL_OPENAI.md takes precedence for GPT platforms.
-- **`SETUP.md`** — Unified installation guide for Codex CLI, Gemini CLI, and ChatGPT GPTs. Contains Knowledge Files list for GPTs.
+- **`SETUP.md`** — Unified installation guide for Codex CLI and Gemini CLI.
 - **`AGENTS.md`** — Condensed entry point for OpenAI Codex CLI. Contains role, decision tree, critical rules, and test accounts.
 - **`GEMINI.md`** — Condensed entry point for Google Gemini CLI. Mirrors AGENTS.md with Gemini-specific notes (Google Search instead of web_fetch).
 - **`commands/`** (6 files) — Claude Code slash commands. Navigation only, ≤20 lines each. Do not duplicate SKILL.md logic.
@@ -71,7 +70,6 @@ CI runs automatically:
 When changing the version number, update these files. **CI-validated** (script fails if missing):
 
 - `SKILL.md` front-matter `version` field (line 3)
-- `SKILL_OPENAI.md` version reference (line 3)
 - `README.md` version string (line 5)
 - `SETUP.md` version reference (line 3)
 - `AGENTS.md` version reference (line 3)
@@ -84,13 +82,11 @@ When changing the version number, update these files. **CI-validated** (script f
 - `vscode_copilot.md` · `visual_studio_2026.md` · `業務說明.md`
 - `../CLAUDE.md` version and guide count (root repo instructions)
 
-`validate-version-sync.sh` checks the canonical version pattern from SKILL.md front-matter (e.g. `V3.2`). `CHANGELOG.md` uses three-segment semver (`1.0.0`) per Keep a Changelog convention — the entry-point files and CHANGELOG may use the same or different number of segments; both must be updated when releasing.
+`validate-version-sync.sh` checks the canonical version pattern from SKILL.md front-matter (e.g. `V3.3`). `CHANGELOG.md` uses three-segment semver (`1.0.0`) per Keep a Changelog convention — the entry-point files and CHANGELOG may use the same or different number of segments; both must be updated when releasing.
 
 ### Platform Entry File Parity
 
 `AGENTS.md` (Codex CLI) and `GEMINI.md` (Gemini CLI) must be **literally identical** in three sections: `## 決策樹`, `## 關鍵規則（必須遵守）`, and `## 測試帳號`. The `validate-agents-parity.sh` script enforces this in CI.
-
-`SKILL_OPENAI.md` (ChatGPT GPTs) is intentionally different — it uses English, different headings (`# Critical Rules`), and GPT-specific rules. It is **not** checked by the parity script. When adding a new critical rule, manually sync the substance (not the exact text) into `SKILL_OPENAI.md` and add a grep keyword to `validate-agents-parity.sh` Part 1b.
 
 ### SNAPSHOT Timestamps
 
@@ -152,7 +148,7 @@ Guides use `{NN}-{slug}.md` (zero-padded two-digit index, kebab-case slug). Curr
 
 - [ ] Editing `guides/13`, `14`, or `23`? → Run `bash scripts/validate-ai-index.sh`
 - [ ] Changing parameter tables in guides? → Update SNAPSHOT date
-- [ ] Bumping version? → Sync across SKILL.md, SKILL_OPENAI.md, README.md, SETUP.md, AGENTS.md, GEMINI.md, copilot-instructions.md, CLAUDE.md (root), CONTRIBUTING.md (English summary)
+- [ ] Bumping version? → Sync across SKILL.md, README.md, SETUP.md, AGENTS.md, GEMINI.md, copilot-instructions.md, CLAUDE.md (root), CONTRIBUTING.md (English summary)
 - [ ] Adding a new language? → Create `guides/lang-standards/{language}.md` + add crypto impl to guides/13+14 + E2E to guides/23 + update AI Section Index in all three + run `bash scripts/validate-ai-index.sh` + update language count in SKILL.md
 - [ ] Adding a new API? → Add guide + reference file + update SKILL.md decision tree
 - [ ] Modifying critical rules in AGENTS.md/GEMINI.md? → Run `bash scripts/validate-agents-parity.sh`

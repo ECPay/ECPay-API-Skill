@@ -26,7 +26,7 @@ Claude Code 支援「Slash Commands」：你在對話框打 `/` 開頭的短指�
 | **業務 / PM / 主管** | ❌ 不用動手。只要知道「這是 Claude Code 使用者的便利工具,選配,不影響 Skill 本身的功能」 |
 | **FAE / 客戶支援** | 🟡 略懂即可。客戶問「怎麼用 `/ecpay-pay`」時,可以回:「那是 Claude Code 的快速指令,把 `commands/` 內的 `.md` 複製到 `.claude/commands/` 就能用」 |
 | **使用 Claude Code 的客戶工程師** | ✅ **可以安裝**。請見下方「如何安裝」章節 |
-| **使用其他平台的客戶工程師**(Cursor / VS Code Copilot / ChatGPT GPTs) | ❌ **不需要**。你的平台沒有 slash command 機制,直接用自然語言對 AI 說「我要串綠界金流」就會觸發 Skill |
+| **使用其他平台的客戶工程師**(Cursor / VS Code Copilot) | ❌ **不需要**。你的平台沒有 slash command 機制,直接用自然語言對 AI 說「我要串綠界金流」就會觸發 Skill |
 | **Skill 維護者** | ✅ 新增新服務時,若複雜度足夠可考慮加對應 `/ecpay-*` 指令 |
 
 ## ⚠️ 常見誤解
@@ -38,7 +38,7 @@ Claude Code 支援「Slash Commands」：你在對話框打 `/` 開頭的短指�
 **正解**:❌ 不是。每個 `.md` 檔都是**預先寫好的提示詞模板**,Claude Code 在使用者輸入 `/ecpay-pay` 時讀取該檔案內容,展開成完整提示詞餵給 AI。檔案本身不會執行任何程式碼,只是被讀取為文字。
 
 ### 誤解 3:「這是給 Claude 以外的平台用的」
-**正解**:❌ 只有 Claude Code 原生支援 slash commands。Cursor、VS Code Copilot、ChatGPT GPTs、Gemini CLI、Codex CLI 等平台**不支援這個機制**,他們需要用自然語言對話觸發 Skill(例如「我要用 Node.js 串綠界 AIO」),效果相同。
+**正解**:❌ 只有 Claude Code 原生支援 slash commands。Cursor、VS Code Copilot、Gemini CLI、Codex CLI 等平台**不支援這個機制**,他們需要用自然語言對話觸發 Skill(例如「我要用 Node.js 串綠界 AIO」),效果相同。
 
 ## 💻 如何安裝(只適用於 Claude Code)
 

@@ -8,6 +8,27 @@
 
 ---
 
+## [2.3.0] — 2026-06-16 (V3.3)
+
+### 移除（不再支援 ChatGPT GPTs / custom GPT）
+
+- **刪除 `SKILL_OPENAI.md`**：此檔為 ChatGPT GPTs（custom GPT，GPT Builder 知識庫上傳）專用入口，正式停止支援
+- **移除所有 ChatGPT GPTs / custom GPT 內容**：涵蓋 README.md（前置需求表、安裝表、安裝小節、入口對照表、即時規格表、FAQ、已知限制、目錄結構）、SKILL.md（platforms 陣列移除 `openai-gpts`、ChatGPT 使用提示、快速指令與即時規格說明、已知限制）、SETUP.md（移除「ChatGPT GPTs 建置」整節，僅保留 Codex CLI / Gemini CLI）、CONTRIBUTING.md、SECURITY.md、commands/README.md、業務說明.md、.github/copilot-instructions.md、Issue/PR 模板
+- **不影響其他平台**：OpenAI Codex CLI（`AGENTS.md`）、Google Gemini CLI（`GEMINI.md`）、Claude Code、VS Code Copilot、Visual Studio 2026、GitHub Copilot CLI、Cursor 維持原樣（Codex CLI 訂閱說明中的「ChatGPT 付費方案」屬計費條件，刻意保留）
+
+### CI / 驗證調整
+
+- `scripts/validate-version-sync.sh`：移除 `SKILL_OPENAI.md`，同步檔由 8 → 7（1 來源 + 6 相依）
+- `scripts/validate-agents-parity.sh`：移除 Part 2（SKILL_OPENAI.md sanity check）與相關檔案存在性檢查；保留 AGENTS ↔ GEMINI parity（Part 1 / 1b）與 awk self-test
+- `.github/workflows/validate.yml`：移除 push / PR 觸發路徑中的 `SKILL_OPENAI.md`
+
+### 同步
+
+- 7 個 CI 驗證入口檔同步至 V3.3：SKILL.md / README.md / SETUP.md / AGENTS.md / GEMINI.md / .github/copilot-instructions.md / CONTRIBUTING.md
+- 3 個手動同步檔同步至 V3.3：vscode_copilot.md / visual_studio_2026.md / 業務說明.md
+
+---
+
 ## [2.2.0] — 2026-05-12 (V3.2)
 
 ### 修正(CI 失敗)

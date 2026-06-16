@@ -4,7 +4,7 @@
 <details>
 <summary><strong>English Summary for International Contributors</strong></summary>
 
-This is a **Markdown-only AI knowledge base** (no build system, no package manager). All content is consumed by AI coding assistants (Claude Code, VS Code Copilot Chat, GitHub Copilot CLI, Cursor, ChatGPT GPTs, etc.).
+This is a **Markdown-only AI knowledge base** (no build system, no package manager). All content is consumed by AI coding assistants (Claude Code, VS Code Copilot Chat, GitHub Copilot CLI, Cursor, etc.).
 
 **Architecture**: `SKILL.md` (AI entry point) → `guides/` (29 integration guides with SNAPSHOT parameter tables) → `references/` (20 files with 443 live API spec URLs for `web_fetch`)
 
@@ -28,7 +28,7 @@ This is a **Markdown-only AI knowledge base** (no build system, no package manag
 
 ## 回報問題
 
-- 在 Issues 中描述問題，附上：使用的 AI 平台（Claude Code / VS Code Copilot Chat / Copilot CLI / Cursor / ChatGPT GPTs）、重現步驟、預期行為
+- 在 Issues 中描述問題，附上：使用的 AI 平台（Claude Code / VS Code Copilot Chat / Copilot CLI / Cursor）、重現步驟、預期行為
 - API 規格錯誤請附上 `developers.ecpay.com.tw` 對應頁面截圖或連結
 
 ## 安全漏洞通報
@@ -46,11 +46,10 @@ This is a **Markdown-only AI knowledge base** (no build system, no package manag
    - 更新 **guides/13、14、23** 的章節結構後，執行 `bash scripts/validate-ai-index.sh` 確認 AI Section Index 行號索引正確
    - **commands/** 為 Claude Code 快速指令，保持精簡（每個 ≤ 20 行）
    - **CI 驗證範圍**：所有 `guides/` 下的修改都會觸發完整 CI pipeline（validate.yml），其中 AI Section Index 行號驗證步驟（validate-ai-index.sh）只驗證 guides/13、14、23；其餘 25 份 guide 的修改仍會觸發 CI，但不會執行 AI Section Index 行號驗證，修改後可手動執行 `bash scripts/validate-ai-index.sh` 確認（若有修改章節結構）
-   - **AGENTS.md / GEMINI.md / SKILL_OPENAI.md 同步**：
+   - **AGENTS.md / GEMINI.md 同步**：
      - **AGENTS.md ↔ GEMINI.md**：決策樹、關鍵規則、測試帳號三個區段必須完全一致（由 `validate-agents-parity.sh` CI 強制執行）
-     - **SKILL_OPENAI.md**：使用英文、不同段落標題，可包含 GPT 平台專屬規則；但所有安全關鍵規則（如「不可假設 JSON 回應」、「ATM RtnCode=2 為取號成功」）必須同步反映在 AGENTS.md / GEMINI.md 中
-     - 修改關鍵規則時需同步更新三個檔案，同時在 `validate-agents-parity.sh` 的 Part 1b 新增對應關鍵詞 grep 檢查，防止 AI 在不同平台行為不一致
-3. 確認 SKILL.md / SKILL_OPENAI.md / README.md / SETUP.md / AGENTS.md / GEMINI.md 的版本號一致
+     - 修改關鍵規則時需同步更新兩個檔案，同時在 `validate-agents-parity.sh` 的 Part 1b 新增對應關鍵詞 grep 檢查，防止 AI 在不同平台行為不一致
+3. 確認 SKILL.md / README.md / SETUP.md / AGENTS.md / GEMINI.md 的版本號一致
 4. 提交 Pull Request 並說明變更原因
 
 ## Guide 編號規則
@@ -105,7 +104,7 @@ guides/02、02a、02b、02c 形成一個單元。修改其中任一檔案時，�
 4. **AI Section Index 驗證**：執行 `bash scripts/validate-ai-index.sh` 確認行號索引正確（含導航表格交叉驗證）
 5. **測試向量驗證**：執行 `pip install pycryptodome && python test-vectors/verify.py` 確認全部 25 個加密測試向量通過（8 CMV + 9 AES-CBC + 4 AES-GCM + 4 URL Encode；CI 已自動執行，手動驗證可用於本地除錯）
 6. **平台規則一致性驗證**：執行 `bash scripts/validate-agents-parity.sh` 確認 AGENTS.md ↔ GEMINI.md 的決策樹、關鍵規則、測試帳號區段一致（CI 已自動執行，手動驗證可用於本地除錯）
-7. **版本同步驗證**：執行 `bash scripts/validate-version-sync.sh` 確認 9 個入口文件版本號一致（CI 已自動執行，手動驗證可用於本地除錯）
+7. **版本同步驗證**：執行 `bash scripts/validate-version-sync.sh` 確認 7 個入口文件版本號一致（CI 已自動執行，手動驗證可用於本地除錯）
 8. **內部連結驗證**：執行 `bash scripts/validate-internal-links.sh` 確認所有指南交叉引用無失效連結
 
 > **URL 失效回退策略**：若 `developers.ecpay.com.tw` 單一 URL 失效（404/重新導向），先在該站搜尋替代頁面更新 reference 檔案。
@@ -155,7 +154,7 @@ cd ~/.codex/ecpay-skill
 git tag -l
 
 # 切換至指定版本（以 git tag -l 查到的實際 tag 為準）
-git checkout v3.2   # 例如：固定至 V3.2
+git checkout v3.3   # 例如：固定至 V3.3
 
 # 之後如需升級
 git fetch --tags
@@ -171,7 +170,7 @@ git checkout v3.0   # 升級至新版本（以實際發布 tag 為準）
 發布新版本時，維護者應執行以下步驟：
 
 ```bash
-# 1. 更新所有版本號（SKILL.md + 8 個相依檔案）
+# 1. 更新所有版本號（SKILL.md + 6 個相依檔案）
 # 2. 更新 CHANGELOG.md（在 [Unreleased] 下新增變更，並將 [Unreleased] 升版為 [X.Y.0] — YYYY-MM-DD）
 # 3. commit 所有變更
 git add .
@@ -227,7 +226,7 @@ Python: line X-Y | Node.js: line X-Y | ...
 | 加密演算法細節 | guides/13 + guides/14 + lang-standards/{語言}.md |
 | 新增語言支援 | guides/13 + guides/14 + guides/23 + SKILL.md（語言數量）+ guides/00 |
 | 新增 guide | SKILL.md 文件索引 + guides/00 導覽表 |
-| 版本號升級 | SKILL.md + SKILL_OPENAI.md + AGENTS.md + GEMINI.md + README.md + SETUP.md + CHANGELOG.md + .github/copilot-instructions.md |
+| 版本號升級 | SKILL.md + AGENTS.md + GEMINI.md + README.md + SETUP.md + CHANGELOG.md + .github/copilot-instructions.md |
 
 ## 授權
 

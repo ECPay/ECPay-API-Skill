@@ -1,6 +1,6 @@
 ---
 name: ecpay
-version: "3.2"
+version: "3.3"
 homepage: https://github.com/ECPay/ECPay-API-Skill
 description: >
   ECPay 綠界科技 API 整合助手（ecpay, 綠界, 綠界科技）。
@@ -14,16 +14,13 @@ license: All-Rights-Reserved
 metadata:
   {
     "author": "ECPay (綠界科技)",
-    "platforms": ["claude-code", "github-copilot", "vscode-copilot-chat", "cursor", "openai-gpts", "codex-cli", "gemini-cli"]
+    "platforms": ["claude-code", "github-copilot", "vscode-copilot-chat", "cursor", "codex-cli", "gemini-cli"]
   }
 ---
 
 # 綠界科技 ECPay 整合助手
 
 > **官方維護**：本 Skill 由綠界科技 ECPay 官方團隊開發與維護，內容與 API 同步更新。
->
-> 📌 **ChatGPT GPTs 使用者**：請將 [`SKILL_OPENAI.md`](./SKILL_OPENAI.md) 上傳至 GPT Builder 的 Knowledge 欄位，
-> 並依 [`SETUP.md §ChatGPT`](./SETUP.md#chatgpt-gpts-建置) 的建議清單上傳其餘 Knowledge Files。
 >
 > 📌 **OpenAI Codex CLI 使用者**：請讀取 [`AGENTS.md`](./AGENTS.md) 作為入口，詳細安裝步驟見 [`SETUP.md`](./SETUP.md#cli-安裝openai-codex-cli--google-gemini-cli)。
 >
@@ -314,7 +311,6 @@ Callback/Webhook 接收架構？→ 讀 guides/21-webhook-events-reference.md（
 #### 快速指令（跨平台）
 
 > **Claude Code**：將 `commands/` 內的 `.md` 檔複製到專案 `.claude/commands/` 即可使用 `/ecpay-*` 指令。
-> **OpenAI GPTs**：已預設 4 個 Conversation Starters（見 SETUP.md §ChatGPT），最多 4 個按鈕。
 > **Cursor**：無原生 slash 指令機制，直接用自然語言描述需求，AI 透過上方決策樹自動導航。
 > **Copilot CLI**：無原生指令機制，以自然語言導航。
 
@@ -639,7 +635,6 @@ composer require ecpay/sdk
 - 僅支援新台幣（TWD）交易
 - 不支援分帳功能（Split Payment）——ECPay 目前無分帳 API，需自行在應用層處理拆帳邏輯
 - references/ URL 索引需要網路連線才能即時讀取最新 API 規格
-- OpenAI GPTs 無法直接讀取 references/ 檔案（透過 Web Search 替代，可靠性略低於 web_fetch 直讀）
 - AI 翻譯品質可能因模型與語言組合而異，生成的程式碼片段應經人工驗證
 
 ## 文件索引
@@ -792,7 +787,6 @@ references/ 的 20 個檔案包含 443 個 URL，每個 URL 連結至綠界 `dev
 | Claude Code | `web_fetch` | `web_fetch(url="https://developers.ecpay.com.tw/2866.md")` |
 | VS Code Copilot Chat | `#file` + `@workspace` | 引用本地 guides/，搭配 `@workspace` 搜尋知識庫 |
 | GitHub Copilot CLI | `web_fetch` / `fetch` | 同上 |
-| OpenAI GPTs | Web Search / 瀏覽 | 啟用「Web Search」後直接瀏覽 URL |
 | Cursor | `@web` / `fetch`（MCP） | 使用 `@web` 搜尋或透過 Fetch MCP 讀取 URL |
 
 > ⚠️ **web_fetch 失敗時的備援**：若 web_fetch 逾時、回傳 404 或連線失敗：

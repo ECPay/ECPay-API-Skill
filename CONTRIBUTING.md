@@ -158,12 +158,12 @@ git checkout v3.3   # 例如：固定至 V3.3
 
 # 之後如需升級
 git fetch --tags
-git checkout v3.0   # 升級至新版本（以實際發布 tag 為準）
+git checkout v3.3   # 升級至新版本（以 git tag -l 查到的最新 tag 為準）
 ```
 
-> 💡 目前可用 tag：`v1.0`、`v2.5`、`v2.6`、`v2.7`、`v3.0`。後續版本隨 release 陸續建立。
+> 💡 目前可用 tag：`v1.0`、`v2.5`、`v2.6`、`v2.7`、`v3.0`、`v3.1`、`v3.2`、`v3.3`。後續版本隨 release 陸續建立。
 
-> 使用 `git pull origin main` 時，會自動取得最新版本（建議開發環境使用）。生產環境建議固定 tag 以避免意外的破壞性變更。
+> 使用 `git pull origin master` 時，會自動取得最新版本（建議開發環境使用）。生產環境建議固定 tag 以避免意外的破壞性變更。
 
 ### 版本發布流程（維護者）
 
@@ -178,10 +178,10 @@ git commit -m "chore: release vX.Y.0"
 
 # 4. 建立 tag 並推送
 git tag vX.Y.0
-git push origin main --tags
+git push origin master --tags
 ```
 
-> ⚠️ **Tag 必須在推送後才存在**：若文件記載 `git checkout v1.0`，請確認 `git push origin main --tags`（或 `git push origin vX.Y.0`）已執行，否則使用者會收到 `error: pathspec 'v1.0' did not match any file(s) known to git`。
+> ⚠️ **Tag 必須在推送後才存在**：若文件記載 `git checkout v1.0`，請確認 `git push origin master --tags`（或 `git push origin vX.Y.0`）已執行，否則使用者會收到 `error: pathspec 'v1.0' did not match any file(s) known to git`。
 
 ---
 

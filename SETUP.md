@@ -5,7 +5,7 @@
 > 將 ECPay API Skill 安裝到 OpenAI Codex CLI 或 Google Gemini CLI。
 > VS Code Copilot Chat 的安裝方式請見 [vscode_copilot.md](./vscode_copilot.md)。
 > Visual Studio 2026 的安裝方式請見 [visual_studio_2026.md](./visual_studio_2026.md)。
-> Claude Code、GitHub Copilot CLI、Cursor 的安裝方式請見 [README.md](./README.md#安裝)。
+> Claude Code、GitHub Copilot CLI、Cursor 的安裝方式請見 [README.md](./README.md#1-安裝)。
 
 ## 概覽
 
@@ -77,7 +77,7 @@ codex "請問綠界 AIO 金流的測試 MerchantID 是什麼？"   # 或 gemini 
 ### 更新 Skill
 
 ```bash
-cd <skill-path> && git pull origin main
+cd <skill-path> && git pull origin master
 ```
 
 | 平台 | 額外步驟 |
@@ -90,7 +90,7 @@ cd <skill-path> && git pull origin main
 確認入口文件位置正確——Codex: `AGENTS.md`、Gemini: `GEMINI.md`。
 
 **Q：Skill 知識過期？**
-`git pull origin main` 更新。或提問時指定「請查詢最新 ECPay 官方規格」。
+`git pull origin master` 更新。或提問時指定「請查詢最新 ECPay 官方規格」。
 
 **Q：可和其他 Skill 共存嗎？**
 可以。多個支付 Skill 共存時，加上「ECPay」或「綠界」確認來源。

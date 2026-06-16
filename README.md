@@ -196,10 +196,10 @@ git checkout v3.3   # 例如：固定至 V3.3
 
 # 之後如需升級
 git fetch --tags
-git checkout v3.0   # 升級至新版本（以實際發布 tag 為準）
+git checkout v3.3   # 升級至新版本（以 git tag -l 查到的最新 tag 為準）
 ```
 
-> 💡 **目前可用 tag**：`v1.0`、`v2.5`、`v2.6`、`v2.7`、`v3.0`（後續版本隨 release 陸續建立）。開發環境使用 `git pull` 取得最新版即可。
+> 💡 **目前可用 tag**：`v1.0`、`v2.5`、`v2.6`、`v2.7`、`v3.0`、`v3.1`、`v3.2`、`v3.3`（後續版本隨 release 陸續建立）。開發環境使用 `git pull` 取得最新版即可。
 
 ### 驗證安裝
 

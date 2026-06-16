@@ -6,6 +6,15 @@
 
 ## [Unreleased]
 
+### 修正（入口文件 review — 跨平台指南正確性）
+
+- **`git pull/push origin main` → `master`**：SETUP.md（更新 Skill、FAQ）與 CONTRIBUTING.md（消費者升級、版本發布流程、tag 推送注意事項）原指向不存在的 `main` 分支，執行必失敗（remote 僅有 `master`）。全數改為 `master`
+- **補建 annotated tag `v3.0` / `v3.1` / `v3.2` / `v3.3`**：分別指向 release commit `aedc63f` / `5e4941d` / `5b1ac76` / `0c4de36`。先前文件版本已升至 V3.3，但對應 git tag 從未建立，導致 README.md / CONTRIBUTING.md 的 `git checkout v3.x` 範例與「可用 tag」清單引用不存在的 tag（`error: pathspec 'v3.3' did not match`）
+- **版本固定範例與 tag 清單更新**：README.md / CONTRIBUTING.md 的「升級」範例由 `v3.0`（比固定範例 `v3.3` 還舊、語意顛倒）改為 `v3.3` +「以 `git tag -l` 為準」；可用 tag 清單補上 `v3.1` / `v3.2` / `v3.3`
+- **`visual_studio_2026.md`**：更新 Copilot Pro 額度（2026-06-01 改 AI Credits 計費，移除過時的「每月 300 次」）、修正 VS Code 命令名 `/create-instruction` → `/create-instructions`、補 Free 方案進階請求說明、精簡 FAQ、code fence `bash` → `powershell`
+- **`vscode_copilot.md`**：修正壞錨點 `README.md#安裝` → `#1-安裝`、Edit 模式描述改為「可跨多個檔案」、命令面板提示改為 `Chat: Focus on Chat View`、Free 額度補充
+- **`SETUP.md`**：修正壞錨點 `README.md#安裝` → `#1-安裝`
+
 ---
 
 ## [2.3.0] — 2026-06-16 (V3.3)

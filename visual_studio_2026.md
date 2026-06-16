@@ -192,13 +192,34 @@ Visual Studio 2026 / 2022 v17.14+ 支援 **Agent Mode**，讓 Copilot 能自主�
 
 ## 常見問題
 
+**Q：步驟 3 驗證時,Copilot 回應的 MerchantID 是 `2000132`,而不是 `3002607`？**
+
+這是最常見的情況。它代表 **Copilot 並未載入到你建立的 `.github/copilot-instructions.md`**,於是改用它自己預設知道的綠界「通用測試帳號」`2000132` 回答。
+
+請先建立一個關鍵觀念:**`2000132` 本身不是壞帳號,但它不是 AIO 金流的帳號。** `2000132` 是綠界**電子發票 / 物流**的測試帳號,也是網路上最常被引用的綠界通用範例帳號;**AIO 金流的正確測試 MerchantID 就是 `3002607`**(見上方步驟 2 的測試帳號表格)。Copilot 回 `2000132`,正是「沒讀到指令檔、只能憑既有印象回答」的典型訊號 —— **這不是 Skill 內容有誤,而是指令檔沒被載入。**
+
+> ⚠️ **最容易搞混的地方:系統裡會有「兩個同名」的 `copilot-instructions.md`,用途完全不同,請勿放錯或互相當成對方使用。**
+>
+> | 檔案位置 | 用途 | 內含測試帳號？ | 該不該用 |
+> |----------|------|:---:|:---:|
+> | **你專案根目錄**的<br>`.github/copilot-instructions.md` | 告訴你「自己專案」的 Copilot 如何使用 ECPay 知識庫,**表格內直接寫了金流 = `3002607`** | ✅ 有 | ✅ **這份才是你要「自己建立」的(步驟 2 方式 A)** |
+> | clone / 解壓下來的<br>`.ecpay-skill/.github/copilot-instructions.md` | 綠界**維護 Skill 這個 repo 本身**用的內部開發指令(版本同步、驗證腳本、SNAPSHOT 規則…) | ❌ 沒有 | ❌ **請勿當成專案指令,也不需要去動它** |
+>
+> 三個重點:
+> 1. GitHub Copilot **只會讀取「目前 Visual Studio 開啟的方案(solution)最上層資料夾」**底下的 `.github/copilot-instructions.md`,**不會**自動去讀 `.ecpay-skill/.github/` 這類子目錄裡的版本。
+> 2. 就算你手動把 `.ecpay-skill/.github/` 那一份指給 Copilot,它裡面**根本沒有任何測試帳號**,一樣回不出 `3002607`。
+> 3. 正確做法不是「去翻 clone 下來的那一份」,而是**依步驟 2 在你自己專案的根目錄「新建一份」**,再把指南提供的內容(含測試帳號表格)整段貼進去。
+
+確認方式與下一題的排查清單相同。
+
 **Q：Copilot Chat 沒有讀到 ECPay API Skill 的內容？**
 
-1. 確認 `.github/copilot-instructions.md` 存在於專案根目錄
-2. 確認已在 **Tools** → **Options** → **GitHub** → **Copilot** → **Copilot Chat** 勾選 **Enable custom instructions**
-3. 確認 `.ecpay-skill/` 目錄位於專案根目錄下
-4. 在提問中明確引用檔案：`請參考 #file:.ecpay-skill/SKILL.md`
-5. 重新啟動 Visual Studio
+1. 確認 `.github/copilot-instructions.md` 存在於**專案根目錄**(即目前 Visual Studio 開啟的方案最上層資料夾),**而不是** `.ecpay-skill/.github/` 子目錄那一份
+2. 確認該檔內容是步驟 2 方式 A 提供的版本(含測試帳號表格,金流 = `3002607`)
+3. 確認已在 **Tools** → **Options** → **GitHub** → **Copilot** → **Copilot Chat** 勾選 **Enable custom instructions**(此選項預設可能未勾;未勾則 Visual Studio 完全不會載入該檔)
+4. 確認 `.ecpay-skill/` 目錄位於專案根目錄下,且資料夾名稱(含開頭的點「.」)與 `copilot-instructions.md` 內所寫的路徑一致
+5. 在提問中明確引用檔案來驗證:`綠界 AIO 金流的測試 MerchantID 是多少？請參考 #file:.ecpay-skill/SKILL.md`(若加 `#file` 會回 `3002607`、不加卻回 `2000132`,即可確認問題出在「自動載入」未設定好,知識庫本身正常)
+6. 重新啟動 Visual Studio
 
 **Q：Agent Mode 選項沒有出現？**
 

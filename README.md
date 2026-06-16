@@ -141,6 +141,8 @@ git clone https://github.com/ECPay/ECPay-API-Skill.git .ecpay-skill
 
 安裝後，在 Copilot Chat 中詢問「綠界 AIO 金流的測試 MerchantID 是多少？」，若回應為 `3002607` 表示 Skill 已載入。
 
+> ⚠️ **常見誤區**：`copilot-instructions.md` 必須建立在**你自己專案的根目錄** `.github/` 下，**不是** clone 下來的 `.ecpay-skill/.github/copilot-instructions.md`（後者是維護本 repo 用的開發指令，不含測試帳號）。GitHub Copilot 只會讀取「目前開啟的方案（solution）根目錄」那一份。若驗證時回 `2000132` 而非 `3002607`，即代表指令檔未被載入——完整排查見 [visual_studio_2026.md §常見問題](./visual_studio_2026.md#常見問題)。
+
 **GitHub Copilot CLI**（終端機工具，適合工程師）
 
 > 💡 **自動載入**：本 repo 的 `.github/copilot-instructions.md` 會被 GitHub Copilot CLI 在此 repo 中工作時**自動讀取**——若你已 clone 本 repo 並在其中開發，Copilot 無需任何額外設定即可感知 ECPay API Skill 知識。
@@ -449,7 +451,7 @@ ecpay-skill/
 ├── SECURITY.md                 # 安全政策（漏洞通報、憑證安全須知）
 ├── LICENSE                     # All Rights Reserved
 ├── .github/                    # GitHub 社群模板（Issue/PR 模板、CI workflow）
-│   └── copilot-instructions.md # VS Code Copilot Chat / GitHub Copilot CLI AI 自動載入入口（在此 repo 工作時自動生效）
+│   └── copilot-instructions.md # 「在本 repo 內」開發時自動載入（本 repo 架構與維護規範，不含測試帳號）；在你自己專案使用 Skill 須另建一份，見 visual_studio_2026.md / vscode_copilot.md
 ├── test-vectors/               # 跨語言加密驗證用測試向量（CMV + AES-CBC + AES-GCM + URL Encode，共 25 個）
 │   ├── verify.py               # Python 驗證器（pip install pycryptodome 後執行）
 │   ├── verify-node.js          # Node.js 驗證器（零依賴，CI cross-check）

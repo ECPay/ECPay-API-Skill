@@ -19,8 +19,6 @@
 
 ### 步驟 1：取得 ECPay API Skill 檔案
 
-**方式 A：Git Clone（推薦）**
-
 在 Visual Studio 的 Terminal 或 Developer Command Prompt 中執行：
 
 ```bash
@@ -28,21 +26,15 @@
 git clone https://github.com/ECPay/ECPay-API-Skill.git .ecpay-skill
 ```
 
-**方式 B：下載 ZIP（不需 Git）**
-
-1. 前往 https://github.com/ECPay/ECPay-API-Skill
-2. 點選綠色 **Code** 按鈕 → **Download ZIP**
-3. 解壓縮到你的專案根目錄，資料夾命名為 `.ecpay-skill`
-
 ### 步驟 2：設定 Custom Instructions
 
-ECPay API Skill 透過 GitHub Copilot 的 **Custom Instructions** 機制載入。你有兩種方式：
-
-#### 方式 A：使用 `.github/copilot-instructions.md`（推薦，團隊共用）
+ECPay API Skill 透過 GitHub Copilot 的 **Custom Instructions**（`.github/copilot-instructions.md`）機制載入。此設定檔可隨專案一起版控、供團隊共用,設定步驟如下：
 
 1. 在你的**專案根目錄**建立 `.github` 資料夾（如不存在）
 2. 建立檔案 `.github/copilot-instructions.md`
 3. 貼入以下內容：
+
+> 💡 以下內容為「**使用導向**」設定,與本 repo 自身的 `.github/copilot-instructions.md`（維護導向）刻意不同,請勿互相複製混用。
 
 ```markdown
 # ECPay API Skill — Copilot 自訂指令
@@ -77,25 +69,6 @@ ECPay API Skill 安裝於 `.ecpay-skill/` 目錄：
 4. 在 Visual Studio 中啟用 Custom Instructions：
    - **Visual Studio 2026**：**Tools** → **Options** → 展開 **All Settings** → **GitHub** → **Copilot** → **Copilot Chat** → 勾選 **Enable custom instructions to be loaded from .github/copilot-instructions.md files and added to requests**
    - **Visual Studio 2022**：**Tools** → **Options** → **GitHub** → **Copilot** → **Copilot Chat** 區段 → 勾選同名選項
-
-#### 方式 B：使用 File-Specific Instructions（針對特定檔案類型）
-
-如果你只想在特定檔案類型（如 `.cs`）中啟用 ECPay 知識，可建立針對性的指令檔：
-
-1. 建立目錄 `.github/instructions/`（如不存在）
-2. 建立檔案 `.github/instructions/ecpay.instructions.md`：
-
-```markdown
----
-applyTo: "**/*.cs,**/*.py,**/*.js,**/*.ts,**/*.java,**/*.go,**/*.php"
-description: ECPay API 串接知識庫 — 綠界金流/發票/物流整合
----
-
-本專案使用綠界科技 ECPay API Skill，安裝於 `.ecpay-skill/`。
-遇到 ECPay 相關需求時，請先讀取 `.ecpay-skill/SKILL.md` 作為入口。
-```
-
-3. 啟用方式同上（Tools → Options → 勾選 Enable custom instructions）
 
 ### 步驟 3：驗證安裝
 
@@ -202,7 +175,7 @@ Visual Studio 2026 / 2022 v17.14+ 支援 **Agent Mode**，讓 Copilot 能自主�
 >
 > | 檔案位置 | 用途 | 內含測試帳號？ | 該不該用 |
 > |----------|------|:---:|:---:|
-> | **你專案根目錄**的<br>`.github/copilot-instructions.md` | 告訴你「自己專案」的 Copilot 如何使用 ECPay 知識庫,**表格內直接寫了金流 = `3002607`** | ✅ 有 | ✅ **這份才是你要「自己建立」的(步驟 2 方式 A)** |
+> | **你專案根目錄**的<br>`.github/copilot-instructions.md` | 告訴你「自己專案」的 Copilot 如何使用 ECPay 知識庫,**表格內直接寫了金流 = `3002607`** | ✅ 有 | ✅ **這份才是你要「自己建立」的(步驟 2)** |
 > | clone / 解壓下來的<br>`.ecpay-skill/.github/copilot-instructions.md` | 綠界**維護 Skill 這個 repo 本身**用的內部開發指令(版本同步、驗證腳本、SNAPSHOT 規則…) | ❌ 沒有 | ❌ **請勿當成專案指令,也不需要去動它** |
 >
 > 三個重點:
@@ -215,7 +188,7 @@ Visual Studio 2026 / 2022 v17.14+ 支援 **Agent Mode**，讓 Copilot 能自主�
 **Q：Copilot Chat 沒有讀到 ECPay API Skill 的內容？**
 
 1. 確認 `.github/copilot-instructions.md` 存在於**專案根目錄**(即目前 Visual Studio 開啟的方案最上層資料夾),**而不是** `.ecpay-skill/.github/` 子目錄那一份
-2. 確認該檔內容是步驟 2 方式 A 提供的版本(含測試帳號表格,金流 = `3002607`)
+2. 確認該檔內容是步驟 2 提供的版本(含測試帳號表格,金流 = `3002607`)
 3. 確認已在 **Tools** → **Options** → **GitHub** → **Copilot** → **Copilot Chat** 勾選 **Enable custom instructions**(此選項預設可能未勾;未勾則 Visual Studio 完全不會載入該檔)
 4. 確認 `.ecpay-skill/` 目錄位於專案根目錄下,且資料夾名稱(含開頭的點「.」)與 `copilot-instructions.md` 內所寫的路徑一致
 5. 在提問中明確引用檔案來驗證:`綠界 AIO 金流的測試 MerchantID 是多少？請參考 #file:.ecpay-skill/SKILL.md`(若加 `#file` 會回 `3002607`、不加卻回 `2000132`,即可確認問題出在「自動載入」未設定好,知識庫本身正常)

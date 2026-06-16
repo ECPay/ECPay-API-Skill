@@ -1,5 +1,7 @@
 # Copilot Instructions — ECPay API Skill
 
+> **Scope:** This file guides AI assistants that **maintain this repository**. If you want to **use** the ECPay skill in your own project, do not copy this file — instead create a project-side `.github/copilot-instructions.md` per `visual_studio_2026.md` / `README.md` (that template includes the test accounts and usage instructions, which this file intentionally omits).
+
 This is an **AI Skill repository** (Markdown knowledge base), not a traditional software project. There is no build system, no package manager, and no application code. All content is Markdown files consumed by AI coding assistants.
 
 ## Architecture

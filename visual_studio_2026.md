@@ -10,10 +10,10 @@
 | 項目 | 需求 |
 |------|------|
 | **Visual Studio** | 2026（v18.0+）或 2022（v17.14+）；Community / Professional / Enterprise 皆可 |
-| **GitHub Copilot** | 需有 Copilot 存取權限（[Free 方案](https://learn.microsoft.com/en-us/visualstudio/ide/copilot-free-plan?view=visualstudio)即可使用 Chat，每月 50 次對話；Pro 每月 300 次 + 無限補全；Business / Enterprise 依方案而定） |
+| **GitHub Copilot** | 需有 Copilot 存取權限（[Free 方案](https://learn.microsoft.com/en-us/visualstudio/ide/copilot-free-plan?view=visualstudio)即可使用 Chat，每月 50 次對話；Pro（USD $10/月）為無限補全 + 無限標準 Chat，另含每月進階模型額度；Business / Enterprise 依方案而定。各方案最新額度以 [GitHub 官方說明](https://docs.github.com/en/copilot/concepts/billing/individual-plans) 為準） |
 | **登入** | 在 Visual Studio 中以具備 Copilot 權限的 GitHub 帳號登入 |
 
-> 💡 **GitHub Copilot Free 方案**：不需信用卡、不需試用期，只需 GitHub 帳號即可啟用。每月 2,000 次程式碼補全 + 50 次 Chat 對話。對於初次評估 ECPay 串接已相當充足。
+> 💡 **GitHub Copilot Free 方案**：不需信用卡、不需試用期，只需 GitHub 帳號即可啟用。每月 2,000 次程式碼補全 + 50 次 Chat 對話（自 2025 Q4 起另含每月 50 次進階模型請求）。對於初次評估 ECPay 串接已相當充足。
 
 ## 安裝步驟
 
@@ -21,7 +21,7 @@
 
 在 Visual Studio 的 Terminal 或 Developer Command Prompt 中執行：
 
-```bash
+```powershell
 # Clone 到專案目錄下（僅當前專案使用）
 git clone https://github.com/ECPay/ECPay-API-Skill.git .ecpay-skill
 ```
@@ -87,7 +87,7 @@ Visual Studio 2026 / 2022 v17.14+ 支援 **Agent Mode**，讓 Copilot 能自主�
 ### 啟用 Agent Mode
 
 1. 開啟 Copilot Chat 視窗
-2. 點選左上角的 **Ask** 下拉選單，切換為 **Agent**
+2. 在 Chat 視窗點選 **Ask** 模式下拉選單，切換為 **Agent**
 3. 確認 Agent Mode 已啟用：
    - **Visual Studio 2026**：**Tools** → **Options** → **All Settings** → **GitHub** → **Copilot** → **Copilot Chat** → 勾選 **Enable Agent mode in the chat pane**
    - **Visual Studio 2022**：**Tools** → **Options** → **GitHub** → **Copilot** → **Copilot Chat** → 勾選同名選項
@@ -167,21 +167,18 @@ Visual Studio 2026 / 2022 v17.14+ 支援 **Agent Mode**，讓 Copilot 能自主�
 
 **Q：步驟 3 驗證時,Copilot 回應的 MerchantID 是 `2000132`,而不是 `3002607`？**
 
-這是最常見的情況。它代表 **Copilot 並未載入到你建立的 `.github/copilot-instructions.md`**,於是改用它自己預設知道的綠界「通用測試帳號」`2000132` 回答。
+這是最常見的情況,代表 **Copilot 沒讀到你建立的 `.github/copilot-instructions.md`**,只能憑既有印象,回它預設知道的綠界通用範例帳號 `2000132`。
 
-請先建立一個關鍵觀念:**`2000132` 本身不是壞帳號,但它不是 AIO 金流的帳號。** `2000132` 是綠界**電子發票 / 物流**的測試帳號,也是網路上最常被引用的綠界通用範例帳號;**AIO 金流的正確測試 MerchantID 就是 `3002607`**(見上方步驟 2 的測試帳號表格)。Copilot 回 `2000132`,正是「沒讀到指令檔、只能憑既有印象回答」的典型訊號 —— **這不是 Skill 內容有誤,而是指令檔沒被載入。**
+關鍵觀念:`2000132` 不是壞帳號,而是綠界**電子發票 / 物流**的測試帳號(也是網路上最常被引用的通用範例);**AIO 金流的正確測試 MerchantID 是 `3002607`**(見步驟 2 的測試帳號表格)。換言之,問題不在 Skill 內容,而在指令檔沒被載入。
 
 > ⚠️ **最容易搞混的地方:系統裡會有「兩個同名」的 `copilot-instructions.md`,用途完全不同,請勿放錯或互相當成對方使用。**
 >
 > | 檔案位置 | 用途 | 內含測試帳號？ | 該不該用 |
 > |----------|------|:---:|:---:|
-> | **你專案根目錄**的<br>`.github/copilot-instructions.md` | 告訴你「自己專案」的 Copilot 如何使用 ECPay 知識庫,**表格內直接寫了金流 = `3002607`** | ✅ 有 | ✅ **這份才是你要「自己建立」的(步驟 2)** |
-> | clone / 解壓下來的<br>`.ecpay-skill/.github/copilot-instructions.md` | 綠界**維護 Skill 這個 repo 本身**用的內部開發指令(版本同步、驗證腳本、SNAPSHOT 規則…) | ❌ 沒有 | ❌ **請勿當成專案指令,也不需要去動它** |
+> | **你專案根目錄**的<br>`.github/copilot-instructions.md` | 告訴「自己專案」的 Copilot 如何使用 ECPay 知識庫,**表格內直接寫了金流 = `3002607`** | ✅ 有 | ✅ **這份才是你要依步驟 2「自己建立」的** |
+> | clone 下來的<br>`.ecpay-skill/.github/copilot-instructions.md` | 綠界**維護 Skill 這個 repo 本身**的內部開發指令(版本同步、驗證腳本…) | ❌ 沒有 | ❌ **請勿當成專案指令,也不需去動它** |
 >
-> 三個重點:
-> 1. GitHub Copilot **只會讀取「目前 Visual Studio 開啟的方案(solution)最上層資料夾」**底下的 `.github/copilot-instructions.md`,**不會**自動去讀 `.ecpay-skill/.github/` 這類子目錄裡的版本。
-> 2. 就算你手動把 `.ecpay-skill/.github/` 那一份指給 Copilot,它裡面**根本沒有任何測試帳號**,一樣回不出 `3002607`。
-> 3. 正確做法不是「去翻 clone 下來的那一份」,而是**依步驟 2 在你自己專案的根目錄「新建一份」**,再把指南提供的內容(含測試帳號表格)整段貼進去。
+> Copilot **只會讀取「目前開啟方案(solution)最上層資料夾」**底下的 `.github/copilot-instructions.md`,**不會**自動去讀 `.ecpay-skill/.github/` 子目錄那一份;就算手動指定,那一份也沒有任何測試帳號。**正確做法是依步驟 2 在你自己專案根目錄「新建一份」**,再貼入指南提供的內容(含測試帳號表格)。
 
 確認方式與下一題的排查清單相同。
 
@@ -214,7 +211,7 @@ Visual Studio 2026 / 2022 v17.14+ 支援 **Agent Mode**，讓 Copilot 能自主�
 | File-Specific Instructions | `.instructions.md` + `applyTo` glob | 相同 |
 | Prompt Files | `.prompt.md` 支援 | 相同 |
 | 右鍵 Copilot Actions | 支援（Explain/Fix/Generate/Tests/Optimize） | 支援 |
-| 自動生成 Instructions | `/generateInstructions` | `/create-instruction`（等效功能，不同命令名） |
+| 自動生成 Instructions | `/generateInstructions` | `/create-instructions`（或 `/init`；等效功能，不同命令名） |
 | 儲存對話為 Prompt File | `/savePrompt` | `/create-prompt`（等效功能，不同命令名） |
 | 內建 Agent | @debug, @profiler, @test, @vs | 不同的內建 Agent |
 | NuGet MCP Server | 內建 | 不適用 |

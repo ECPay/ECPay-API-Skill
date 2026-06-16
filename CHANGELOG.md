@@ -14,6 +14,7 @@
 - **`visual_studio_2026.md`**：更新 Copilot Pro 額度（2026-06-01 改 AI Credits 計費，移除過時的「每月 300 次」）、修正 VS Code 命令名 `/create-instruction` → `/create-instructions`、補 Free 方案進階請求說明、精簡 FAQ、code fence `bash` → `powershell`
 - **`vscode_copilot.md`**：修正壞錨點 `README.md#安裝` → `#1-安裝`、Edit 模式描述改為「可跨多個檔案」、命令面板提示改為 `Chat: Focus on Chat View`、Free 額度補充
 - **`SETUP.md`**：修正壞錨點 `README.md#安裝` → `#1-安裝`
+- **`SKILL.md`**：「更新紀錄」段殘留的「目前版本 V3.0」更正為 V3.3（body 文字，未被 `validate-version-sync.sh` 的 pattern 涵蓋）
 
 ---
 

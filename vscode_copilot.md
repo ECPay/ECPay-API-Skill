@@ -40,7 +40,7 @@ AI 會根據綠界官方文件，給你具體的步驟和程式碼。
 4. 搜尋 **GitHub Copilot**，點 **Install** 安裝（較新版本的 VS Code 已將 Copilot Chat 整合為單一擴充套件，安裝一個即可）
 5. 安裝後，VS Code 會提示你登入 GitHub 帳號——按提示完成登入即可
 
-> 💡 **免費方案可用**：GitHub Copilot 提供 **Free 方案**（每月 2,000 次程式碼補全 + 50 次 Chat 對話），不需信用卡，足夠測試和諮詢使用。
+> 💡 **免費方案可用**：GitHub Copilot 提供 **Free 方案**（每月 2,000 次程式碼補全 + 50 次 Chat 對話，自 2025 Q4 起另含每月 50 次進階模型請求），不需信用卡，足夠測試和諮詢使用。
 > 前往 [github.com/features/copilot](https://github.com/features/copilot) 註冊。
 > 若需要更多用量，可升級 Pro（月費 10 美元）或請 IT 部門開通公司的 Business / Enterprise 方案。
 
@@ -72,7 +72,7 @@ AI 會根據綠界官方文件，給你具體的步驟和程式碼。
 
 - **方式一**：點擊 VS Code 標題列的 **Chat** 選單，或底部狀態列的 **Copilot 圖示**
 - **方式二**：按快捷鍵 `Ctrl+Alt+I`（Windows/Linux）或 `Ctrl+Cmd+I`（macOS）
-- **方式三**：按 `Ctrl+Shift+P` 開啟命令面板，輸入 **Copilot Chat** 後按 Enter
+- **方式三**：按 `Ctrl+Shift+P` 開啟命令面板，輸入 **Chat** 找到 **Chat: Focus on Chat View** 後按 Enter
 
 ### 步驟 3：開始提問！
 
@@ -89,7 +89,7 @@ VS Code Copilot Chat 提供三種模式，適合不同情境：
 | 模式 | 說明 | 適合場景 |
 |------|------|---------|
 | **Ask**（詢問） | 只回答問題，不修改程式碼 | 了解串接流程、查詢 API 規格、排查問題 |
-| **Edit**（編輯） | 直接修改你選取的程式碼 | 修改現有程式碼、加入 ECPay 串接邏輯 |
+| **Edit**（編輯） | 依你的指示直接修改程式碼（可跨多個檔案） | 修改現有程式碼、加入 ECPay 串接邏輯 |
 | **Agent**（代理） | 自主完成複雜任務，可建立/修改多個檔案 | 從零開始建立串接程式碼、完整專案建置 |
 
 > 💡 **快速諮詢**：使用 **Ask** 模式就足夠了——用來了解串接流程、查詢測試帳號、取得程式碼範例。
@@ -207,7 +207,7 @@ Copilot Chat 在 Ask 和 Agent 模式下會**自動搜尋**你的工作區內容
 
 ### Q：跟其他 CLI 工具有什麼不同？
 
-本 Skill 支援多種平台（詳見 [README.md](./README.md#安裝)）。VS Code Copilot Chat 與其他 CLI 工具的主要差異：
+本 Skill 支援多種平台（詳見 [README.md](./README.md#1-安裝)）。VS Code Copilot Chat 與其他 CLI 工具的主要差異：
 
 | | VS Code Copilot Chat | CLI 工具（Claude Code、Codex 等） |
 |---|---|---|

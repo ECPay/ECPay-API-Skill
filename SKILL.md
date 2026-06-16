@@ -14,7 +14,7 @@ license: All-Rights-Reserved
 metadata:
   {
     "author": "ECPay (綠界科技)",
-    "platforms": ["claude-code", "github-copilot", "vscode-copilot-chat", "cursor", "codex-cli", "gemini-cli"]
+    "platforms": ["claude-code", "github-copilot", "vscode-copilot-chat", "visual-studio-2026", "cursor", "codex-cli", "gemini-cli"]
   }
 ---
 

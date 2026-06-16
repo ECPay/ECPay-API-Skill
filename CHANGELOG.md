@@ -15,6 +15,7 @@
 - **`vscode_copilot.md`**：修正壞錨點 `README.md#安裝` → `#1-安裝`、Edit 模式描述改為「可跨多個檔案」、命令面板提示改為 `Chat: Focus on Chat View`、Free 額度補充
 - **`SETUP.md`**：修正壞錨點 `README.md#安裝` → `#1-安裝`
 - **`SKILL.md`**：「更新紀錄」段殘留的「目前版本 V3.0」更正為 V3.3（body 文字，未被 `validate-version-sync.sh` 的 pattern 涵蓋）
+- **`SKILL.md`**：`platforms` metadata 補上 `visual-studio-2026`，與 README 需求表 / CHANGELOG 的 7 個支援平台對齊（先前 6 個，漏列 Visual Studio 2026）
 
 ---
 

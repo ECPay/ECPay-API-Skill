@@ -517,21 +517,21 @@ try {
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <!-- 2. node-forge（必要依賴，SDK 用於前端加密） -->
 <script src="https://cdn.jsdelivr.net/npm/node-forge@0.7.0/dist/forge.min.js"></script>
-<!-- 3. ECPay 站內付 JS SDK -->
-<!-- ⚠️ JS SDK 一律從正式 domain 載入（測試/正式都用同一個 URL）
-     環境切換透過 ECPay.initialize('Stage'|'Prod', ...) 控制
-     stage domain 的 SDK 檔案與正式版不同（大小不同、行為異常），不可使用 -->
-<script src="https://ecpg.ecpay.com.tw/Scripts/sdk-1.0.0.js"></script>
+<!-- 3. ECPay 站內付 JS SDK（依環境擇一載入；載入的環境須與下方 initialize 一致）-->
+<!-- 測試環境： -->
+<script src="https://ecpg-stage.ecpay.com.tw/Scripts/sdk-1.0.0.js?t=20210121100116"></script>
+<!-- 正式環境（上線時改用此行）： -->
+<!-- <script src="https://ecpg.ecpay.com.tw/Scripts/sdk-1.0.0.js?t=20210121100116"></script> -->
 ```
 
-> **⚠️ JS SDK domain 重要**：JS SDK **一律從正式 domain `ecpg.ecpay.com.tw` 載入**（與官方 WebJS.html 一致），
-> 測試/正式環境切換透過 `ECPay.initialize('Stage'|'Prod', ...)` 控制。
-> **不要使用 `ecpg-stage.ecpay.com.tw/Scripts/sdk-1.0.0.js`**——stage 版 SDK 是不同檔案（14.7KB vs 正式版 12.7KB），功能不完整且行為異常。
-> 路徑為 `/Scripts/sdk-1.0.0.js`（大寫 `S`）。ECPay 更新 SDK 版本或路徑時，
-> 請以[綠界站內付官方文件](https://developers.ecpay.com.tw/)及[官方 GitHub 範例](https://github.com/ECPay/ECPayPaymentGatewayKit_Web)中的最新版本為準。
+> **⚠️ JS SDK domain 說明**：依[綠界官方 WEB JS SDK 使用說明（8989）](https://developers.ecpay.com.tw/8989/)，
+> SDK 提供**兩個環境各自的網址**：測試 `ecpg-stage.ecpay.com.tw/Scripts/sdk-1.0.0.js`、正式 `ecpg.ecpay.com.tw/Scripts/sdk-1.0.0.js`。
+> **載入的 SDK 環境務必與 `ECPay.initialize('Stage'|'Prod', ...)` 的環境一致**（測試載 stage + `initialize('Stage')`；正式載 prod + `initialize('Prod')`）。
+> 路徑為 `/Scripts/sdk-1.0.0.js`（大寫 `S`），並帶版本參數 `?t=20210121100116`（與官方範例一致）。
+> ECPay 更新 SDK 版本或路徑時，請以[綠界站內付官方文件](https://developers.ecpay.com.tw/8989/)及[官方 GitHub 範例](https://github.com/ECPay/ECPayPaymentGatewayKit_Web)中的最新版本為準。
 
 > **CSP（Content Security Policy）設定**：若你的網站啟用了 CSP header，需允許 ECPay domain：
-> - `script-src`: 加入 `https://ecpg.ecpay.com.tw`
+> - `script-src`: 加入 `https://ecpg.ecpay.com.tw`（正式）及 `https://ecpg-stage.ecpay.com.tw`（測試，SDK 檔案由測試 domain 載入）
 > - `frame-src`: 加入 `https://ecpg.ecpay.com.tw`（正式）及 `https://ecpg-stage.ecpay.com.tw`（測試，SDK 內部 iframe 連接測試環境）
 > - `connect-src`: 加入 `https://ecpg.ecpay.com.tw`（正式）及 `https://ecpg-stage.ecpay.com.tw`（測試，SDK 內部 API 呼叫）
 
@@ -967,7 +967,7 @@ $input = [
         'OrderInfo' => [
             'MerchantTradeDate' => date('Y/m/d H:i:s'),
             'MerchantTradeNo'   => 'Bind' . time(),
-            'TotalAmount'       => '100',  
+            'TotalAmount'       => 100,  // 綁卡驗證金額（整數，與一般付款一致）
             'TradeDesc'         => '綁卡驗證',
             'ItemName'          => '綁卡',
             'ReturnURL'         => 'https://你的網站/ecpay/notify',

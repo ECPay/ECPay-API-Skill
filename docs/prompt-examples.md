@@ -273,7 +273,7 @@
 > - 查詢/請退款 API（QueryTrade、DoAction）：`https://ecpayment-stage.ecpay.com.tw`
 > - **嚴禁混用這兩個 domain，混用會 404！**
 >
-> **前端 SDK（正式版）**：`https://ecpg.ecpay.com.tw/Scripts/sdk-1.0.0.js`（不要用 stage 版 SDK）
+> **前端 SDK**：測試環境用 `https://ecpg-stage.ecpay.com.tw/Scripts/sdk-1.0.0.js`、正式用 `https://ecpg.ecpay.com.tw/Scripts/sdk-1.0.0.js`（載入環境須與 `initialize('Stage'|'Prod')` 一致）
 >
 > **需要實作的完整流程（5 步驟）**：
 > 1. **後端 GetTokenbyTrade**：`POST https://ecpg-stage.ecpay.com.tw/Merchant/GetTokenbyTrade`

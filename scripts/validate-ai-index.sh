@@ -63,7 +63,9 @@ for file in guides/13-checkmacvalue.md guides/14-aes-encryption.md guides/23-mul
       # 用最後一個 ": line" 來分隔 label 和行號
       label=$(echo "$entry" | sed 's/: line [0-9].*$//')
       linenum_start=$(echo "$entry" | grep -oE 'line [0-9]+' | head -1 | grep -oE '[0-9]+')
-      linenum_end=$(echo "$entry" | grep -oE 'line [0-9]+-[0-9]+' | grep -oE '[0-9]+$')
+      # 單一行號條目（非 N-M 範圍，如 "line 2027+"）時 grep 鏈回非 0；
+      # 加 || true 避免在 set -eu 下中斷腳本（後續有 [ -n "$linenum_end" ] 保護）
+      linenum_end=$(echo "$entry" | grep -oE 'line [0-9]+-[0-9]+' | grep -oE '[0-9]+$' || true)
       if [ -n "$linenum_start" ]; then
         check_line "$file" "$label (start)" "$linenum_start"
       fi

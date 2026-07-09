@@ -1,6 +1,6 @@
 # ECPay 綠界科技 API 整合助手 — Google Gemini CLI
 
-> **V3.3** | 適用 Google Gemini CLI | 完整知識庫入口：`SKILL.md`
+> **V3.4** | 適用 Google Gemini CLI | 完整知識庫入口：`SKILL.md`
 > 官方維護：ECPay (綠界科技)
 >
 > **Note**：本檔案為 Gemini CLI 獨立入口，核心決策樹與規則同步自 `SKILL.md`。如有差異以 `SKILL.md` 為準。

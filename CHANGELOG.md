@@ -6,6 +6,22 @@
 
 ## [Unreleased]
 
+---
+
+## [2.4.0] — 2026-07-09 (V3.4)
+
+### 修正（CI）
+
+- **修復 `scripts/validate-ai-index.sh` 誤殺整支腳本**：第 4 行 `set -eu` 搭配第 66 行未加保護的 `linenum_end=$(... | grep -oE 'line [0-9]+-[0-9]+' | grep -oE '[0-9]+$')`，當 AI Section Index 條目為**單一行號（非 `N-M` 範圍，如 guides/23 `Production 環境切換: line 2027+`、guides/14 `line 1322` / `line 2208+`）**時，grep 鏈回傳非 0，在 `set -e` 下直接終止腳本 → **無 `FAIL:` 行、無摘要、僅 `exit 1`**。此 bug 自 2026-06-16 起讓每次 doc push 的 `Validate AI Section Index` workflow 失敗，**與程式內容、與綁卡金額 int/字串改動皆無關**。修法：第 66 行結尾加 `|| true`（後續已有 `[ -n "$linenum_end" ]` 保護）。因 Windows/macOS 無 `grep -P` 會整支 skip，故此 bug 僅在 Linux CI 顯現（本機開發者看不到）。
+
+### 修正（站內付 2.0 綁卡）
+
+- **綁卡取號 `TotalAmount` 還原為整數**：先前因誤判上述 CI 失敗為「少了引號」（commit `414f6e3` → `19bd398` 一來一回）而改為字串 `'100'`；現還原為整數 `100`（[guides/02-payment-ecpg.md](guides/02-payment-ecpg.md) `GetTokenbyBindingCard` 範例），與一般付款、綁卡扣款 `CreatePaymentWithCardID` 的 AES-JSON int 慣例一致。
+
+### 變更（站內付 2.0 JS SDK）
+
+- **JS SDK 測試環境網址對齊官方 8989**：依[綠界官方 WEB JS SDK 使用說明](https://developers.ecpay.com.tw/8989/)，測試環境改用 `ecpg-stage.ecpay.com.tw/Scripts/sdk-1.0.0.js`、正式用 `ecpg.ecpay.com.tw/Scripts/sdk-1.0.0.js`，並統一帶版本參數 `?t=20210121100116`；載入的 SDK 環境須與 `ECPay.initialize('Stage'|'Prod', ...)` 一致。**移除先前「stage 版是不同檔案、行為異常、一律用正式版」的錯誤說法**。涵蓋 guides/02、02a、02b、02c 及 docs/prompt-examples.md，並在 guides/02 CSP 說明的 `script-src` 補上測試 domain。
+
 ### 修正（入口文件 review — 跨平台指南正確性）
 
 - **`git pull/push origin main` → `master`**：SETUP.md（更新 Skill、FAQ）與 CONTRIBUTING.md（消費者升級、版本發布流程、tag 推送注意事項）原指向不存在的 `main` 分支，執行必失敗（remote 僅有 `master`）。全數改為 `master`

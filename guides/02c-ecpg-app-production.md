@@ -460,7 +460,7 @@ if result is None:
 |------|---------|---------|
 | GetToken / 付款端點 | `ecpg-stage.ecpay.com.tw` | `ecpg.ecpay.com.tw` |
 | 查詢 / 退款端點 | `ecpayment-stage.ecpay.com.tw` | `ecpayment.ecpay.com.tw` |
-| JS SDK URL | `ecpg.ecpay.com.tw/Scripts/sdk-1.0.0.js`（⚠️ **測試/正式都用正式 domain**） | `ecpg.ecpay.com.tw/Scripts/sdk-1.0.0.js` |
+| JS SDK URL | `ecpg-stage.ecpay.com.tw/Scripts/sdk-1.0.0.js`（⚠️ 須與 `initialize('Stage')` 一致） | `ecpg.ecpay.com.tw/Scripts/sdk-1.0.0.js` |
 
 ### 憑證與帳號
 

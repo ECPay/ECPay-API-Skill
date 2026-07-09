@@ -1,6 +1,6 @@
 # 各平台安裝指南
 
-> **版本**：V3.3
+> **版本**：V3.4
 
 > 將 ECPay API Skill 安裝到 OpenAI Codex CLI 或 Google Gemini CLI。
 > VS Code Copilot Chat 的安裝方式請見 [vscode_copilot.md](./vscode_copilot.md)。

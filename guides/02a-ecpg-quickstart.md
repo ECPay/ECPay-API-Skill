@@ -182,7 +182,7 @@ t=10 ⚠️ Token 過期（若仍在調試）
 | 步驟 | API | Domain（測試） | Domain（正式） |
 |:----:|-----|:------------:|:-------------:|
 | 1 | GetTokenbyTrade | `ecpg-stage.ecpay.com.tw` | `ecpg.ecpay.com.tw` |
-| 2 | JS SDK Script | `ecpg.ecpay.com.tw/Scripts/sdk-1.0.0.js`（⚠️ **測試/正式都用正式 domain**，透過 `initialize('Stage')` 切換） | `ecpg.ecpay.com.tw/Scripts/sdk-1.0.0.js` |
+| 2 | JS SDK Script | `ecpg-stage.ecpay.com.tw/Scripts/sdk-1.0.0.js`（⚠️ **載入的環境須與 `initialize('Stage')` 一致**） | `ecpg.ecpay.com.tw/Scripts/sdk-1.0.0.js` |
 | 4 | CreatePayment | `ecpg-stage.ecpay.com.tw` | `ecpg.ecpay.com.tw` |
 | 查詢/請退款 | QueryTrade / DoAction | `ecpayment-stage.ecpay.com.tw` | `ecpayment.ecpay.com.tw` |
 
@@ -484,12 +484,12 @@ async function getEcpayToken(merchantTradeNo: string): Promise<string> {
 
 ```html
 <!-- ⚠️ 三個依賴缺一不可：jQuery → node-forge → ECPay SDK，順序不可調換 -->
-<!-- ⚠️ JS SDK 一律從正式 domain 載入，不要用 ecpg-stage（stage 版是不同檔案，行為異常） -->
+<!-- ⚠️ 測試環境載入 stage SDK（正式改用 ecpg.ecpay.com.tw），環境須與 initialize('Stage'|'Prod') 一致 -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/node-forge@0.7.0/dist/forge.min.js"></script>
 <!--渲染付款界面UI，請勿更動id-->
 <div id="ECPayPayment"></div>
-<script src="https://ecpg.ecpay.com.tw/Scripts/sdk-1.0.0.js"></script>
+<script src="https://ecpg-stage.ecpay.com.tw/Scripts/sdk-1.0.0.js?t=20210121100116"></script>
 
 <script>
   const _token = '{{ 步驟1後端傳入的Token }}';  // 純字串
@@ -977,10 +977,10 @@ PAYMENT_HTML = '''<!DOCTYPE html>
   <meta charset="UTF-8">
   <title>站內付 2.0 測試</title>
   <!-- 步驟 2：載入綠界 JS SDK — 三個依賴缺一不可 -->
-  <!-- ⚠️ JS SDK 一律從正式 domain 載入，透過 initialize('Stage') 切換環境 -->
+  <!-- ⚠️ 測試環境載入 stage SDK（正式改用 ecpg.ecpay.com.tw），環境須與 initialize('Stage'|'Prod') 一致 -->
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/node-forge@0.7.0/dist/forge.min.js"></script>
-  <script src="https://ecpg.ecpay.com.tw/Scripts/sdk-1.0.0.js"></script>
+  <script src="https://ecpg-stage.ecpay.com.tw/Scripts/sdk-1.0.0.js?t=20210121100116"></script>
 </head>
 <body>
   <h1>站內付 2.0 — 完整範例</h1>
@@ -1233,7 +1233,8 @@ app.get('/', (req, res) => res.send(`<!DOCTYPE html>
 <html lang="zh-TW"><head><meta charset="UTF-8"><title>站內付 2.0 測試</title>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/node-forge@0.7.0/dist/forge.min.js"></script>
-<script src="https://ecpg.ecpay.com.tw/Scripts/sdk-1.0.0.js"></script>
+<!-- ⚠️ 測試環境載入 stage SDK（正式改用 ecpg.ecpay.com.tw），須與 initialize('Stage'|'Prod') 一致 -->
+<script src="https://ecpg-stage.ecpay.com.tw/Scripts/sdk-1.0.0.js?t=20210121100116"></script>
 </head><body>
 <h1>站內付 2.0 — 完整範例（Node.js）</h1>
 <p>訂單：<span id="order-id"></span></p>

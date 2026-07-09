@@ -303,8 +303,8 @@ $response = $postService->post($input, 'https://ecpayment-stage.ecpay.com.tw/1.0
 import { useEffect, useState, useRef } from 'react';
 
 // ⚠️ SDK 依賴 jQuery + node-forge，必須先載入（見下方 loadDependencies）
-// ⚠️ JS SDK 一律從正式 domain 載入，透過 initialize('Stage') 切換環境
-const ECPAY_SDK_URL = 'https://ecpg.ecpay.com.tw/Scripts/sdk-1.0.0.js';
+// ⚠️ 測試環境用 ecpg-stage，正式環境改用 ecpg；載入環境須與 initialize('Stage'|'Prod') 一致
+const ECPAY_SDK_URL = 'https://ecpg-stage.ecpay.com.tw/Scripts/sdk-1.0.0.js?t=20210121100116';
 
 export default function PaymentForm({ amount = 100, onSuccess, onError }) {
   const [status, setStatus] = useState('初始化中…');
@@ -528,8 +528,8 @@ onMounted(async () => {
   // ⚠️ 三個依賴必須按順序載入：jQuery → node-forge → ECPay SDK
   await loadScript('https://code.jquery.com/jquery-3.7.1.min.js');
   await loadScript('https://cdn.jsdelivr.net/npm/node-forge@0.7.0/dist/forge.min.js');
-  // ⚠️ JS SDK 一律從正式 domain 載入，透過 initialize('Stage') 切換環境
-  await loadScript('https://ecpg.ecpay.com.tw/Scripts/sdk-1.0.0.js');
+  // ⚠️ 測試環境用 ecpg-stage，正式改用 ecpg；載入環境須與 initialize('Stage'|'Prod') 一致
+  await loadScript('https://ecpg-stage.ecpay.com.tw/Scripts/sdk-1.0.0.js?t=20210121100116');
   status.value = '取得 Token 中…';
   const res = await fetch('/api/ecpay/gettoken', {
     method: 'POST',

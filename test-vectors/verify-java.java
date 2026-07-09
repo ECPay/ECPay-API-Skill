@@ -27,7 +27,8 @@ import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.util.*;
 
-public class VerifyJava {
+// 注意：class 為 package-private（非 public），故檔名 verify-java.java 無需與類別名相符仍可編譯
+class VerifyJava {
 
     // ──────────────────────────────────────────────
     // ecpayUrlEncode — used for CheckMacValue (CMV)

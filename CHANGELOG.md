@@ -13,7 +13,7 @@
 ### 修正（CI）
 
 - **修復 `scripts/validate-ai-index.sh` 誤殺整支腳本**：第 4 行 `set -eu` 搭配第 66 行未加保護的 `linenum_end=$(... | grep -oE 'line [0-9]+-[0-9]+' | grep -oE '[0-9]+$')`，當 AI Section Index 條目為**單一行號（非 `N-M` 範圍，如 guides/23 `Production 環境切換: line 2027+`、guides/14 `line 1322` / `line 2208+`）**時，grep 鏈回傳非 0，在 `set -e` 下直接終止腳本 → **無 `FAIL:` 行、無摘要、僅 `exit 1`**。此 bug 自 2026-06-16 起讓每次 doc push 的 `Validate AI Section Index` workflow 失敗，**與程式內容、與綁卡金額 int/字串改動皆無關**。修法：第 66 行結尾加 `|| true`（後續已有 `[ -n "$linenum_end" ]` 保護）。因 Windows/macOS 無 `grep -P` 會整支 skip，故此 bug 僅在 Linux CI 顯現（本機開發者看不到）。
-- **修復 `test-vectors/verify-java.java` 無法編譯**：第 367 行註解 `// \uXXXX` 因 `javac` 在 lexing 前即處理 unicode escape（連註解內的 `\u` 也不例外），造成 `illegal unicode escape` 編譯失敗。此為被上述 ai-index 失敗遮蔽的既有 bug（CI 步驟循序執行，前一步失敗後續即不執行）；修好 ai-index 後才浮現。修法：改寫該註解移除 `\u` 字樣。
+- **修復 `test-vectors/verify-java.java` 無法編譯（兩個既有 Java 陷阱）**：此檔因長期被 ai-index 失敗遮蔽（CI 步驟循序執行，前一步失敗後續即不執行），從未在 CI 成功編譯過；修好 ai-index 後連續浮現兩個 `javac` 錯誤：①第 367 行註解 `// \uXXXX` 觸發 `illegal unicode escape`（`javac` 在 lexing 前即處理 unicode escape，連註解內的 `\u` 也不例外）→ 改寫註解移除 `\u`；②`public class VerifyJava` 與 kebab-case 檔名 `verify-java.java` 不符，觸發 `class ... should be declared in a file named VerifyJava.java` → 改為 package-private `class VerifyJava`（保留與 verify-node.js / verify-go.go 一致的檔名慣例；`main` 仍 `public static`，編譯與 `java VerifyJava` 執行皆正常）。其餘程式碼經完整檢視為合法 JDK 17 Java。
 
 ### 修正（站內付 2.0 綁卡）
 

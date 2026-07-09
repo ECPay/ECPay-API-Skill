@@ -37,9 +37,6 @@ https://developers.ecpay.com.tw/8848.md
 ## 超商 / 列印託運單 / C2C萊爾富
 https://developers.ecpay.com.tw/8858.md
 
-## 超商 / 列印託運單 / C2C OK超商
-https://developers.ecpay.com.tw/8870.md
-
 ## 超商 / 列印託運單 / B2C（含測標）、宅配
 https://developers.ecpay.com.tw/8875.md
 

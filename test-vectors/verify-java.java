@@ -364,7 +364,7 @@ public class VerifyJava {
                         case 'r': sb.append('\r'); idx += 2; break;
                         case 't': sb.append('\t'); idx += 2; break;
                         case 'u': {
-                            // \uXXXX
+                            // JSON unicode escape: backslash-u followed by 4 hex digits
                             String hex = json.substring(idx + 2, Math.min(idx + 6, json.length()));
                             sb.append((char) Integer.parseInt(hex, 16));
                             idx += 6;

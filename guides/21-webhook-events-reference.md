@@ -267,6 +267,7 @@ return '1|OK'  # 必須回應
 |------|------|
 | MerchantID | 特店編號 |
 | MerchantTradeNo | 特店交易編號 |
+| StoreID | 特店旗下店舖代號 |
 | RtnCode | 交易狀態碼（**1=成功**） |
 | RtnMsg | 交易訊息 |
 | TradeNo | 綠界交易編號 |
@@ -275,7 +276,12 @@ return '1|OK'  # 必須回應
 | PaymentType | 付款方式 |
 | PaymentTypeChargeFee | 手續費 |
 | TradeDate | 交易日期 |
+| PlatformID | 特約合作平台商代號（平台商使用） |
 | SimulatePaid | 是否為模擬付款（0=否, 1=是） |
+| CustomField1 | 自訂欄位 1（原樣回傳建單時的值） |
+| CustomField2 | 自訂欄位 2 |
+| CustomField3 | 自訂欄位 3 |
+| CustomField4 | 自訂欄位 4 |
 | CheckMacValue | 檢查碼 |
 
 **處理流程**：
@@ -373,6 +379,7 @@ echo '1|OK';  // 必須回應
 |------|------|
 | MerchantID | 特店編號 |
 | MerchantTradeNo | 特店交易編號 |
+| StoreID | 特店旗下店舖代號 |
 | RtnCode | 交易狀態碼（1=成功） |
 | RtnMsg | 交易訊息 |
 | Amount | 本次授權金額 |
@@ -385,6 +392,10 @@ echo '1|OK';  // 必須回應
 | FirstAuthAmount | 初次授權金額 |
 | TotalSuccessTimes | 已成功扣款次數 |
 | SimulatePaid | 是否為模擬付款（0=否, 1=是） |
+| CustomField1 | 自訂欄位 1（原樣回傳建單時的值） |
+| CustomField2 | 自訂欄位 2 |
+| CustomField3 | 自訂欄位 3 |
+| CustomField4 | 自訂欄位 4 |
 | CheckMacValue | 檢查碼 |
 
 > 完整回傳欄位見 references/Payment/全方位金流API技術文件.md §定期定額付款結果通知。

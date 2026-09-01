@@ -809,7 +809,7 @@ echo $autoSubmitFormService->generate(
 | Frequency | Int | 執行頻率 |
 | ExecTimes | Int | 執行次數 |
 | Amount | Int | 本次授權金額 |
-| Gwsr | Int | 授權交易單號 |
+| gwsr | Int | 授權交易單號 |
 | ProcessDate | String(20) | 處理時間（yyyy/MM/dd HH:mm:ss） |
 | AuthCode | String(6) | 授權碼 |
 | FirstAuthAmount | Int | 初次授權金額 |

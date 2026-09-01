@@ -376,7 +376,7 @@ echo '1|OK';  // 必須回應
 | RtnCode | 交易狀態碼（1=成功） |
 | RtnMsg | 交易訊息 |
 | Amount | 本次授權金額 |
-| Gwsr | 授權交易單號 |
+| gwsr | 授權交易單號 |
 | AuthCode | 授權碼 |
 | ProcessDate | 處理時間（yyyy/MM/dd HH:mm:ss） |
 | PeriodType | 週期類型（D=天, M=月, Y=年） |

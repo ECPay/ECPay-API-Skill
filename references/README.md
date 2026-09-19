@@ -31,14 +31,14 @@
 |------|------|---------|---------|
 | B2C 電子發票 | `Invoice/B2C電子發票介接技術文件.md` | 36 | [guides/04](../guides/04-invoice-b2c.md) |
 | B2B 發票（交換模式） | `Invoice/B2B電子發票API技術文件_交換模式.md` | 36 | [guides/05](../guides/05-invoice-b2b.md) |
-| B2B 發票（存證模式） | `Invoice/B2B電子發票API技術文件_存證模式.md` | 24 | [guides/05](../guides/05-invoice-b2b.md) |
-| 離線電子發票 | `Invoice/離線電子發票API技術文件.md` | 21 | [guides/18](../guides/18-invoice-offline.md) |
+| B2B 發票（存證模式） | `Invoice/B2B電子發票API技術文件_存證模式.md` | 25 | [guides/05](../guides/05-invoice-b2b.md) |
+| 離線電子發票 | `Invoice/離線電子發票API技術文件.md` | 22 | [guides/18](../guides/18-invoice-offline.md) |
 
 ### Logistics 物流
 
 | 服務 | 檔案 | URL 數量 | 對應指南 |
 |------|------|---------|---------|
-| 國內物流（CMV-MD5） | `Logistics/物流整合API技術文件.md` | 36 | [guides/06](../guides/06-logistics-domestic.md) |
+| 國內物流（CMV-MD5） | `Logistics/物流整合API技術文件.md` | 35 | [guides/06](../guides/06-logistics-domestic.md) |
 | 全方位物流 v2（AES-JSON） | `Logistics/全方位物流服務API技術文件.md` | 27 | [guides/07](../guides/07-logistics-allinone.md) |
 | 跨境物流 | `Logistics/綠界科技跨境物流API技術文件.md` | 13 | [guides/08](../guides/08-logistics-crossborder.md) |
 
@@ -46,9 +46,9 @@
 
 | 服務 | 檔案 | URL 數量 | 對應指南 |
 |------|------|---------|---------|
-| 價金保管（使用後核銷） | `Ecticket/價金保管-使用後核銷API技術文件.md` | 20 | [guides/09](../guides/09-ecticket.md) |
+| 價金保管（使用後核銷） | `Ecticket/價金保管-使用後核銷API技術文件.md` | 21 | [guides/09](../guides/09-ecticket.md) |
 | 價金保管（分期核銷） | `Ecticket/價金保管-分期核銷API技術文件.md` | 12 | [guides/09](../guides/09-ecticket.md) |
-| 純發行（使用後核銷） | `Ecticket/純發行-使用後核銷API技術文件.md` | 23 | [guides/09](../guides/09-ecticket.md) |
+| 純發行（使用後核銷） | `Ecticket/純發行-使用後核銷API技術文件.md` | 24 | [guides/09](../guides/09-ecticket.md) |
 
 ### Receipt 電子收據
 
@@ -62,7 +62,7 @@
 |------|------|---------|---------|
 | 購物車設定 | `Cart/購物車設定說明.md` | 5 | [guides/10](../guides/10-cart-plugins.md) |
 
-**合計**：20 個檔案，約 443 個 URL。
+**合計**：20 個檔案，442 個 URL。
 
 ## 使用方式
 

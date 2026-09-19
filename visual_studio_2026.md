@@ -46,7 +46,7 @@ ECPay API Skill 透過 GitHub Copilot 的 **Custom Instructions**（`.github/cop
 ECPay API Skill 安裝於 `.ecpay-skill/` 目錄：
 - 入口文件：`.ecpay-skill/SKILL.md`（決策樹、快速參考、文件索引）
 - 整合指南：`.ecpay-skill/guides/`（29 份深度指南）
-- API 規格索引：`.ecpay-skill/references/`（443 個官方 API 文件 URL）
+- API 規格索引：`.ecpay-skill/references/`（442 個官方 API 文件 URL）
 - PHP 範例：`.ecpay-skill/scripts/SDK_PHP/example/`（134 個驗證範例）
 
 ## 使用方式

@@ -10,7 +10,7 @@ Three-layer knowledge system:
 
 - **`SKILL.md`** — AI entry point: decision trees, navigation, safety rules, test accounts. Routes queries to the correct guide + reference.
 - **`guides/`** (29 files, indexed 00-25 + 02a/02b/02c) — Static integration knowledge with SNAPSHOT parameter tables. Provides process logic, caveats, code examples in 12 languages.
-- **`references/`** (20 files, 443 URLs) — Real-time API spec gateway. Each file contains organized URLs pointing to `developers.ecpay.com.tw`. AI uses `web_fetch` on these URLs to get the latest official parameter specs before generating code.
+- **`references/`** (20 files, 442 URLs) — Real-time API spec gateway. Each file contains organized URLs pointing to `developers.ecpay.com.tw`. AI uses `web_fetch` on these URLs to get the latest official parameter specs before generating code.
 
 The critical pattern: **guides/ tells you HOW to integrate; references/ gives you the CURRENT spec to integrate against.** Guides are sufficient for prototyping and initial development (parameter stability >95%). For production deployment or when API behavior doesn't match expectations, use `web_fetch` on references/ URLs to verify the latest specs.
 

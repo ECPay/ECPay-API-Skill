@@ -754,7 +754,7 @@ echo $autoSubmitFormService->generate($input, 'https://logistics-stage.ecpay.com
 
 ## 相關文件
 
-- 官方 API 規格：`references/Logistics/物流整合API技術文件.md`（36 個 URL）
+- 官方 API 規格：`references/Logistics/物流整合API技術文件.md`（35 個 URL）
 - 物流狀態碼：`scripts/SDK_PHP/example/Logistics/logistics_status.xlsx`
 - CheckMacValue：[guides/13-checkmacvalue.md](./13-checkmacvalue.md)
 - 除錯指南：[guides/15-troubleshooting.md](./15-troubleshooting.md)

@@ -6,7 +6,7 @@
 
 This is a **Markdown-only AI knowledge base** (no build system, no package manager). All content is consumed by AI coding assistants (Claude Code, VS Code Copilot Chat, GitHub Copilot CLI, Cursor, etc.).
 
-**Architecture**: `SKILL.md` (AI entry point) → `guides/` (29 integration guides with SNAPSHOT parameter tables) → `references/` (20 files with 443 live API spec URLs for `web_fetch`)
+**Architecture**: `SKILL.md` (AI entry point) → `guides/` (29 integration guides with SNAPSHOT parameter tables) → `references/` (20 files with 442 live API spec URLs for `web_fetch`)
 
 **To contribute**:
 1. Fork the repo and create a feature branch

@@ -35,7 +35,7 @@
 > **關鍵規則（務必遵守）**：
 > - CheckMacValue 驗證必須使用 timing-safe 比較（Go 用 `crypto/subtle.ConstantTimeCompare`），禁止用 `==` 比較
 > - MerchantTradeNo 每次必須唯一，重複會被拒絕
-> - ReturnURL 是 Server-to-Server 通知（不是用戶瀏覽器跳轉），必須是公開可訪��的 URL
+> - ReturnURL 是 Server-to-Server 通知（不是用戶瀏覽器跳轉），必須是公開可訪問的 URL
 > - 付款成功時回傳的 RtnCode=1；RtnCode 不是 1 表示付款失敗
 > - 禁止將 HashKey/HashIV 寫在前端程式碼中
 
@@ -328,7 +328,7 @@
 > 2. 前端渲染信用卡表單，消費者輸入卡號付款
 > 3. 後端 CreatePayment，回應中會包含 `BindCardID`（綁卡識別碼），儲存此 ID 與會員的對應關係
 >
-> **Part B — 快速付款（已��卡的會員）**：
+> **Part B — 快速付款（已綁卡的會員）**：
 > 1. 後端呼叫 `POST https://ecpg-stage.ecpay.com.tw/Merchant/GetTokenbyBindingCard`
 >    - Data 明文帶入 MerchantID、MerchantMemberID、BindCardID
 > 2. 取得 Token 後，前端僅顯示卡號末四碼確認畫面（不需再輸入完整卡號）
@@ -384,7 +384,7 @@
 
 ### 11. 站內付 2.0 Android App 信用卡付款（Kotlin）
 
-> 我���在 Android App 中串接 ECPay 站內付 2.0 信用卡付款，使用 Android WebView 載入綠界信用卡表單。
+> 我們在 Android App 中串接 ECPay 站內付 2.0 信用卡付款，使用 Android WebView 載入綠界信用卡表單。
 >
 > **服務**：ECPay ECPG 站內付 2.0
 > **程式語言**：Kotlin，Android SDK 26+（minSdk），使用 Android WebView
@@ -444,7 +444,7 @@
 > 2. AES 加密明文：JSON string → URL encode（AES 版：只做 urlencode，不轉小寫，不做 .NET 替換）→ AES-128-CBC(key=HashKey, iv=HashIV, PKCS7) → Base64
 > 3. 組合外層 JSON：`{ MerchantID, RqHeader: { Timestamp }, Data: "加密後字串" }`
 > 4. POST 到測試環境 URL，Content-Type: application/json
-> 5. 回應處理：先檢�� TransCode===1 → Base64 decode Data → AES decrypt → URL decode → JSON parse → 檢查 RtnCode===1 → 取得 BankCode + vAccount（虛擬帳號）
+> 5. 回應處理：先檢查 TransCode===1 → Base64 decode Data → AES decrypt → URL decode → JSON parse → 檢查 RtnCode===1 → 取得 BankCode + vAccount（虛擬帳號）
 > 6. 將虛擬帳號和銀行代碼顯示給消費者
 > 7. 實作 PaymentInfoURL callback 接收取號結果，ReturnURL 接收付款完成通知
 >
@@ -502,7 +502,7 @@
 >
 > **服務**：ECPay AIO 信用卡退款（DoAction）
 > **程式語言**：Node.js 18+，Express
-> **加密方���**：CheckMacValue SHA256
+> **加密方式**：CheckMacValue SHA256
 >
 > **測試帳號**：
 > - MerchantID：3002607
@@ -908,7 +908,7 @@
 >
 > **關鍵規則**：
 > - AES URL encode 只做 urlencode，不轉小寫，不做 .NET 替換
-> - 回應雙層檢���：TransCode===1 + RtnCode===1
+> - 回應雙層檢查：TransCode===1 + RtnCode===1
 > - Callback 回應必須是 AES 加密 JSON 格式（不是純文字 `1|OK`！跨境物流和國內物流不同）
 > - 禁止 HashKey/HashIV 出現在前端或版本控制中
 
@@ -995,7 +995,7 @@
 >
 > **步驟 3 — 接收核銷通知（UseStatusNotifyURL）**：
 > - 消費者使用票券後，綠界 POST 到 UseStatusNotifyURL
-> - **回應格式與 AIO 完全不同！** 不是回�� `1|OK`，而是必須回傳 AES 加密 JSON + CheckMacValue
+> - **回應格式與 AIO 完全不同！** 不是回傳 `1|OK`，而是必須回傳 AES 加密 JSON + CheckMacValue
 > - 回傳格式：`{ MerchantID, RqHeader: { Timestamp }, Data: "AES加密的回應JSON", CheckMacValue }`
 >
 > **ECTicket特有注意事項**：
@@ -1315,7 +1315,7 @@
 >    - ReturnURL：Server-to-Server 背景通知（消費者看不到），用於更新訂單狀態
 >    - ClientRedirectURL：消費者瀏覽器跳轉（前端跳轉），用於顯示結果頁面
 >    - 站內付 2.0 用的是 OrderResultURL（功能同 ReturnURL）
->    - 如果你只設了 ClientRedirectURL 沒設 ReturnURL��就收不到背景通知
+>    - 如果你只設了 ClientRedirectURL 沒設 ReturnURL，就收不到背景通知
 >
 > 7. **綠界測試環境特性**：
 >    - 測試環境的 Callback 可能有延遲（數秒到數分鐘）
@@ -1348,7 +1348,7 @@
 >
 > 1. **用錯帳號的 HashKey/HashIV**：
 >    - 金流 Callback 必須用金流帳號的 HashKey/HashIV 驗證
->    - 物��� Callback 必須用物流帳號的 HashKey/HashIV 驗證
+>    - 物流 Callback 必須用物流帳號的 HashKey/HashIV 驗證
 >    - 發票 Callback 必須用發票帳號的 HashKey/HashIV 驗證
 >    - 混用就會永遠驗證失敗
 >
@@ -1406,7 +1406,7 @@
 > - ECTicket：`ecticket-stage.ecpay.com.tw` → `ecticket.ecpay.com.tw`
 >
 > **2. 帳號切換**：
-> - 測試帳號（公開共用）→ 正式帳號（向綠界申請取得，每個商家���立）
+> - 測試帳號（公開共用）→ 正式帳號（向綠界申請取得，每個商家獨立）
 > - 正式的 MerchantID / HashKey / HashIV 必須以環境變數管理，禁止寫在程式碼中
 >
 > **3. 安全檢查**：

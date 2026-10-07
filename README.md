@@ -262,7 +262,7 @@ git checkout <版本 tag>   # 固定至指定版本，例如 git checkout v3.3
 - **134 個**經官方驗證的 PHP 範例（可翻譯為 12 種主流語言或其他語言）
 - **29 份**深度整合指南（從入門到上線，含 3 個站內付子指南 + 電子收據）
 - **12 種語言**的加密函式實作（Python、Node.js、TypeScript、Java、C#、Go、C、C++、Rust、Swift、Kotlin、Ruby），**AES-128-CBC 與 AES-128-GCM 雙模式完整覆蓋**
-- **20 份**官方 API 技術文件索引 + 1 份索引說明（共計 443 個 URL，可即時查閱原始文件）
+- **20 份**官方 API 技術文件索引 + 1 份索引說明（共計 442 個 URL，可即時查閱原始文件）
 - 決策樹自動推薦最適方案
 - 跨服務整合場景（收款 + 發票 + 出貨）
 - 內建除錯指南和上線檢查清單
@@ -309,7 +309,7 @@ git checkout <版本 tag>   # 固定至指定版本，例如 git checkout v3.3
 
 **觸發**：每週一 UTC 02:00 自動排程，另外修改 `references/` 時或手動觸發也會執行。
 
-以 8 執行緒並行 curl 檢查 `references/` 目錄下全部 443 個 `developers.ecpay.com.tw` URL：
+以 8 執行緒並行 curl 檢查 `references/` 目錄下全部 442 個 `developers.ecpay.com.tw` URL：
 
 | 結果 | 條件 | 處理 |
 |------|------|------|
@@ -444,7 +444,7 @@ ecpay-skill/
 ├── commands/                   # Claude Code 快速指令（6 個 /ecpay-* 指令）
 ├── guides/                     # 29 份深度整合指南
 │   └── lang-standards/         # 12 語言程式規範（Python/Node.js/TS/Go/Java/C#/Kotlin/Ruby/Rust/Swift/C/C++）
-├── references/                 # 官方 API 文件 URL 索引（20 個檔案，443 個 URL）— AI 即時讀取入口
+├── references/                 # 官方 API 文件 URL 索引（20 個檔案，442 個 URL）— AI 即時讀取入口
 │   ├── Payment/   (8 個)
 │   ├── Invoice/   (4 個)
 │   ├── Logistics/ (3 個)
@@ -574,7 +574,7 @@ A：AI 基於 134 個官方驗證的 PHP 範例和 12 語言加密實作生成�
 A：每次 Skill 發布前都會自動跑 **25 組跨語言加密測試向量**（`test-vectors/verify.py` + `verify-node.js` 雙語言 cross-check），涵蓋 CheckMacValue（SHA256 / MD5）、AES-128-CBC 加密/解密、**AES-128-GCM 加密/解密**（V3.0 新增，for 電子收據）、URL Encode 差異等所有核心演算法。25/25 全部通過才能發布；任何加密演算法錯誤會在 CI 階段就被攔下，不會進入客戶環境。白話說明（為什麼需要、如果沒有會怎樣、誰要關心）請見 [`test-vectors/README.md`](./test-vectors/README.md)，FAE 可直接引用該文件回覆客戶的品質疑慮。
 
 **Q：API 規格更新時，AI 會讀到最新的嗎？**
-A：會。`references/` 目錄存放 443 個指向 `developers.ecpay.com.tw` 的 URL 索引（不是靜態副本），AI 會即時讀取最新官方規格。
+A：會。`references/` 目錄存放 442 個指向 `developers.ecpay.com.tw` 的 URL 索引（不是靜態副本），AI 會即時讀取最新官方規格。
 
 ## 相關資源
 

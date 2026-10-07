@@ -401,7 +401,7 @@ Callback/Webhook 接收架構？→ 讀 guides/21-webhook-events-reference.md（
 - **不可在前端或版本控制中暴露** HashKey/HashIV
 - **不可將 ATM RtnCode=2 或 CVS RtnCode=10100073 視為錯誤**（代表取號成功，消費者尚未付款）
 - **生成程式碼或回答 API 規格問題時，必須 web_fetch references/ 中的對應 URL**：不可僅依賴 guides/ SNAPSHOT 或 AI 自身記憶回答。唯一可省略 web_fetch 的情況是：(1) 純概念說明且不涉及具體參數值，或 (2) web_fetch 失敗後的備援（但必須告知使用者）
-- **URL 來源白名單（強制）**：回覆中引用的所有 ECPay 技術文件 URL **必須來自 references/ 檔案中列出的 443 個 URL**。禁止引用 AI 記憶中的 URL、第三方部落格、Stack Overflow、或任何非 `developers.ecpay.com.tw` 網域的連結作為 API 規格來源。若需要的 URL 不在 references/ 中，應告知使用者「此資訊未收錄於官方索引，建議至 developers.ecpay.com.tw 搜尋確認」
+- **URL 來源白名單（強制）**：回覆中引用的所有 ECPay 技術文件 URL **必須來自 references/ 檔案中列出的 442 個 URL**。禁止引用 AI 記憶中的 URL、第三方部落格、Stack Overflow、或任何非 `developers.ecpay.com.tw` 網域的連結作為 API 規格來源。若需要的 URL 不在 references/ 中，應告知使用者「此資訊未收錄於官方索引，建議至 developers.ecpay.com.tw 搜尋確認」
 - **生成程式碼時必須標註資料來源**：在程式碼註解中標明參數值取自 SNAPSHOT 或 web_fetch（例如 `// Source: web_fetch references/Payment/... 2026-03-06`），方便開發者日後驗證
 - **不可將 ECPG 所有端點都打向 ecpg domain**（查詢/請退款走 `ecpayment`；Token 類及 CreatePayment 走 `ecpg`，詳見 guides/02 端點表）
 - **不可省略 Callback 回應**：CMV-SHA256（AIO）回 `1|OK`、**站內付 2.0 ReturnURL** 回 `1|OK`（官方規格 9058.md）、**站內付 2.0 OrderResultURL** 回 HTML 頁面（前端跳轉，不重試）、信用卡幕後授權回 `1|OK`（官方規格 45907.md）、非信用卡幕後取號回 `1|OK`、國內物流 CMV-MD5 回 `1|OK`、全方位/跨境物流 v2 回 **AES 加密 JSON**（三層結構）、ECTicket回 **AES 加密 JSON + CheckMacValue**（Data 內 `{"RtnCode": 1, "RtnMsg": "成功"}`）、**直播收款** 回 `1|OK`（⚠️ callback 格式與ECTicket相同：JSON POST + AES 解密 Data + ECTicket 式 CheckMacValue SHA256；但回應為純文字 `1|OK`，與ECTicket不同）、**B2C 發票線上折讓（AllowanceByCollegiate）回 `1|OK`**（⚠️ Callback 為 Form POST + CheckMacValue **MD5**，是發票中唯一帶 CheckMacValue 的 API，詳見 [guides/04](./guides/04-invoice-b2c.md)）。**`1|OK` 常見錯誤格式**（會導致系統重發 4 次）：`"1|OK"`（含引號）、`1|ok`（小寫 ok）、`1OK`（缺分隔）、帶空白或換行
@@ -429,9 +429,9 @@ Callback/Webhook 接收架構？→ 讀 guides/21-webhook-events-reference.md（
 - **語言強制規則**：見文件頂部 CRITICAL 區塊（本規則優先順序最高）
 
 > **AI 注意**：大多數請求只需載入 SKILL.md + 1-2 份 guide。
-> **guides/ 參數表為 SNAPSHOT（2026-03）**—��穩定度高（改動機率 < 5%），可作為流程理解的參考。
-> **預設行為：有 web_fetch 能力時，一律先從 references/ 取得即時規格再回答。** guides/ 僅作為 web_fetch 失敗時的備援，且必須告知使���者資料來自 SNAPSHOT。
-> **唯一可省略 web_fetch**：純概念說明（如「什麼是站內付？」）且���涉及具體參數值、端點路徑、或程式碼生成。
+> **guides/ 參數表為 SNAPSHOT（2026-03）**——穩定度高（改動機率 < 5%），可作為流程理解的參考。
+> **預設行為：有 web_fetch 能力時，一律先從 references/ 取得即時規格再回答。** guides/ 僅作為 web_fetch 失敗時的備援，且必須告知使用者資料來自 SNAPSHOT。
+> **唯一可省略 web_fetch**：純概念說明（如「什麼是站內付？」）且不涉及具體參數值、端點路徑、或程式碼生成。
 > guides/13、14、23 有 AI Section Index（行號索引），若只需單一語言可用 offset/limit 讀取特定行範圍。
 > AES vs CMV 對比表見 guides/14 §AES vs CMV URL Encode 對比表（line 129-226）。
 > guides/23 有約 1700 行，建議使用 AI Section Index 的行號範圍只讀取目標語言的 E2E 區段。
@@ -729,15 +729,15 @@ composer require ecpay/sdk
 
 ### 官方 API 文件索引（references/）
 
-> 完整索引（20 檔案 × 443 個 URL × 對應 Guide 映射）見 [references/README.md](./references/README.md)。
+> 完整索引（20 檔案 × 442 個 URL × 對應 Guide 映射）見 [references/README.md](./references/README.md)。
 
-references/ 包含 6 大類 API 文件：Payment（8 檔, 174 URLs）、Invoice（4 檔, 119 URLs）、Logistics（3 檔, 76 URLs）、Ecticket（3 檔, 57 URLs）、Receipt（1 檔, 12 URLs）、Cart（1 檔, 5 URLs）。每個檔案收錄官方 API 技術文件的章節 URL 索引，搭配 web_fetch 即時讀取最新規格。
+references/ 包含 6 大類 API 文件：Payment（8 檔, 174 URLs）、Invoice（4 檔, 119 URLs）、Logistics（3 檔, 75 URLs）、Ecticket（3 檔, 57 URLs）、Receipt（1 檔, 12 URLs）、Cart（1 檔, 5 URLs）。每個檔案收錄官方 API 技術文件的章節 URL 索引，搭配 web_fetch 即時讀取最新規格。
 
 ### ⚠️ AI 必讀：API 規格即時查閱機制
 
 **references/ 是即時 API 規格入口，不是靜態文件。**
 
-references/ 的 20 個檔案包含 443 個 URL，每個 URL 連結至綠界 `developers.ecpay.com.tw` 官方最新 API 規格頁面。guides/ 提供整合知識（如何串接），references/ 提供即時規格來源（最新參數表、欄位定義）。**兩者結合才是完整的回答。**
+references/ 的 20 個檔案包含 442 個 URL，每個 URL 連結至綠界 `developers.ecpay.com.tw` 官方最新 API 規格頁面。guides/ 提供整合知識（如何串接），references/ 提供即時規格來源（最新參數表、欄位定義）。**兩者結合才是完整的回答。**
 
 #### 何時必須即時查閱 references/
 
@@ -776,7 +776,7 @@ references/ 的 20 個檔案包含 443 個 URL，每個 URL 連結至綠界 `dev
        → ⚠️ 禁止從 AI 記憶中編造或猜測 URL
        → 可嘗試 web_fetch https://developers.ecpay.com.tw 首頁搜尋
        → 若找到 developers.ecpay.com.tw 下的頁面，可引用但須註明「此 URL 未收錄於 references/ 索引，請自行確認有效性」
-       → 若找不到，告知��發者聯繫綠界客服 (02-2655-1775) 確認
+       → 若找不到，告知開發者聯繫綠界客服 (02-2655-1775) 確認
        → 禁止引用非 ecpay.com.tw 網域的第三方連結作為 API 規格來源
 ```
 

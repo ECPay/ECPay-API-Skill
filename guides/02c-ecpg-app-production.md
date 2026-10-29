@@ -186,7 +186,7 @@ class PaymentViewController: UIViewController, WKNavigationDelegate {
         view.addSubview(webView)
 
         // 從後端取得站內付2.0 Token 後，載入付款頁面
-        if let url = URL(string: "https://你的後端/ecpg/payment-page?token=\(payToken)") {
+        if let url = URL(string: "https://你的後端/ecpg/payment-page?token=\(Token)") {
             webView.load(URLRequest(url: url))
         }
     }
@@ -232,7 +232,7 @@ class PaymentActivity : AppCompatActivity() {
         }
 
         // 從後端取得站內付2.0 Token 後，載入付款頁面
-        val payToken = intent.getStringExtra("payToken")
+        val payToken = intent.getStringExtra("Token")
         webView.loadUrl("https://你的後端/ecpg/payment-page?token=$payToken")
     }
 }
